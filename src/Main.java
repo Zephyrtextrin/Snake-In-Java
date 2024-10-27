@@ -60,6 +60,7 @@ public class Main{
             public void run() {
                 Snake.position++;
                 Snake.updateMovement();
+                Board.cellAgeDeprecation();
             }
         };
 
@@ -72,10 +73,8 @@ public class Main{
         final static protected int BOARD_SIZE = 10;
         //protected ArrayList<Cell> allCells = new ArrayList<>(); //arraylist of all the cells
         protected static Map<Integer, Cell> cellsByPosition = new HashMap<>(); //contains all the cells and their position so u can get a specific cell by finding them in the map via positional value
-        protected static Map<Integer, Cell> cellsByAge = new HashMap<>(); //contains all the cells and their age so u can get a specific cell by finding them in the map via age value
-        protected static ArrayList<Integer> ageList = new ArrayList<>();
+        protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
         private static final int CELL_COUNT = (int) Math.pow(BOARD_SIZE, 2);
-
 
         //constructor that initializes all cell values into the board
         protected Board() {
@@ -99,7 +98,7 @@ public class Main{
                 }
 
                 //delete youngest cell
-                
+
             }
             toDisplay.append("</html>"); //NGL I HAF NP IDEA HTML WAS POSSIBLE IN SWING AND I ONLY KNOW IT BECAUSE I HAD TO ADD LINEBREAKS TO THIS JLABEL
 
@@ -111,8 +110,25 @@ public class Main{
         //updates a specific cell based on specified status and position
         protected static void updateCell (boolean status, int position, boolean type){
             Cell targetCell = cellsByPosition.get(position);
-            targetCell.changeAppearance(status, type);
+            targetCell.changeAppearance(status);
+            if(type){targetCell.snakeCellsManagement(targetCell);} //calls snakeCellsManagement method if the changeAppearance method's being called in regards to the snake class
+        }
 
+        //decreases age of all cells by 1 and removes any cells with an age of zero
+        protected static void cellAgeDeprecation(){
+            for(int i = 0; i<snakeCells.size(); i++){
+                Cell currentCell = snakeCells.get(i);
+                //depreciates age by 1
+                currentCell.age--;
+
+                //if 0, turn back into a regular board cell
+                if(currentCell.age<=0){
+                    currentCell.type = false;
+                    currentCell.changeAppearance(false); //sets appearance to regular ass cell LOL
+                    snakeCells.remove(i);
+                    System.out.println("POS "+ currentCell.POSITION+"AGE "+currentCell.age);
+                }
+            }
         }
 
         //class manages attributes for individual cells
@@ -121,20 +137,22 @@ public class Main{
             char appearance; //actual display of the cell
             int POSITION; //this is the location data and is effectively rows+col. this is used because you have to run the values through a map to sort by an element and running 2 maps for rows and cols is lag-inducing
             int age; //used to determine which cell is cleared when the snake moves
+            boolean type; //true if snake cell, false if else
 
             //constructor method used for initialization: sets X/Y position
             private Cell(int position){
                 POSITION = position;
-                this.appearance = changeAppearance(false, false);
+                this.appearance = changeAppearance(false);
+                this.type = false;
+                this.age = 0;
 
                 //allCells.add(this);
                 cellsByPosition.put(POSITION, this);
             }
 
             //method used to change appearance of cell based on status
-            private char changeAppearance(boolean status, boolean type){ //true if snake false if no\t
+            private char changeAppearance(boolean status){ //true if snake false if no\t
                 //active/inactive vars may not be necessary but it's nice to have them easily configurable
-                Cell thisCell = this;
                 final char ACTIVE = 'X'; //active/inactive appearances for each cell (active is if there's a snake/food on that tile)
                 final char INACTIVE = 'O';
                 this.status = status;
@@ -142,20 +160,21 @@ public class Main{
                 //idk if they should be formatted like this but it looks nicer
                 if(status){appearance = ACTIVE;}else{appearance = INACTIVE;}
 
-                if(type){
-                    age++;
-                    thisCell.age = age;
-                    ageList.add(age);
-                }
-
                 return appearance;
+            }
+
+            //adds cells to snakeCell list
+            private void snakeCellsManagement(Cell targetCell){
+                targetCell.type = true;
+                targetCell.age = Snake.length;
+                snakeCells.add(this);
             }
         }
     }
 
     //holds data for snake
     public static class Snake extends Board{
-        int length = 4;
+        static int length = 4;
         String direction = "RIGHT";
         static int position = 1; //thithe position of the cell the snake's head is in
 

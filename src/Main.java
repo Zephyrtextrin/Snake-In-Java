@@ -10,10 +10,10 @@ public class Main{
     protected static JLabel display = new JLabel();
     protected static JPanel panel = new JPanel();
     protected static boolean gameStatus = true;
+    static final int WINDOW_SIZE = (22*Board.BOARD_SIZE); //controls size of all panels and frames
 
     //sets up frame, initializes some constructors, and runs method that actually makes the game work
     public static void main(String[] args) {
-        final int WINDOW_SIZE = (22*Board.BOARD_SIZE); //controls size of all panels and frames
         //changes l&f to windows classic because im a basic bitch like that
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -72,8 +72,14 @@ public class Main{
             TimerTask snakeMovement = new TimerTask() {
                 @Override
                 public void run() {
-                    Snake.changeDirection(pressedKey[0]);
-                    Board.cellAgeDeprecation();
+                    if(gameStatus) {
+                        Snake.changeDirection(pressedKey[0]);
+                        Board.cellAgeDeprecation();
+                    }else{
+                        display.setText("GAME OVER!");
+                        display.setBounds(WINDOW_SIZE/2, WINDOW_SIZE/2, WINDOW_SIZE, WINDOW_SIZE);
+                    }
+                    //TOOD: make a better solution for stopping the game
                 }
             };
 
@@ -210,7 +216,6 @@ public class Main{
             if(key == KeyEvent.VK_RIGHT){
                 direction = "RIGHT";
                 modifier = 1;
-                System.out.println("'EAYAH'");
 
             }else if(key == KeyEvent.VK_LEFT){
                 direction = "LEFT";

@@ -4,8 +4,6 @@ import java.util.Timer;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-import static java.awt.event.KeyEvent.VK_RIGHT;
-
 public class Main{
     protected static JLabel display = new JLabel();
     protected static JPanel panel = new JPanel();
@@ -60,13 +58,6 @@ public class Main{
         final int FPS = 1000/4; //how often the frame refreshes, in MILLISECONDS (this is 1000/4 instead of just 250 bc its easier to work with)
         Timer timer = new Timer(); //new timer instance
         Snake.updateMovement(); //inits snake at positiion of 1
-
-        /*timer that goes off every frame or evry 2 frames idk
-        //if()else{
-        //if player input is up set snake.direction to up and obv do that for all directions
-        //if direction is left/right change MODIFIER by 1 but if direction is up/down change by BOARD_SIZE
-        //end ifelse
-        //snake.position += MODIFIER*/
 
         //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
             TimerTask snakeMovement = new TimerTask() {
@@ -233,5 +224,14 @@ public class Main{
 
             updateMovement();
         }
+
+        /* ok so for the apple its like
+        its a subclass of cell
+        and it starts at a random pos when init and it has activated tex
+        and when the snake hits it then length++
+        like make some kinda att that the snake can tell its an apple
+        and then after that it changes to a new pos
+        make sure that it doesnt spawn inside the snake (use maps)
+         */
     }
 }

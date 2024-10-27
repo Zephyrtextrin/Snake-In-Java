@@ -1,14 +1,19 @@
 import javax.swing.*;
 import java.util.*;
 import java.util.Timer;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
+import static java.awt.event.KeyEvent.VK_RIGHT;
 
 public class Main{
     protected static JLabel display = new JLabel();
     protected static JPanel panel = new JPanel();
+    protected static boolean gameStatus = true;
 
     //sets up frame, initializes some constructors, and runs method that actually makes the game work
     public static void main(String[] args) {
-        final int WINDOW_SIZE = 220; //controls size of all panels and frames
+        final int WINDOW_SIZE = (22*Board.BOARD_SIZE); //controls size of all panels and frames
         //changes l&f to windows classic because im a basic bitch like that
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -35,14 +40,23 @@ public class Main{
 
         new Board(); //inits cell values
 
-        runGame(panel); //runs the method that actually makrs the gamr work
+        runGame(frame); //runs the method that actually makrs the gamr work
         frame.setVisible(true);
 
 
     }
 
     //manages game
-    private static void runGame(JPanel panel){
+    private static void runGame(JFrame frame){
+        final int[] pressedKey = new int[1]; //WHA THE ACTUAL FUCK IS INTELLIJ MAKING MY CODE DO WHI IS THIS A FINAL INT ARRAY???
+        //IDK WHAT THIS DOES INTELLIJ JUST ADDED IT
+        frame.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                int keyCode = e.getKeyCode();
+                Snake.changeDirection(keyCode);
+            }
+        });
+
         final int FPS = 1000/4; //how often the frame refreshes, in MILLISECONDS (this is 1000/4 instead of just 250 bc its easier to work with)
         Timer timer = new Timer(); //new timer instance
         Snake.updateMovement(); //inits snake at positiion of 1
@@ -55,16 +69,15 @@ public class Main{
         //snake.position += MODIFIER*/
 
         //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
-        TimerTask snakeMovement = new TimerTask() {
-            @Override
-            public void run() {
-                Snake.position++;
-                Snake.updateMovement();
-                Board.cellAgeDeprecation();
-            }
-        };
+            TimerTask snakeMovement = new TimerTask() {
+                @Override
+                public void run() {
+                    Snake.changeDirection(pressedKey[0]);
+                    Board.cellAgeDeprecation();
+                }
+            };
 
-        timer.scheduleAtFixedRate(snakeMovement,0,FPS);
+            timer.scheduleAtFixedRate(snakeMovement, 0, FPS);
 
     }
 
@@ -85,6 +98,7 @@ public class Main{
 
         //redraws the board tbh //EDIT: bro what was i thinking this is the worst comment of all time
         public static void drawBoard(JPanel panel, JLabel display) {
+
             StringBuilder toDisplay = new StringBuilder();
 
             toDisplay.append("<html>"); //NGL I HAF NP IDEA HTML WAS POSSIBLE IN SWING AND I ONLY KNOW IT BECAUSE I HAD TO ADD LINEBREAKS TO THIS JLABEL
@@ -93,7 +107,7 @@ public class Main{
                 String input = " "+targetCell.appearance+" ";
 
                 toDisplay.append(input);
-                if (position % 10 == 0) {
+                if (position % BOARD_SIZE == 0) {
                     toDisplay.append("<br>"); //adds new row
                 }
 
@@ -126,7 +140,6 @@ public class Main{
                     currentCell.type = false;
                     currentCell.changeAppearance(false); //sets appearance to regular ass cell LOL
                     snakeCells.remove(i);
-                    System.out.println("POS "+ currentCell.POSITION+"AGE "+currentCell.age);
                 }
             }
         }
@@ -165,6 +178,12 @@ public class Main{
 
             //adds cells to snakeCell list
             private void snakeCellsManagement(Cell targetCell){
+                if(targetCell.age!=0){
+                    System.out.println("BROTHER YOU ATE YOURSELF" + targetCell.age);
+                    gameStatus = false;
+
+                }
+
                 targetCell.type = true;
                 targetCell.age = Snake.length;
                 snakeCells.add(this);
@@ -175,12 +194,39 @@ public class Main{
     //holds data for snake
     public static class Snake extends Board{
         static int length = 4;
-        String direction = "RIGHT";
+        static String direction = "RIGHT";
         static int position = 1; //thithe position of the cell the snake's head is in
+        static int modifier = 1; //how mmany cells the snake will move by (aka: the direction)
+
 
         public static void updateMovement(){
+            position+=modifier;
             Board.updateCell(true, position, true); //snake turns the tile it's on into it's activated appearance
             drawBoard(panel,display); //updates board
+        }
+
+        private static void changeDirection(int key){
+            //me when code stolen off stackoverflow
+            if(key == KeyEvent.VK_RIGHT){
+                direction = "RIGHT";
+                modifier = 1;
+                System.out.println("'EAYAH'");
+
+            }else if(key == KeyEvent.VK_LEFT){
+                direction = "LEFT";
+                modifier = -1;
+
+            }else if(key == KeyEvent.VK_UP){
+                direction = "RIGHT";
+                modifier = -10;
+
+            }else if(key == KeyEvent.VK_DOWN){
+                direction = "RIGHT";
+                modifier = 10;
+
+            }
+
+            updateMovement();
         }
     }
 }

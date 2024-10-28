@@ -72,7 +72,7 @@ public class Main{
                         display.setBounds(WINDOW_SIZE/2, WINDOW_SIZE/2, WINDOW_SIZE, WINDOW_SIZE);
                         //System.exit(0);
                     }
-                    
+
                     //TODO: make a better solution for stopping the game (also u can still input when in game-over)
                 }
             };

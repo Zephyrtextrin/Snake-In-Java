@@ -65,14 +65,15 @@ public class Main{
                 @Override
                 public void run() {
                     if(gameStatus) {
-                        Snake.changeDirection(pressedKey[0]);
                         Board.cellAgeDeprecation();
+                        Snake.changeDirection(pressedKey[0]);
                     }else{
                         display.setText("GAME OVER!");
                         display.setBounds(WINDOW_SIZE/2, WINDOW_SIZE/2, WINDOW_SIZE, WINDOW_SIZE);
                         //System.exit(0);
                     }
-                    //TOOD: make a better solution for stopping the game
+                    
+                    //TODO: make a better solution for stopping the game (also u can still input when in game-over)
                 }
             };
 
@@ -110,7 +111,7 @@ public class Main{
                     toDisplay.append("<br>"); //adds new row
                 }
             }
-            toDisplay.append("</html>"); //NGL I HAF NP IDEA HTML WAS POSSIBLE IN SWING AND I ONLY KNOW IT BECAUSE I HAD TO ADD LINEBREAKS TO THIS JLABEL
+            toDisplay.append("</html>");
 
             display.setText(String.valueOf(toDisplay)); //sets display text to the drawn board
             panel.repaint();
@@ -125,6 +126,8 @@ public class Main{
         }
 
         //decreases age of all cells by 1 and removes any cells with an age of zero
+        //TODO: stop that gltich where there's just a piece of the snake lagging behind
+
         protected static void cellAgeDeprecation(){
             for(int i = 0; i<snakeCells.size(); i++){
                 Cell currentCell = snakeCells.get(i);
@@ -137,6 +140,7 @@ public class Main{
                     currentCell.type = "tile";
                     currentCell.changeAppearance(false); //sets appearance to regular ass cell LOL
                     snakeCells.remove(i);
+                    System.out.println("------------------");
                 }
             }
         }
@@ -179,21 +183,17 @@ public class Main{
                     System.out.println("BROTHER YOU ATE YOURSELF" + targetCell.age);
                     gameStatus = false;
 
-                } else if (Objects.equals(targetCell.type, "food")) {
-                    targetCell.type = "tile";
-                    targetCell.status = false;
-                    targetCell.changeAppearance(false);
-                    createFood();
                 } else {
+                    if (Objects.equals(targetCell.type, "food")) {createFood();}
                     targetCell.type = "snake";
-                    targetCell.age = Snake.length+1; //set to one because the cells would immediately get depreciated to (length-1)
+                    targetCell.age = Snake.length; //set to one because the cells would immediately get depreciated to (length-1)
                     snakeCells.add(this);
                 }
             }
 
             protected static void createFood(){
-                Cell targetCell = cellsByPosition.get(1); //inits to placeholder cell
                 Random rand = new Random(); //gets random class to call random cell pos
+                Cell targetCell = cellsByPosition.get(rand.nextInt(CELL_COUNT)+1); //inits to placeholder cell
 
                 while(!Objects.equals(targetCell.type, "tile")){ //if selected cell is snake
                     int position = rand.nextInt(CELL_COUNT)+1; //must be ++ because rolls start at 0
@@ -209,7 +209,7 @@ public class Main{
 
     //holds data for snake
     public static class Snake extends Board{
-        static int length = 4;
+        static int length = 0;
         static String direction = "RIGHT";
         static int position = 1; //thithe position of the cell the snake's head is in
         static int modifier = 1; //how mmany cells the snake will move by (aka: the direction)
@@ -229,20 +229,20 @@ public class Main{
 
         private static void changeDirection(int key){
             //me when code stolen off stackoverflow
-            if(key == KeyEvent.VK_RIGHT){
+            if(key == KeyEvent.VK_RIGHT&&!Objects.equals(direction, "LEFT")){
                 direction = "RIGHT";
                 modifier = 1;
 
-            }else if(key == KeyEvent.VK_LEFT){
+            }else if(key == KeyEvent.VK_LEFT&&!Objects.equals(direction, "RIGHT")){
                 direction = "LEFT";
                 modifier = -1;
 
-            }else if(key == KeyEvent.VK_UP){
-                direction = "RIGHT";
+            }else if(key == KeyEvent.VK_UP&&!Objects.equals(direction, "DOWN")){
+                direction = "UP";
                 modifier = -BOARD_SIZE;
 
-            }else if(key == KeyEvent.VK_DOWN){
-                direction = "RIGHT";
+            }else if(key == KeyEvent.VK_DOWN&&!Objects.equals(direction, "UP")){
+                direction = "DOWN";
                 modifier = BOARD_SIZE;
 
             }

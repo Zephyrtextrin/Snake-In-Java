@@ -4,11 +4,31 @@ import java.util.Timer;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+/*
+
+  [[[---KNOWN-ISSUES---]]]
+
+    *PROBLEM: unable to lose via hitting game edges (you can lose by hitting urself tho)
+    *CAUSE: i havent programmed it yet and i genuinely dont know where to start for that lol (unless i reprogrammed how position values are stored and read to rely off row/col instead of one num for the pos)
+
+    *PROBLEM: game is very laggy
+    *CAUSE: it's not very well optimized and there's a lot of methods running every frame cause i had bigger fish to fry for a while
+
+    *PROBLEM: the method for making the game end rn feels weird and plays weird (you can still make inputs and its weird and glitchy)
+    *CAUSE: i cant think of any other solution for it rn so it was the only thing i could think of (unless i close the window but that feels weird
+
+  [[[---POSSIBLE-FEATURES---]]]
+    add a play again button wheb u lose
+    and stats about how long u are
+    maybe a high score too where it writes to a txt file your high score every time u lose and then it reads it to set the highscore variable but also that feels like someon can just open it and set it to 999999999999999999 so there would need to be an errchk
+
+ */
 public class Main{
     protected static JLabel display = new JLabel();
     protected static JPanel panel = new JPanel();
     protected static boolean gameStatus = true;
-    static final int WINDOW_SIZE = (22*Board.BOARD_SIZE); //controls size of all panels and frames
+    protected static int BOARD_SIZE = 20;
+    static final int WINDOW_SIZE = (22*BOARD_SIZE); //controls size of all panels and frames
 
     //sets up frame, initializes some constructors, and runs method that actually makes the game work
     public static void main(String[] args) {
@@ -64,10 +84,9 @@ public class Main{
             TimerTask snakeMovement = new TimerTask() {
                 @Override
                 public void run() {
-                    if(gameStatus) {
-                        Board.cellAgeDeprecation();
-                        Snake.changeDirection(pressedKey[0]);
-                    }else{
+                    if(gameStatus) {Snake.changeDirection(pressedKey[0]);}
+
+                    else{
                         display.setText("GAME OVER!");
                         display.setBounds(WINDOW_SIZE/2, WINDOW_SIZE/2, WINDOW_SIZE, WINDOW_SIZE);
                         //System.exit(0);
@@ -83,7 +102,6 @@ public class Main{
 
     protected static class Board extends Main{
         //init var
-        final static protected int BOARD_SIZE = 20;
         //protected ArrayList<Cell> allCells = new ArrayList<>(); //arraylist of all the cells
         protected static Map<Integer, Cell> cellsByPosition = new HashMap<>(); //contains all the cells and their position so u can get a specific cell by finding them in the map via positional value
         protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
@@ -126,21 +144,18 @@ public class Main{
         }
 
         //decreases age of all cells by 1 and removes any cells with an age of zero
-        //TODO: stop that gltich where there's just a piece of the snake lagging behind
 
         protected static void cellAgeDeprecation(){
             for(int i = 0; i<snakeCells.size(); i++){
                 Cell currentCell = snakeCells.get(i);
                 //depreciates age by 1
                 currentCell.age--;
-                System.out.println(currentCell.age);
 
                 //if 0, turn back into a regular board cell
                 if(currentCell.age<=0){
                     currentCell.type = "tile";
                     currentCell.changeAppearance(false); //sets appearance to regular ass cell LOL
                     snakeCells.remove(i);
-                    System.out.println("------------------");
                 }
             }
         }
@@ -179,14 +194,15 @@ public class Main{
 
             //adds cells to snakeCell list
             private void snakeCellsManagement(Cell targetCell) {
-                if (Objects.equals(targetCell.type, "snake")) {
-                    System.out.println("BROTHER YOU ATE YOURSELF" + targetCell.age);
-                    gameStatus = false;
+                if (Objects.equals(targetCell.type, "snake")) {gameStatus = false;}
+                else {
+                    if (Objects.equals(targetCell.type, "food")) { //this looks incredibly dumb but you have to have this if statement inside the else
+                        Snake.length++;
+                        createFood();
+                    }
 
-                } else {
-                    if (Objects.equals(targetCell.type, "food")) {createFood();}
                     targetCell.type = "snake";
-                    targetCell.age = Snake.length; //set to one because the cells would immediately get depreciated to (length-1)
+                    targetCell.age = Snake.length+1; //add one because the cells would immediately get depreciated to (length-1)
                     snakeCells.add(this);
                 }
             }
@@ -209,7 +225,7 @@ public class Main{
 
     //holds data for snake
     public static class Snake extends Board{
-        static int length = 0;
+        static int length = 1;
         static String direction = "RIGHT";
         static int position = 1; //thithe position of the cell the snake's head is in
         static int modifier = 1; //how mmany cells the snake will move by (aka: the direction)
@@ -217,13 +233,8 @@ public class Main{
 
         public static void updateMovement(){
             position+=modifier;
-            Cell hoveredCell = cellsByPosition.get(position);
-            if(Objects.equals(hoveredCell.type, "food")){
-                length++;
-
-            }
-
             Board.updateCell(true, position, true); //snake turns the tile it's on into it's activated appearance
+            cellAgeDeprecation();
             drawBoard(panel,display); //updates board
         }
 

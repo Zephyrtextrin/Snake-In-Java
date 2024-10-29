@@ -1,6 +1,6 @@
   [[[---KNOWN-ISSUES---]]]
     *PROBLEM: game is very laggy
-    *NOTES: it's not very well optimized and there's a lot of methods running every frame. EDIT: i didnt change much optimization-wise and it runs fine now. not marking this as resolved since this could be a fringe case
+    *CAUSE: it's not very well optimized and there's a lot of methods running every frame cause i had bigger fish to fry for a while //EDIT: i didnt change much optimization-wise and it runs fine now. not marking this as resolved since this could be a fringe case
     *STATUS: ???
 
     *PROBLEM: the method for making the game end rn feels weird coding-wise
@@ -15,7 +15,7 @@
     *SOLUTION: forgot to update the nextPos var lol so it only updated upon initialization and it would always be 2
 
     *PROBLEM: unable to lose via hitting game edges (you can lose by hitting urself tho)
-    *SOLUTION: all i had to do is calc the row/col vals on the fly by dividing the positional value by the board size and make a checksum comparing the current row to what the row would be if the position value was modified by one tile in the snake's current direction
+    *SOLUTION: all i had to do is calc the row/col vals on the fly by dividing the positional value by the
 
   [[[---POSSIBLE-FEATURES---]]]
     add a play again button wheb u lose

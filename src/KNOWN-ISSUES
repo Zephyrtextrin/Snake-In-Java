@@ -1,7 +1,7 @@
   [[[---KNOWN-ISSUES---]]]
     *PROBLEM: game is very laggy
-    *CAUSE: it's not very well optimized and there's a lot of methods running every frame cause i had bigger fish to fry for a while //EDIT: i didnt change much optimization-wise and it runs fine now. not marking this as resolved since this could be a fringe case
-    *STATUS: ???
+    *NOTES: it's not very well optimized and there's a lot of methods running every frame cause i had bigger fish to fry for a while
+    *STATUS: UNRESOLVED
 
     *PROBLEM: the method for making the game end rn feels weird coding-wise
     *NOTES:  it's probably the only way i can do this and it doesnt affect gameplay. keeping this unnmarked since it's something to note

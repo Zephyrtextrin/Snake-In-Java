@@ -156,7 +156,7 @@ public class Main {
             }else{stopGame();}
         }
     }
-    
+
     protected static class Board extends Main {
         //init var
         //protected ArrayList<Cell> allCells = new ArrayList<>(); //arraylist of all the cells

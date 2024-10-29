@@ -5,12 +5,18 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class Main {
+    protected static JFrame frame = new JFrame("text-based snake in java+swing");
     protected static JLabel display = new JLabel();
     protected static JPanel panel = new JPanel();
     protected static boolean gameStatus = true;
     protected static int BOARD_SIZE = 20;
     static final int WINDOW_SIZE = (22 * BOARD_SIZE); //controls size of all panels and frames
     private static final int CELL_COUNT = (int) Math.pow(BOARD_SIZE, 2);
+    
+    //allows you to set celltypes without using direct strings and ensures no compatibility issues
+    protected static final String TYPE_FIELD = "tile";
+    protected static final String TYPE_SNAKE = "snake";
+    protected static final String TYPE_FOOD = "food";
 
     static final JButton playAgain = new JButton("Play again"); //plays the game again
 
@@ -29,7 +35,6 @@ public class Main {
 
 
         // create a window
-        JFrame frame = new JFrame("text-based snake in java+swing");
         frame.setSize(WINDOW_SIZE, WINDOW_SIZE);
 
         //adds panel
@@ -48,7 +53,6 @@ public class Main {
         playAgain.setBounds(WINDOW_SIZE / 2, WINDOW_SIZE / 2, WINDOW_SIZE / 3, WINDOW_SIZE / 5);
         panel.add(playAgain);
         playAgain.setVisible(false);
-        playAgain.addActionListener(e -> runGame(frame)); //if clicked, play the game again
 
         runGame(frame); //runs the method that actually makrs the gamr work
         frame.setVisible(true);
@@ -66,16 +70,15 @@ public class Main {
             }
         });
 
-        final int FPS = 300; //how often the frame refreshes, in MILLISECONDS (this is 1000/4 instead of just 250 bc its easier to work with)
+        final int FPS = 350; //how often the frame refreshes, in MILLISECONDS (this is 1000/4 instead of just 250 bc its easier to work with)
         Timer timer = new Timer(); //new timer instance
         Snake.updateMovement(); //inits snake at positiion of 1
 
-        Board.Cell.createFood(); //initializes food item
+        Board.createFood(); //initializes food item
         //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
         TimerTask snakeMovement = new TimerTask() {
             @Override
             public void run() {
-
                 if (gameStatus){Snake.changeDirection(pressedKey[0]);}
                 else{stopGame();}
             }
@@ -89,6 +92,7 @@ public class Main {
         gameStatus = false;
         display.setText("GAME OVER!");
         playAgain.setVisible(true);
+        playAgain.addActionListener(e -> runGame(frame)); //if clicked, play the game again
     }
 
 
@@ -109,7 +113,7 @@ public class Main {
                 position += modifier; //makes the snake advance by however many tiles the direction needs them to advance in
                 nextPos = position + modifier;
                 checkBorders(); //checks if snake is hitting an edge cell (this must be done AFTER the next cell is ran through validity checks because if it isnt then the snake will advance to the invalid cell before borderchecks are run and crash the game
-                targetCell.snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
+                snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
                 cellAgeDeprecation();
                 drawBoard(panel, display);
             }
@@ -117,20 +121,27 @@ public class Main {
 
         //checks to see if player ran into a wall
         private static void checkBorders() {
+            Cell targetCell = cellsByPosition.get(position);
+            final boolean check = isCheck();
+            final boolean ego = Objects.equals(targetCell.type, TYPE_SNAKE); //is snake eating itself
+
+            //System.out.println("----------------------------\nCURRENT ROW: "+row+" NEXT ROW: "+nextRow+"\nCURRENT COLUMN: "+column+" NEXT COLUMN: "+nextCol+"\nCURRENT POS: "+position+" NEXT POS:  "+nextPos+"\nDIRECTION: "+direction+" HORIZONTAL: "+HORIZONTAL+"\nMODIFIER: "+modifier+"\n----------------------------");
+            //VERY LONG DEBUG STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
+
+            if(check||ego){
+                gameStatus = false;
+                stopGame();
+            }
+        }
+
+        private static boolean isCheck() {
             final boolean HORIZONTAL = direction.equals("LEFT") || direction.equals("RIGHT");
             final int column = position % BOARD_SIZE; //gets the current column of the snake by dividing the position by the board size and getting the remainder
             final int row = position / BOARD_SIZE; //gets the current row of the snake by dividing the position of the board size and truncating any decimal slots
             final int nextRow = nextPos / BOARD_SIZE; //these nextRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable
             final int nextCol = nextPos % BOARD_SIZE;
-
-            //System.out.println("----------------------------\nCURRENT ROW: "+row+" NEXT ROW: "+nextRow+"\nCURRENT COLUMN: "+column+" NEXT COLUMN: "+nextCol+"\nCURRENT POS: "+position+" NEXT POS:  "+nextPos+"\nDIRECTION: "+direction+" HORIZONTAL: "+HORIZONTAL+"\nMODIFIER: "+modifier+"\n----------------------------");
-            //VERY LONG DEBUG STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
-
-            if(HORIZONTAL&&nextRow!=row){stopGame();
-
-            }else if(!HORIZONTAL&&nextCol!=column){stopGame();}
+            return (HORIZONTAL&&nextRow!=row)||(!HORIZONTAL&&nextCol!=column);
         }
-
 
 
         private static void changeDirection(int key){
@@ -155,7 +166,20 @@ public class Main {
                 updateMovement();
             }else{stopGame();}
         }
-    }
+
+        //adds cells to snakeCell list
+        private static void snakeCellsManagement(Cell targetCell) {
+            targetCell.changeAppearance(true); //changes target cell into its activated appearance (since snake cells are the activated appearance of a shaded-in block
+                if (Objects.equals(targetCell.type, TYPE_FOOD)) { //this looks incredibly dumb but you have to have this if statement inside the else
+                    Snake.length++;
+                    Board.createFood();
+                }
+
+                targetCell.type = TYPE_SNAKE;
+                targetCell.age = Snake.length + 1; //add one because the cells would immediately get depreciated to (length-1)
+                snakeCells.add(targetCell);
+            }
+        }
 
     protected static class Board extends Main {
         //init var
@@ -194,15 +218,7 @@ public class Main {
             panel.revalidate();
         }
 
-        //updates a specific cell based on specified status and position
-        //* intellij is alwayas telling me that these vars are always set to snake/true when called and while that is correct it's better flexibility to keep these as vars
-        protected static void updateCell(boolean status, int position, String type) {
-            Cell targetCell = cellsByPosition.get(position);
-            targetCell.changeAppearance(status);
-        }
-
         //decreases age of all cells by 1 and removes any cells with an age of zero
-
         protected static void cellAgeDeprecation() {
             for (int i = 0; i < snakeCells.size(); i++) {
                 Cell currentCell = snakeCells.get(i);
@@ -211,11 +227,25 @@ public class Main {
 
                 //if 0, turn back into a regular board cell
                 if (currentCell.age <= 0) {
-                    currentCell.type = "tile";
+                    currentCell.type = TYPE_FIELD;
                     currentCell.changeAppearance(false); //sets appearance to regular ass cell LOL
                     snakeCells.remove(i);
                 }
             }
+        }
+
+        protected static void createFood() {
+            Random rand = new Random(); //gets random class to call random cell pos
+            Cell targetCell = cellsByPosition.get(rand.nextInt(CELL_COUNT) + 1); //inits to placeholder cell
+
+            while (!Objects.equals(targetCell.type, TYPE_FIELD)) { //if selected cell is snake
+                int position = rand.nextInt(CELL_COUNT) + 1; //must be ++ because rolls start at 0
+                targetCell = cellsByPosition.get(position); //gets atts of cell currently selected
+            }
+
+            //changes type to food and changes appearance to activated char
+            targetCell.type = TYPE_FOOD;
+            targetCell.changeAppearance(true);
         }
 
         //class manages attributes for individual cells
@@ -230,7 +260,7 @@ public class Main {
             private Cell(int position) {
                 POSITION = position;
                 this.appearance = changeAppearance(false);
-                this.type = "tile";
+                this.type = TYPE_FIELD;
                 this.age = 0;
 
                 //allCells.add(this);
@@ -238,7 +268,7 @@ public class Main {
             }
 
             //method used to change appearance of cell based on status
-            private char changeAppearance(boolean status) { //true if snake false if no\t
+            char changeAppearance(boolean status) { //true if snake false if no\t
                 //active/inactive vars may not be necessary but it's nice to have them easily configurable
                 final char ACTIVE = '■'; //active/inactive appearances for each cell (active is if there's a snake/food on that tile)
                 final char INACTIVE = '☐';
@@ -249,36 +279,6 @@ public class Main {
                 }else{appearance = INACTIVE;}
 
                 return appearance;
-            }
-
-            //adds cells to snakeCell list
-            private void snakeCellsManagement(Cell targetCell) {
-                targetCell.changeAppearance(true); //changes target cell into its activated appearance (since snake cells are the activated appearance of a shaded-in block
-                if (Objects.equals(targetCell.type, "snake")) {stopGame();} //ends game if you run into yourself
-                else {
-                    if (Objects.equals(targetCell.type, "food")) { //this looks incredibly dumb but you have to have this if statement inside the else
-                        Snake.length++;
-                        createFood();
-                    }
-
-                    targetCell.type = "snake";
-                    targetCell.age = Snake.length + 1; //add one because the cells would immediately get depreciated to (length-1)
-                    snakeCells.add(this);
-                }
-            }
-
-            protected static void createFood() {
-                Random rand = new Random(); //gets random class to call random cell pos
-                Cell targetCell = cellsByPosition.get(rand.nextInt(CELL_COUNT) + 1); //inits to placeholder cell
-
-                while (!Objects.equals(targetCell.type, "tile")) { //if selected cell is snake
-                    int position = rand.nextInt(CELL_COUNT) + 1; //must be ++ because rolls start at 0
-                    targetCell = cellsByPosition.get(position); //gets atts of cell currently selected
-                }
-
-                //changes type to food and changes appearance to activated char
-                targetCell.type = "food";
-                targetCell.changeAppearance(true);
             }
         }
     }

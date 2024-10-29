@@ -60,7 +60,7 @@ public class Main {
         //init var
         final int[] pressedKey = new int[1]; //WHA THE ACTUAL FUCK IS INTELLIJ SMART SOLUTIONS MAKING MY CODE DO WHI IS THIS A FINAL INT ARRAY???
         Board.createFood(); //initializes food item
-        final int FPS = 250; //how often the frame refreshes, in MILLISECONDS (this is 1000/4 instead of just 250 bc its easier to work with); this is 1/60 sec in ms, so this is approximately 60fps
+        final int FPS = 250; //how often the frame refreshes, in MILLISECONDS
         Timer timer = new Timer(); //new timer instance
 
         //IDK WHAT THIS DOES INTELLIJ JUST ADDED IT

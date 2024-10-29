@@ -14,7 +14,7 @@ import java.awt.event.KeyEvent;
     *PROBLEM: game is very laggy
     *CAUSE: it's not very well optimized and there's a lot of methods running every frame cause i had bigger fish to fry for a while
 
-    *PROBLEM: the method for making the game end rn feels weird and plays weird (you can still make inputs and its weird and glitchy)
+    *PROBLEM: the method for making the game end rn feels weird coding-wise and is weird from a gameplay perspective bc u can still make inputs and its weird and glitchy
     *CAUSE: i cant think of any other solution for it rn so it was the only thing i could think of (unless i close the window but that feels weird
 
   [[[---POSSIBLE-FEATURES---]]]

@@ -99,11 +99,20 @@ public class Main {
     //holds data for snake
     public static class Snake extends Board {
         static int length = 1;
-        static String direction = "RIGHT";
+        static Direction direction = Direction.RIGHT;
         static int position = 1; //thithe position of the cell the snake's head is in
         static int modifier = 1; //how mmany cells the snake will move by (aka: the direction)
         private static int nextPos; //predicts next position via modifier
 
+        private enum Direction {
+            //init var
+            //sets values for each direction
+            UP(-BOARD_SIZE), DOWN(BOARD_SIZE), LEFT(-1), RIGHT(1);
+            private final int value;
+
+            //sets value according to input
+            Direction(int value){this.value = value;}
+        }
 
         public static void updateMovement() {
             if (nextPos>CELL_COUNT&&nextPos<= 0) {stopGame(); //ERR HANDLER: if the next position would be out-of-bounds or otherwise invalid, stop the game
@@ -135,7 +144,7 @@ public class Main {
         }
 
         private static boolean isCheck() {
-            final boolean HORIZONTAL = direction.equals("LEFT") || direction.equals("RIGHT");
+            final boolean HORIZONTAL = direction.equals(Direction.LEFT) || direction.equals(Direction.RIGHT);
             final int column = position % BOARD_SIZE; //gets the current column of the snake by dividing the position by the board size and getting the remainder
             final int row = position / BOARD_SIZE; //gets the current row of the snake by dividing the position of the board size and truncating any decimal slots
             final int nextRow = nextPos / BOARD_SIZE; //these nextRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable
@@ -144,27 +153,19 @@ public class Main {
         }
 
 
+        //TODO: THIS IS THE SOURCE OF ERRORS BC IM TRYING TO USE ENUMS FOR THE DIRECTIONS FIX THIS
         private static void changeDirection(int key){
+            Direction newDirection = null;
+                //sets values
+            if(key==KeyEvent.VK_RIGHT&&!Objects.equals(direction, Direction.LEFT)) {newDirection = Direction.LEFT;
+            }else if(key==KeyEvent.VK_LEFT&&!Objects.equals(direction, Direction.RIGHT)) {newDirection = Direction.RIGHT;
+            }else if(key==KeyEvent.VK_UP&&!Objects.equals(direction, Direction.DOWN)) {newDirection = Direction.DOWN;
+            }else if(key==KeyEvent.VK_DOWN&&!Objects.equals(direction, Direction.UP)) {newDirection = Direction.UP;}
 
-            if(gameStatus) {
-                //me when code stolen off stackoverflow
-                if (key==KeyEvent.VK_RIGHT&&!Objects.equals(direction, "LEFT")) {
-                    direction = "RIGHT";
-                    modifier = 1;
-                } else if (key==KeyEvent.VK_LEFT&&!Objects.equals(direction, "RIGHT")) {
-                    direction = "LEFT";
-                    modifier = -1;
-
-                } else if (key==KeyEvent.VK_UP&&!Objects.equals(direction, "DOWN")) {
-                    direction = "UP";
-                    modifier = -BOARD_SIZE;
-                } else if (key==KeyEvent.VK_DOWN&&!Objects.equals(direction, "UP")) {
-                    direction = "DOWN";
-                    modifier = BOARD_SIZE;
-                }
-
-                updateMovement();
-            }else{stopGame();}
+            if(!(newDirection ==null)){
+                direction = newDirection; //sets name to direction name
+                modifier = direction.value; //sets value to direction's sepcified value
+            }updateMovement();
         }
 
         //adds cells to snakeCell list

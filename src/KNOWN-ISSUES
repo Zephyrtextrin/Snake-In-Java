@@ -1,23 +1,21 @@
   [[[---KNOWN-ISSUES---]]]
-    *PROBLEM: unable to lose via hitting game edges (you can lose by hitting urself tho)
-    *CAUSE: i havent programmed it yet and i genuinely dont know where to start for that lol (unless i reprogrammed how position values are stored and read to rely off row/col instead of one num for the pos)
-    *STATUS: RESOLVED! im a genius. all i had to do is calc the row/col vals on the fly by dividing the positional value by the board size and make a checksum comparing the current row to what the row would be if the position value was modified by one tile in the snake's current direction
-
     *PROBLEM: game is very laggy
-    *CAUSE: it's not very well optimized and there's a lot of methods running every frame cause i had bigger fish to fry for a while
-    *STATUS: ??? i didnt change much optimization-wise and it runs fine now. not marking this as resolved since this could be a fringe case
+    *NOTES: it's not very well optimized and there's a lot of methods running every frame. EDIT: i didnt change much optimization-wise and it runs fine now. not marking this as resolved since this could be a fringe case
+    *STATUS: ???
 
-    *PROBLEM: the method for making the game end rn feels weird coding-wise and is weird from a gameplay perspective bc u can still make inputs and its weird and glitchy
-    *CAUSE: i cant think of any other solution for it rn so it was the only thing i could think of (unless i close the window but that feels weird
-    *STATUS: ??? it's probably the only way i can do this
+    *PROBLEM: the method for making the game end rn feels weird coding-wise
+    *NOTES:  it's probably the only way i can do this and it doesnt affect gameplay. keeping this unnmarked since it's something to note
+    *STATUS: ???
 
+  [[[---RESOLVED---]]]
     *PROBLEM: you can go insanely fast by going diagonal and/or holding down the arrow keys or pressing keys in the opposite direction
     *SOLUTION: this is an easy fix but its really fun and isnt hurting anyone (you can just choose to not hold down the keys) so it's a feature now
-    *STATUS: RESOLVED! see above
 
     *PROBLEM: game crashes when changing snake's Y value and positioning appears broken
-    *CAUSE: i have no idea
-    *STATUS: RESOLVED! forgot to update the nextPos var lol
+    *SOLUTION: forgot to update the nextPos var lol so it only updated upon initialization and it would always be 2
+
+    *PROBLEM: unable to lose via hitting game edges (you can lose by hitting urself tho)
+    *SOLUTION: all i had to do is calc the row/col vals on the fly by dividing the positional value by the board size and make a checksum comparing the current row to what the row would be if the position value was modified by one tile in the snake's current direction
 
   [[[---POSSIBLE-FEATURES---]]]
     add a play again button wheb u lose

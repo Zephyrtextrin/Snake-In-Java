@@ -4,33 +4,6 @@ import java.util.Timer;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-/*
-
-  [[[---KNOWN-ISSUES---]]]
-    *PROBLEM: unable to lose via hitting game edges (you can lose by hitting urself tho)
-    *CAUSE: i havent programmed it yet and i genuinely dont know where to start for that lol (unless i reprogrammed how position values are stored and read to rely off row/col instead of one num for the pos)
-    *STATUS: RESOLVED! im a genius. all i had to do is calc the row/col vals on the fly and make a checksum
-
-    *PROBLEM: game is very laggy
-    *CAUSE: it's not very well optimized and there's a lot of methods running every frame cause i had bigger fish to fry for a while
-    *STATUS: ??? i didnt change much optimization-wise and it runs fine now. not marking this as resolved since this could be a fringe case
-
-    *PROBLEM: the method for making the game end rn feels weird coding-wise and is weird from a gameplay perspective bc u can still make inputs and its weird and glitchy
-    *CAUSE: i cant think of any other solution for it rn so it was the only thing i could think of (unless i close the window but that feels weird
-    *STATUS: ??? it's probably the only way i can do this
-
-    *PROBLEM: you can go insanely fast by going diagonal and/or holding down the arrow keys or pressing keys in the opposite direction
-    *SOLUTION: this is an easy fix but its really fun and isnt hurting anyone (you can just choose to not hold down the keys) so it's a feature now
-    *STATUS: RESOLVED! see above
-
-    *PROBLEM: game crashes when changing snake's Y value and positioning appears broken
-
-  [[[---POSSIBLE-FEATURES---]]]
-    add a play again button wheb u lose
-    and stats about how long u are
-    maybe a high score too where it writes to a txt file your high score every time u lose and then it reads it to set the highscore variable but also that feels like someon can just open it and set it to 999999999999999999 so there would need to be an errchk
-
- */
 public class Main {
     protected static JLabel display = new JLabel();
     protected static JPanel panel = new JPanel();
@@ -258,7 +231,7 @@ public class Main {
         static String direction = "RIGHT";
         static int position = 1; //thithe position of the cell the snake's head is in
         static int modifier = 1; //how mmany cells the snake will move by (aka: the direction)
-        private static final int nextPos = position + modifier; //predicts next position via modifier
+        private static int nextPos; //predicts next position via modifier
 
 
         public static void updateMovement() {
@@ -266,6 +239,7 @@ public class Main {
 
             }else{
                 position += modifier; //makes the snake advance by however many tiles the direction needs them to advance in
+                nextPos = position + modifier;
                 checkBorders(); //checks if snake is hitting an edge cell (this must be done AFTER the next cell is ran through validity checks because if it isnt then the snake will advance to the invalid cell before borderchecks are run and crash the game
                 cellsByPosition.get(position).snakeCellsManagement(cellsByPosition.get(position)); //calls snakeCellsManagement method to add the cell into the list of snake cells
                 cellAgeDeprecation();

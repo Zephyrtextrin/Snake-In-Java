@@ -91,6 +91,72 @@ public class Main {
         playAgain.setVisible(true);
     }
 
+
+    //holds data for snake
+    public static class Snake extends Board {
+        static int length = 1;
+        static String direction = "RIGHT";
+        static int position = 1; //thithe position of the cell the snake's head is in
+        static int modifier = 1; //how mmany cells the snake will move by (aka: the direction)
+        private static int nextPos; //predicts next position via modifier
+
+
+        public static void updateMovement() {
+            if (nextPos>CELL_COUNT&&nextPos<= 0) {stopGame(); //ERR HANDLER: if the next position would be out-of-bounds or otherwise invalid, stop the game
+
+            }else{
+                Cell targetCell = cellsByPosition.get(position);
+                position += modifier; //makes the snake advance by however many tiles the direction needs them to advance in
+                nextPos = position + modifier;
+                checkBorders(); //checks if snake is hitting an edge cell (this must be done AFTER the next cell is ran through validity checks because if it isnt then the snake will advance to the invalid cell before borderchecks are run and crash the game
+                targetCell.snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
+                cellAgeDeprecation();
+                drawBoard(panel, display);
+            }
+        }
+
+        //checks to see if player ran into a wall
+        private static void checkBorders() {
+            final boolean HORIZONTAL = direction.equals("LEFT") || direction.equals("RIGHT");
+            final int column = position % BOARD_SIZE; //gets the current column of the snake by dividing the position by the board size and getting the remainder
+            final int row = position / BOARD_SIZE; //gets the current row of the snake by dividing the position of the board size and truncating any decimal slots
+            final int nextRow = nextPos / BOARD_SIZE; //these nextRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable
+            final int nextCol = nextPos % BOARD_SIZE;
+
+            //System.out.println("----------------------------\nCURRENT ROW: "+row+" NEXT ROW: "+nextRow+"\nCURRENT COLUMN: "+column+" NEXT COLUMN: "+nextCol+"\nCURRENT POS: "+position+" NEXT POS:  "+nextPos+"\nDIRECTION: "+direction+" HORIZONTAL: "+HORIZONTAL+"\nMODIFIER: "+modifier+"\n----------------------------");
+            //VERY LONG DEBUG STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
+
+            if(HORIZONTAL&&nextRow!=row){stopGame();
+
+            }else if(!HORIZONTAL&&nextCol!=column){stopGame();}
+        }
+
+
+
+        private static void changeDirection(int key){
+
+            if(gameStatus) {
+                //me when code stolen off stackoverflow
+                if (key==KeyEvent.VK_RIGHT&&!Objects.equals(direction, "LEFT")) {
+                    direction = "RIGHT";
+                    modifier = 1;
+                } else if (key==KeyEvent.VK_LEFT&&!Objects.equals(direction, "RIGHT")) {
+                    direction = "LEFT";
+                    modifier = -1;
+
+                } else if (key==KeyEvent.VK_UP&&!Objects.equals(direction, "DOWN")) {
+                    direction = "UP";
+                    modifier = -BOARD_SIZE;
+                } else if (key==KeyEvent.VK_DOWN&&!Objects.equals(direction, "UP")) {
+                    direction = "DOWN";
+                    modifier = BOARD_SIZE;
+                }
+
+                updateMovement();
+            }else{stopGame();}
+        }
+    }
+    
     protected static class Board extends Main {
         //init var
         //protected ArrayList<Cell> allCells = new ArrayList<>(); //arraylist of all the cells
@@ -214,71 +280,6 @@ public class Main {
                 targetCell.type = "food";
                 targetCell.changeAppearance(true);
             }
-        }
-    }
-
-    //holds data for snake
-    public static class Snake extends Board {
-        static int length = 1;
-        static String direction = "RIGHT";
-        static int position = 1; //thithe position of the cell the snake's head is in
-        static int modifier = 1; //how mmany cells the snake will move by (aka: the direction)
-        private static int nextPos; //predicts next position via modifier
-
-
-        public static void updateMovement() {
-            if (nextPos>CELL_COUNT&&nextPos<= 0) {stopGame(); //ERR HANDLER: if the next position would be out-of-bounds or otherwise invalid, stop the game
-
-            }else{
-                Cell targetCell = cellsByPosition.get(position);
-                position += modifier; //makes the snake advance by however many tiles the direction needs them to advance in
-                nextPos = position + modifier;
-                checkBorders(); //checks if snake is hitting an edge cell (this must be done AFTER the next cell is ran through validity checks because if it isnt then the snake will advance to the invalid cell before borderchecks are run and crash the game
-                targetCell.snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
-                cellAgeDeprecation();
-                drawBoard(panel, display);
-            }
-        }
-
-        //checks to see if player ran into a wall
-        private static void checkBorders() {
-            final boolean HORIZONTAL = direction.equals("LEFT") || direction.equals("RIGHT");
-            final int column = position % BOARD_SIZE; //gets the current column of the snake by dividing the position by the board size and getting the remainder
-            final int row = position / BOARD_SIZE; //gets the current row of the snake by dividing the position of the board size and truncating any decimal slots
-            final int nextRow = nextPos / BOARD_SIZE; //these nextRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable
-            final int nextCol = nextPos % BOARD_SIZE;
-
-            //System.out.println("----------------------------\nCURRENT ROW: "+row+" NEXT ROW: "+nextRow+"\nCURRENT COLUMN: "+column+" NEXT COLUMN: "+nextCol+"\nCURRENT POS: "+position+" NEXT POS:  "+nextPos+"\nDIRECTION: "+direction+" HORIZONTAL: "+HORIZONTAL+"\nMODIFIER: "+modifier+"\n----------------------------");
-            //VERY LONG DEBUG STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
-
-            if(HORIZONTAL&&nextRow!=row){stopGame();
-
-            }else if(!HORIZONTAL&&nextCol!=column){stopGame();}
-        }
-
-
-
-        private static void changeDirection(int key){
-
-            if(gameStatus) {
-                //me when code stolen off stackoverflow
-                if (key==KeyEvent.VK_RIGHT&&!Objects.equals(direction, "LEFT")) {
-                    direction = "RIGHT";
-                    modifier = 1;
-                } else if (key==KeyEvent.VK_LEFT&&!Objects.equals(direction, "RIGHT")) {
-                    direction = "LEFT";
-                    modifier = -1;
-
-                } else if (key==KeyEvent.VK_UP&&!Objects.equals(direction, "DOWN")) {
-                    direction = "UP";
-                    modifier = -BOARD_SIZE;
-                } else if (key==KeyEvent.VK_DOWN&&!Objects.equals(direction, "UP")) {
-                    direction = "DOWN";
-                    modifier = BOARD_SIZE;
-                }
-
-                updateMovement();
-            }else{stopGame();}
         }
     }
 }

@@ -95,8 +95,10 @@ public class Main {
             //IDK WHAT THIS DOES INTELLIJ JUST ADDED IT
             frame.addKeyListener(new KeyAdapter() {
                 public void keyPressed(KeyEvent e) {
-                    int keyCode = e.getKeyCode();
-                    Snake.changeDirection(keyCode);
+                    if(gameStatus) {
+                        int keyCode = e.getKeyCode();
+                        Snake.changeDirection(keyCode);
+                    }
                 }
             });
 
@@ -141,7 +143,7 @@ public class Main {
         static Direction direction = Direction.RIGHT;
         static int position = 1; //thithe position of the cell the snake's head is in
         static int modifier = 1; //how mmany cells the snake will move by (aka: the direction)
-        private static int nextPos; //predicts next position via modifier
+        private static int nextPos = 2; //predicts next position via modifier
 
         private enum Direction {
             //init var
@@ -154,7 +156,7 @@ public class Main {
         }
 
         public static void updateMovement() {
-            Cell targetCell = cellsByPosition.get(position);
+            Cell targetCell = cellList[position];
             position += modifier; //makes the snake advance by however many tiles the direction needs them to advance in
             nextPos = position + modifier;
             checkBorders(); //checks if snake is hitting an edge cell (this must be done AFTER the next cell is ran through validity checks because if it isnt then the snake will advance to the invalid cell before borderchecks are run and crash the game
@@ -165,7 +167,7 @@ public class Main {
 
         //checks to see if player ran into a wall
         private static void checkBorders() {
-            Cell targetCell = cellsByPosition.get(position);
+            Cell targetCell = cellList[position];
             //final boolean check = isCheck();
             final boolean check = isCheck();
             final boolean ego = Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_SNAKE.value); //is snake eating itself
@@ -203,8 +205,8 @@ public class Main {
             if (newDirection != null && !newDirection.equals(oppositeDirection(direction))) {
                 direction = newDirection; //updates to name of direction value
                 modifier = direction.value; //updartes to value of direction enum
-                updateMovement();
             }
+            updateMovement();
         }
 
         //CHAT... IM A GENIUS!!
@@ -234,8 +236,8 @@ public class Main {
     protected static class Board extends GameManager {
         //init var
         //protected ArrayList<Cell> allCells = new ArrayList<>(); //arraylist of all the cells
-        protected static Map<Integer, Cell> cellsByPosition = new HashMap<>(); //contains all the cells and their position so u can get a specific cell by finding them in the map via positional value
         protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
+        public static Cell[] cellList = new Cell[INT_CONSTANTS.CELL_COUNT.value+1]; //adds +1 because positions start at 1
 
         private Board(){} //this stupid constructor that does nothing has to be here cause snake wont run if there's no parameterless value or something
 
@@ -243,7 +245,7 @@ public class Main {
         protected Board(boolean isInitialized) {
             if(!isInitialized){for (int position = 1; position <= INT_CONSTANTS.CELL_COUNT.value; position++){new Cell(position);}}
             //creates a cell object for each position and age of 0
-            //TODO: this could have cell age dep in here instead of it being in snake
+            //TODO: this could have cell age dep in here instead of it being in snake and also i feel like it would be better if these were seperate constructors because initing and doing frame-by-frame snake operations is different
 
             updateDisplayLabel(drawBoard());
         }
@@ -259,7 +261,7 @@ public class Main {
 
             toDisplay.append("<html>"); //NGL I HAF NP IDEA HTML WAS POSSIBLE IN SWING AND I ONLY KNOW IT BECAUSE I HAD TO ADD LINEBREAKS TO THIS JLABEL
             for (int position = 1; position <= INT_CONSTANTS.CELL_COUNT.value; position++) {
-                Cell targetCell = cellsByPosition.get(position);
+                Cell targetCell = cellList[position];
                 String input = " " + targetCell.appearance + " ";
 
                 toDisplay.append(input);
@@ -290,13 +292,14 @@ public class Main {
             for(Cell cell:cellsToRemove){snakeCells.remove(cell);}
         }
 
+        //TODO: u could make a lsit of 
         protected static void createFood() {
             Random rand = new Random(); //gets random class to call random cell pos
-            Cell targetCell = cellsByPosition.get(rand.nextInt(INT_CONSTANTS.CELL_COUNT.value) + 1); //inits to placeholder cell
+            Cell targetCell = cellList[rand.nextInt(INT_CONSTANTS.CELL_COUNT.value) + 1]; //inits to placeholder cell
 
             while (!Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_FIELD.value)) { //if selected cell is snake
                 int position = rand.nextInt(INT_CONSTANTS.CELL_COUNT.value) + 1; //must be ++ because rolls start at 0
-                targetCell = cellsByPosition.get(position); //gets atts of cell currently selected
+                targetCell = cellList[position]; //gets atts of cell currently selected
             }
 
             //changes type to food and changes appearance to activated char
@@ -320,7 +323,7 @@ public class Main {
                 this.age = 0;
 
                 //allCells.add(this);
-                cellsByPosition.put(POSITION, this);
+                cellList[position] = this;
             }
 
             //method used to change appearance of cell based on status

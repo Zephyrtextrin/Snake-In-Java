@@ -5,21 +5,32 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class Main {
-    protected static JFrame frame = new JFrame("text-based snake in java+swing");
-    protected static JLabel display = new JLabel();
-    protected static JPanel panel = new JPanel();
-    protected static boolean gameStatus = true;
-    protected static int BOARD_SIZE = 20;
-    static final int WINDOW_SIZE = (22 * BOARD_SIZE); //controls size of all panels and frames
-    private static final int CELL_COUNT = (int) Math.pow(BOARD_SIZE, 2);
-    
-    //allows you to set celltypes without using direct strings and ensures no compatibility issues
-    protected static final String TYPE_FIELD = "tile";
-    protected static final String TYPE_SNAKE = "snake";
-    protected static final String TYPE_FOOD = "food";
 
-    static final JButton playAgain = new JButton("Play again"); //plays the game again
+    public static JLabel display = new JLabel();
+    public static JPanel panel = new JPanel();
+    public static JFrame frame = new JFrame("text-based snake in java+swing");
+    public static JButton playAgain = new JButton("Play again");
 
+    public enum STRING_CONSTANTS{
+        //TYPE VALUES: allows you to set celltypes without using direct strings and ensures no compatibility issues
+        TYPE_FIELD("tile"),
+        TYPE_SNAKE("snake"),
+        TYPE_FOOD("food");
+        private final String value;
+
+        STRING_CONSTANTS(String type){this.value = type;}
+    }
+
+    public enum INT_CONSTANTS{
+        //INTEGERS: values that make the game work
+        BOARD_SIZE(20), 
+        WINDOW_SIZE(22*BOARD_SIZE.value), 
+        CELL_COUNT((int) Math.pow(BOARD_SIZE.value, 2));
+        private final int value;
+
+        //constructor for strings (all type vaues)
+        INT_CONSTANTS(int value){this.value = value;}
+    }
 
     //sets up frame, initializes some constructors, and runs method that actually makes the game work
     public static void main(String[] args) {
@@ -33,66 +44,93 @@ public class Main {
             }
         }catch (Exception e){System.out.println("error with look and feel!\n------DETAILS------\n" + e.getMessage());}
 
+        new GameManager(true); //creates new instance of game manager
+        //new Board(); //inits cell values
+        //CREATES UI VALUES
 
         // create a window
-        frame.setSize(WINDOW_SIZE, WINDOW_SIZE);
+        frame.setSize(INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
 
         //adds panel
         frame.add(panel);
-        panel.setBounds(0, 0, WINDOW_SIZE, WINDOW_SIZE);
+        panel.setBounds(0, 0, INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
         frame.setResizable(false);
 
         //adds jlabel that does the things
-        display.setBounds(0, 0, WINDOW_SIZE, WINDOW_SIZE);
+        display.setBounds(0, 0, INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
         panel.add(display);
-
-        new Board(); //inits cell values
 
         //inits the button to play again
         //inivisible before initialization
-        playAgain.setBounds(WINDOW_SIZE / 2, WINDOW_SIZE / 2, WINDOW_SIZE / 3, WINDOW_SIZE / 5);
+        playAgain.setBounds(INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 3, INT_CONSTANTS.WINDOW_SIZE.value / 5);
         panel.add(playAgain);
         playAgain.setVisible(false);
 
-        runGame(frame); //runs the method that actually makrs the gamr work
         frame.setVisible(true);
 
     }
 
-    //manages game
-    private static void runGame(JFrame frame) {
-        final int[] pressedKey = new int[1]; //WHA THE ACTUAL FUCK IS INTELLIJ SMART SOLUTIONS MAKING MY CODE DO WHI IS THIS A FINAL INT ARRAY???
-        //IDK WHAT THIS DOES INTELLIJ JUST ADDED IT
-        frame.addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                int keyCode = e.getKeyCode();
-                Snake.changeDirection(keyCode);
-            }
-        });
+    //starts and stops game, initializes variables
+    protected static class GameManager {
+ //plays the game again
+        static boolean gameStatus = true;
 
-        final int FPS = 350; //how often the frame refreshes, in MILLISECONDS (this is 1000/4 instead of just 250 bc its easier to work with)
-        Timer timer = new Timer(); //new timer instance
-        Snake.updateMovement(); //inits snake at positiion of 1
 
-        Board.createFood(); //initializes food item
-        //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
-        TimerTask snakeMovement = new TimerTask() {
-            @Override
-            public void run() {
-                if (gameStatus){Snake.changeDirection(pressedKey[0]);}
-                else{stopGame();}
-            }
-        };
+        //CONSTRUCTOR
+        GameManager(boolean gameStatus){
+            if(gameStatus) {runGame();
+            }else{stopGame();}
+        }
 
-        timer.scheduleAtFixedRate(snakeMovement, 0, FPS);
+        GameManager(){} //this feels stupid but sometimes they dont want params in a constructor
 
-    }
+        //manages game; initializes variables and sets timer
+        private void runGame() {
 
-    public static void stopGame() {
-        gameStatus = false;
-        display.setText("GAME OVER!");
-        playAgain.setVisible(true);
-        playAgain.addActionListener(e -> runGame(frame)); //if clicked, play the game again
+            new Board(false); //inits cells
+
+            //RUNS GAME METHODS
+            final int[] pressedKey = new int[1]; //WHA THE ACTUAL FUCK IS INTELLIJ SMART SOLUTIONS MAKING MY CODE DO WHI IS THIS A FINAL INT ARRAY???
+            //IDK WHAT THIS DOES INTELLIJ JUST ADDED IT
+            frame.addKeyListener(new KeyAdapter() {
+                public void keyPressed(KeyEvent e) {
+                    int keyCode = e.getKeyCode();
+                    Snake.changeDirection(keyCode);
+                }
+            });
+
+            final int FPS = 350; //how often the frame refreshes, in MILLISECONDS (this is 1000/4 instead of just 250 bc its easier to work with)
+            Timer timer = new Timer(); //new timer instance
+            Snake.updateMovement(); //inits snake at positiion of 1
+
+            Board.createFood(); //initializes food item
+            //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
+            TimerTask snakeMovement = new TimerTask() {
+                @Override
+                public void run() {
+
+                    if(gameStatus){Snake.changeDirection(pressedKey[0]);
+                    }else{stopGame();}
+                }
+            };
+
+            timer.scheduleAtFixedRate(snakeMovement, 0, FPS);
+
+        }
+
+        public void stopGame() {
+            gameStatus = false;
+            display.setText("GAME OVER!");
+            playAgain.setVisible(true);
+            playAgain.addActionListener(e -> runGame()); //if clicked, play the game again
+        }
+
+        public void updateDisplayLabel(StringBuilder toDisplay){
+            display.setText(String.valueOf(toDisplay)); //sets display text to the drawn board
+            //System.out.println(display.getText());
+            panel.repaint();
+            panel.revalidate();
+        }
     }
 
 
@@ -107,7 +145,7 @@ public class Main {
         private enum Direction {
             //init var
             //sets values for each direction
-            UP(-BOARD_SIZE), DOWN(BOARD_SIZE), LEFT(-1), RIGHT(1);
+            UP(-INT_CONSTANTS.BOARD_SIZE.value), DOWN(INT_CONSTANTS.BOARD_SIZE.value), LEFT(-1), RIGHT(1);
             private final int value;
 
             //sets value according to input
@@ -115,7 +153,8 @@ public class Main {
         }
 
         public static void updateMovement() {
-            if (nextPos>CELL_COUNT&&nextPos<= 0) {stopGame(); //ERR HANDLER: if the next position would be out-of-bounds or otherwise invalid, stop the game
+            if (nextPos>INT_CONSTANTS.CELL_COUNT.value&&nextPos<= 0) {
+                new GameManager(false); //ERR HANDLER: if the next position would be out-of-bounds or otherwise invalid, stop the game
 
             }else{
                 Cell targetCell = cellsByPosition.get(position);
@@ -123,32 +162,31 @@ public class Main {
                 nextPos = position + modifier;
                 checkBorders(); //checks if snake is hitting an edge cell (this must be done AFTER the next cell is ran through validity checks because if it isnt then the snake will advance to the invalid cell before borderchecks are run and crash the game
                 snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
-                cellAgeDeprecation();
-                drawBoard(panel, display);
+                new Board(true);
             }
         }
 
         //checks to see if player ran into a wall
         private static void checkBorders() {
             Cell targetCell = cellsByPosition.get(position);
+            //final boolean check = isCheck();
             final boolean check = isCheck();
-            final boolean ego = Objects.equals(targetCell.type, TYPE_SNAKE); //is snake eating itself
+            final boolean ego = Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_SNAKE.value); //is snake eating itself
 
             //System.out.println("----------------------------\nCURRENT ROW: "+row+" NEXT ROW: "+nextRow+"\nCURRENT COLUMN: "+column+" NEXT COLUMN: "+nextCol+"\nCURRENT POS: "+position+" NEXT POS:  "+nextPos+"\nDIRECTION: "+direction+" HORIZONTAL: "+HORIZONTAL+"\nMODIFIER: "+modifier+"\n----------------------------");
             //VERY LONG DEBUG STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
 
             if(check||ego){
-                gameStatus = false;
-                stopGame();
+                new GameManager(false);
             }
         }
 
         private static boolean isCheck() {
             final boolean HORIZONTAL = direction.equals(Direction.LEFT) || direction.equals(Direction.RIGHT);
-            final int column = position % BOARD_SIZE; //gets the current column of the snake by dividing the position by the board size and getting the remainder
-            final int row = position / BOARD_SIZE; //gets the current row of the snake by dividing the position of the board size and truncating any decimal slots
-            final int nextRow = nextPos / BOARD_SIZE; //these nextRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable
-            final int nextCol = nextPos % BOARD_SIZE;
+            final int column = position % INT_CONSTANTS.BOARD_SIZE.value; //gets the current column of the snake by dividing the position by the board size and getting the remainder
+            final int row = position / INT_CONSTANTS.BOARD_SIZE.value; //gets the current row of the snake by dividing the position of the board size and truncating any decimal slots
+            final int nextRow = nextPos / INT_CONSTANTS.BOARD_SIZE.value; //these nextRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable
+            final int nextCol = nextPos % INT_CONSTANTS.BOARD_SIZE.value;
             return (HORIZONTAL&&nextRow!=row)||(!HORIZONTAL&&nextCol!=column);
         }
 
@@ -170,52 +208,54 @@ public class Main {
         //adds cells to snakeCell list
         private static void snakeCellsManagement(Cell targetCell) {
             targetCell.changeAppearance(true); //changes target cell into its activated appearance (since snake cells are the activated appearance of a shaded-in block
-                if (Objects.equals(targetCell.type, TYPE_FOOD)) { //this looks incredibly dumb but you have to have this if statement inside the else
+                if (Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_FOOD.value)) { //this looks incredibly dumb but you have to have this if statement inside the else
                     Snake.length++;
                     Board.createFood();
                 }
 
-                targetCell.type = TYPE_SNAKE;
+                targetCell.type = STRING_CONSTANTS.TYPE_SNAKE.value;
                 targetCell.age = Snake.length + 1; //add one because the cells would immediately get depreciated to (length-1)
                 snakeCells.add(targetCell);
             }
         }
 
-    protected static class Board extends Main {
+    protected static class Board extends GameManager {
         //init var
         //protected ArrayList<Cell> allCells = new ArrayList<>(); //arraylist of all the cells
         protected static Map<Integer, Cell> cellsByPosition = new HashMap<>(); //contains all the cells and their position so u can get a specific cell by finding them in the map via positional value
         protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
 
-        //constructor that initializes all cell values into the board
-        protected Board() {
-            for (int position = 1; position <= CELL_COUNT; position++) {
-                new Cell(position);
-            } //creates a cell object for each position and age of 0
+        private Board(){} //this stupid constructor that does nothing has to be here cause snake wont run if there's no parameterless value or something
 
-            drawBoard(panel, display);
+        //constructor that initializes all cell values into the board
+        protected Board(boolean isInitialized) {
+            if(!isInitialized){for (int position = 1; position <= INT_CONSTANTS.CELL_COUNT.value; position++){new Cell(position);}} //creates a cell object for each position and age of 0
+
+            updateDisplayLabel(drawBoard());
         }
 
+        //CONSTRUCTOR: calls both methods that snake needs
+        //there's a useless param here that does nothing bc the board already has a paramless method and the snake class needs to call these methods
+
         //redraws the board tbh //EDIT: bro what was i thinking this is the worst comment of all time
-        public static void drawBoard(JPanel panel, JLabel display) {
+        public StringBuilder drawBoard() {
+
 
             StringBuilder toDisplay = new StringBuilder();
 
             toDisplay.append("<html>"); //NGL I HAF NP IDEA HTML WAS POSSIBLE IN SWING AND I ONLY KNOW IT BECAUSE I HAD TO ADD LINEBREAKS TO THIS JLABEL
-            for (int position = 1; position <= CELL_COUNT; position++) {
+            for (int position = 1; position <= INT_CONSTANTS.CELL_COUNT.value; position++) {
                 Cell targetCell = cellsByPosition.get(position);
                 String input = " " + targetCell.appearance + " ";
 
                 toDisplay.append(input);
-                if (position % BOARD_SIZE == 0) {
+                if (position % INT_CONSTANTS.BOARD_SIZE.value == 0) {
                     toDisplay.append("<br>"); //adds new row
                 }
             }
             toDisplay.append("</html>");
 
-            display.setText(String.valueOf(toDisplay)); //sets display text to the drawn board
-            panel.repaint();
-            panel.revalidate();
+            return toDisplay;
         }
 
         //decreases age of all cells by 1 and removes any cells with an age of zero
@@ -227,7 +267,7 @@ public class Main {
 
                 //if 0, turn back into a regular board cell
                 if (currentCell.age <= 0) {
-                    currentCell.type = TYPE_FIELD;
+                    currentCell.type = STRING_CONSTANTS.TYPE_FIELD.value;
                     currentCell.changeAppearance(false); //sets appearance to regular ass cell LOL
                     snakeCells.remove(i);
                 }
@@ -236,15 +276,15 @@ public class Main {
 
         protected static void createFood() {
             Random rand = new Random(); //gets random class to call random cell pos
-            Cell targetCell = cellsByPosition.get(rand.nextInt(CELL_COUNT) + 1); //inits to placeholder cell
+            Cell targetCell = cellsByPosition.get(rand.nextInt(INT_CONSTANTS.CELL_COUNT.value) + 1); //inits to placeholder cell
 
-            while (!Objects.equals(targetCell.type, TYPE_FIELD)) { //if selected cell is snake
-                int position = rand.nextInt(CELL_COUNT) + 1; //must be ++ because rolls start at 0
+            while (!Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_FIELD.value)) { //if selected cell is snake
+                int position = rand.nextInt(INT_CONSTANTS.CELL_COUNT.value) + 1; //must be ++ because rolls start at 0
                 targetCell = cellsByPosition.get(position); //gets atts of cell currently selected
             }
 
             //changes type to food and changes appearance to activated char
-            targetCell.type = TYPE_FOOD;
+            targetCell.type = STRING_CONSTANTS.TYPE_FOOD.value;
             targetCell.changeAppearance(true);
         }
 
@@ -260,7 +300,7 @@ public class Main {
             private Cell(int position) {
                 POSITION = position;
                 this.appearance = changeAppearance(false);
-                this.type = TYPE_FIELD;
+                this.type = STRING_CONSTANTS.TYPE_FIELD.value;
                 this.age = 0;
 
                 //allCells.add(this);

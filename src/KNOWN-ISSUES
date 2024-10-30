@@ -1,11 +1,9 @@
   [[[---KNOWN-ISSUES---]]]
     *PROBLEM: game is very laggy
     *NOTES: it's not very well optimized and there's a lot of methods running every frame cause i had bigger fish to fry for a while
-    *STATUS: UNRESOLVED
 
-    *PROBLEM: the method for making the game end rn feels weird coding-wise
-    *NOTES:  it's probably the only way i can do this and it doesnt affect gameplay. keeping this unnmarked since it's something to note
-    *STATUS: ???
+    *PROBLEM: snake will lose game even if ur 2 blocks away from border but apparently only if ur direction's RIGHT???
+    *NOTES: dude im hoping its just lag because i have no clue
 
   [[[---RESOLVED---]]]
     *PROBLEM: you can go insanely fast by going diagonal and/or holding down the arrow keys or pressing keys in the opposite direction
@@ -16,6 +14,9 @@
 
     *PROBLEM: unable to lose via hitting game edges (you can lose by hitting urself tho)
     *SOLUTION: all i had to do is calc the row/col vals on the fly by dividing the positional value by the
+
+    *PROBLEM: the method for making the game end rn feels weird coding-wise
+    *SOLUTION:  made new gamemanagar class
 
   [[[---POSSIBLE-FEATURES---]]]
     add a play again button wheb u lose

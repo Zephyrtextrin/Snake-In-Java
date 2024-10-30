@@ -7,9 +7,6 @@ import java.awt.event.KeyEvent;
 public class Main {
 
     public static JLabel display = new JLabel();
-    public static JPanel panel = new JPanel();
-    public static JFrame frame = new JFrame("text-based snake in java+swing");
-    public static JButton playAgain = new JButton("Play again");
 
     public enum STRING_CONSTANTS{
         //TYPE VALUES: allows you to set celltypes without using direct strings and ensures no compatibility issues
@@ -44,40 +41,28 @@ public class Main {
             }
         }catch (Exception e){System.out.println("error with look and feel!\n------DETAILS------\n" + e.getMessage());}
 
-        new GameManager(true); //creates new instance of game manager
+        GameManager game = new GameManager(true); //creates new instance of game manager
         //new Board(); //inits cell values
         //CREATES UI VALUES
 
-        // create a window
-        frame.setSize(INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
-
-        //adds panel
-        frame.add(panel);
-        panel.setBounds(0, 0, INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
-        frame.setResizable(false);
-
         //adds jlabel that does the things
         display.setBounds(0, 0, INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
-        panel.add(display);
-
-        //inits the button to play again
-        //inivisible before initialization
-        playAgain.setBounds(INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 3, INT_CONSTANTS.WINDOW_SIZE.value / 5);
-        panel.add(playAgain);
-        playAgain.setVisible(false);
-
-        frame.setVisible(true);
-
+        game.panel.add(display);
     }
 
     //starts and stops game, initializes variables
     protected static class GameManager {
+        JPanel panel = new JPanel();
+        JFrame frame = new JFrame("text-based snake in java+swing");
+        JButton playAgain = new JButton("Play again");
+
  //plays the game again
         static boolean gameStatus = true;
 
 
         //CONSTRUCTOR
         GameManager(boolean gameStatus){
+
             if(gameStatus) {runGame();
             }else{stopGame();}
         }
@@ -86,8 +71,24 @@ public class Main {
 
         //manages game; initializes variables and sets timer
         private void runGame() {
+            //UI
+            // create a window IM SOOOOOOOOOOO TIRED IDC NO MORE ILL FORMAT THIS STUPID UI BS TOMORROW
+            frame.setSize(INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
 
+            //adds panel
+            frame.add(panel);
+            panel.setBounds(0, 0, INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
+            frame.setResizable(false);
             new Board(false); //inits cells
+
+
+            //inits the button to play again
+            //inivisible before initialization
+            playAgain.setBounds(INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 3, INT_CONSTANTS.WINDOW_SIZE.value / 5);
+            panel.add(playAgain);
+            playAgain.setVisible(false);
+
+            frame.setVisible(true);
 
             //RUNS GAME METHODS
             final int[] pressedKey = new int[1]; //WHA THE ACTUAL FUCK IS INTELLIJ SMART SOLUTIONS MAKING MY CODE DO WHI IS THIS A FINAL INT ARRAY???
@@ -163,6 +164,7 @@ public class Main {
                 checkBorders(); //checks if snake is hitting an edge cell (this must be done AFTER the next cell is ran through validity checks because if it isnt then the snake will advance to the invalid cell before borderchecks are run and crash the game
                 snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
                 new Board(true);
+                cellAgeDeprecation();
             }
         }
 
@@ -229,7 +231,9 @@ public class Main {
 
         //constructor that initializes all cell values into the board
         protected Board(boolean isInitialized) {
-            if(!isInitialized){for (int position = 1; position <= INT_CONSTANTS.CELL_COUNT.value; position++){new Cell(position);}} //creates a cell object for each position and age of 0
+            if(!isInitialized){for (int position = 1; position <= INT_CONSTANTS.CELL_COUNT.value; position++){new Cell(position);}}
+            //creates a cell object for each position and age of 0
+            //TODO: this could have cell age dep in here instead of it being in snake
 
             updateDisplayLabel(drawBoard());
         }

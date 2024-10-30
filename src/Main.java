@@ -153,19 +153,18 @@ public class Main {
         }
 
 
-        //TODO: THIS IS THE SOURCE OF ERRORS BC IM TRYING TO USE ENUMS FOR THE DIRECTIONS FIX THIS
         private static void changeDirection(int key){
-            Direction newDirection = null;
+            Direction newDirection = direction;
                 //sets values
-            if(key==KeyEvent.VK_RIGHT&&!Objects.equals(direction, Direction.LEFT)) {newDirection = Direction.LEFT;
-            }else if(key==KeyEvent.VK_LEFT&&!Objects.equals(direction, Direction.RIGHT)) {newDirection = Direction.RIGHT;
-            }else if(key==KeyEvent.VK_UP&&!Objects.equals(direction, Direction.DOWN)) {newDirection = Direction.DOWN;
-            }else if(key==KeyEvent.VK_DOWN&&!Objects.equals(direction, Direction.UP)) {newDirection = Direction.UP;}
+            if(key==KeyEvent.VK_RIGHT&&!Objects.equals(direction, Direction.LEFT)) {newDirection = Direction.RIGHT;
+            }else if(key==KeyEvent.VK_LEFT&&!Objects.equals(direction, Direction.RIGHT)) {newDirection = Direction.LEFT;
+            }else if(key==KeyEvent.VK_UP&&!Objects.equals(direction, Direction.DOWN)) {newDirection = Direction.UP;
+            }else if(key==KeyEvent.VK_DOWN&&!Objects.equals(direction, Direction.UP)) {newDirection = Direction.DOWN;}
 
-            if(!(newDirection ==null)){
-                direction = newDirection; //sets name to direction name
-                modifier = direction.value; //sets value to direction's sepcified value
-            }updateMovement();
+            direction = newDirection; //sets name to direction name
+            modifier = direction.value; //sets value to direction's sepcified value
+
+            updateMovement();
         }
 
         //adds cells to snakeCell list

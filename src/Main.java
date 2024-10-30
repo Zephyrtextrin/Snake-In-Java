@@ -104,7 +104,7 @@ public class Main {
                 }
             });
 
-            final int FPS = 150; //how often the frame refreshes, in MILLISECONDS (*9 is for debug only, usually 150 in normal play)
+            final int FPS = 150*9; //how often the frame refreshes, in MILLISECONDS (*9 is for debug only, usually 150 in normal play)
             Timer timer = new Timer(); //new timer instance
             Snake.updateMovement(); //inits snake at positiion of 1
 
@@ -189,7 +189,7 @@ public class Main {
             final int nextRow = nextPosLocal / INT_CONSTANTS.BOARD_SIZE.value; //these nextRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable
             final int nextCol = nextPosLocal % INT_CONSTANTS.BOARD_SIZE.value;
 
-            //System.out.println("----------------------------\nCURRENT ROW: "+row+" NEXT ROW: "+nextRow+"\nCURRENT COLUMN: "+column+" NEXT COLUMN: "+nextCol+"\nCURRENT POS: "+position+" NEXT POS:  "+nextPosLocal+"\nDIRECTION: "+direction+" HORIZONTAL: "+HORIZONTAL+"\nMODIFIER: "+modifier+"\n----------------------------");
+            System.out.println("----------------------------\nCURRENT ROW: "+row+" NEXT ROW: "+nextRow+"\nCURRENT COLUMN: "+column+" NEXT COLUMN: "+nextCol+"\nCURRENT POS: "+position+" NEXT POS:  "+nextPosLocal+"\nDIRECTION: "+direction+" HORIZONTAL: "+HORIZONTAL+"\nMODIFIER: "+modifier+"\n----------------------------");
             //VERY LONG DEBUG STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
 
             return (HORIZONTAL&&nextRow!=row)||(!HORIZONTAL&&nextCol!=column)||nextPosLocal>INT_CONSTANTS.CELL_COUNT.value||nextPosLocal<= 0;

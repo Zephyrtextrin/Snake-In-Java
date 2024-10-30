@@ -104,7 +104,7 @@ public class Main {
                 }
             });
 
-            final int FPS = 150; //how often the frame refreshes, in MILLISECONDS (this is 1000/4 instead of just 250 bc its easier to work with)
+            final int FPS = 150; //how often the frame refreshes, in MILLISECONDS (*9 is for debug only, usually 150 in normal play)
             Timer timer = new Timer(); //new timer instance
             Snake.updateMovement(); //inits snake at positiion of 1
 
@@ -144,8 +144,7 @@ public class Main {
         static int length = 1;
         static Direction direction = Direction.RIGHT;
         static int position = 1; //thithe position of the cell the snake's head is in
-        static int modifier = 1; //how mmany cells the snake will move by (aka: the direction)
-        private static int nextPos = 2; //predicts next position via modifier
+        static int modifier = direction.value; //how mmany cells the snake will move by (aka: the direction)
 
         private enum Direction {
             //init var
@@ -158,12 +157,12 @@ public class Main {
         }
 
         public static void updateMovement() {
-            Cell targetCell = cellList[position];
-            position += modifier; //makes the snake advance by however many tiles the direction needs them to advance in
-            nextPos = position + modifier;
-            checkBorders(); //checks if snake is hitting an edge cell (this must be done AFTER the next cell is ran through validity checks because if it isnt then the snake will advance to the invalid cell before borderchecks are run and crash the game
-            snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
-            new Board();
+            if(checkBorders()) {
+                Cell targetCell = cellList[position];
+                snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
+                position += modifier; //makes the snake advance by however many tiles the direction needs them to advance in
+                new Board();
+            }
         }
 
         //checks to see if player ran into a wall
@@ -172,25 +171,28 @@ public class Main {
             //final boolean check = isCheck();
             final boolean check = isCheck();
             final boolean ego = Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_SNAKE.value); //is snake eating itself
-            //VERY LONG DEBUG STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
-
+            System.out.println("EGO: "+ ego);
             if(check||ego){
                 new GameManager(false);
+                return false;
             }
 
-            return check;
+            return true;
         }
 
         //idk why this method is here intellij was givin me a warnin like "u could wrap this in a method" and so i clicked quick fix and it did this so idc
         private static boolean isCheck() {
+            final int nextPosLocal = position+modifier;
             final boolean HORIZONTAL = direction.equals(Direction.LEFT) || direction.equals(Direction.RIGHT);
             final int column = position % INT_CONSTANTS.BOARD_SIZE.value; //gets the current column of the snake by dividing the position by the board size and getting the remainder
             final int row = position / INT_CONSTANTS.BOARD_SIZE.value; //gets the current row of the snake by dividing the position of the board size and truncating any decimal slots
-            final int nextRow = nextPos / INT_CONSTANTS.BOARD_SIZE.value; //these nextRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable
-            final int nextCol = nextPos % INT_CONSTANTS.BOARD_SIZE.value;
-            System.out.println("----------------------------\nCURRENT ROW: "+row+" NEXT ROW: "+nextRow+"\nCURRENT COLUMN: "+column+" NEXT COLUMN: "+nextCol+"\nCURRENT POS: "+position+" NEXT POS:  "+nextPos+"\nDIRECTION: "+direction+" HORIZONTAL: "+HORIZONTAL+"\nMODIFIER: "+modifier+"\n----------------------------");
+            final int nextRow = nextPosLocal / INT_CONSTANTS.BOARD_SIZE.value; //these nextRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable
+            final int nextCol = nextPosLocal % INT_CONSTANTS.BOARD_SIZE.value;
 
-            return (HORIZONTAL&&nextRow!=row)||(!HORIZONTAL&&nextCol!=column)||nextPos>INT_CONSTANTS.CELL_COUNT.value||nextPos<= 0;
+            //System.out.println("----------------------------\nCURRENT ROW: "+row+" NEXT ROW: "+nextRow+"\nCURRENT COLUMN: "+column+" NEXT COLUMN: "+nextCol+"\nCURRENT POS: "+position+" NEXT POS:  "+nextPosLocal+"\nDIRECTION: "+direction+" HORIZONTAL: "+HORIZONTAL+"\nMODIFIER: "+modifier+"\n----------------------------");
+            //VERY LONG DEBUG STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
+
+            return (HORIZONTAL&&nextRow!=row)||(!HORIZONTAL&&nextCol!=column)||nextPosLocal>INT_CONSTANTS.CELL_COUNT.value||nextPosLocal<= 0;
         }
 
 
@@ -230,7 +232,7 @@ public class Main {
                 }
 
                 targetCell.type = STRING_CONSTANTS.TYPE_SNAKE.value;
-                targetCell.age = Snake.length + 1; //add one because the cells would immediately get depreciated to (length-1)
+                targetCell.age = Snake.length+1; //add one because the cells would immediately get depreciated to (length-1)
                 snakeCells.add(targetCell);
             }
         }

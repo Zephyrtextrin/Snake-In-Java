@@ -73,6 +73,8 @@ public class Main {
         private void runGame() {
             //UI
             // create a window IM SOOOOOOOOOOO TIRED IDC NO MORE ILL FORMAT THIS STUPID UI BS TOMORROW
+            gameStatus = true;
+
             frame.setSize(INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
 
             //adds panel
@@ -91,7 +93,7 @@ public class Main {
             frame.setVisible(true);
 
             //RUNS GAME METHODS
-            final int[] pressedKey = new int[1]; //WHA THE ACTUAL FUCK IS INTELLIJ SMART SOLUTIONS MAKING MY CODE DO WHI IS THIS A FINAL INT ARRAY???
+            final int[] pressedKey = new int[1]; //WHA THE ACTUAL freak IS INTELLIJ SMART SOLUTIONS MAKING MY CODE DO WHI IS THIS A FINAL INT ARRAY???
             //IDK WHAT THIS DOES INTELLIJ JUST ADDED IT
             frame.addKeyListener(new KeyAdapter() {
                 public void keyPressed(KeyEvent e) {
@@ -102,7 +104,7 @@ public class Main {
                 }
             });
 
-            final int FPS = 250; //how often the frame refreshes, in MILLISECONDS (this is 1000/4 instead of just 250 bc its easier to work with)
+            final int FPS = 150; //how often the frame refreshes, in MILLISECONDS (this is 1000/4 instead of just 250 bc its easier to work with)
             Timer timer = new Timer(); //new timer instance
             Snake.updateMovement(); //inits snake at positiion of 1
 
@@ -125,7 +127,7 @@ public class Main {
             gameStatus = false;
             display.setText("GAME OVER!");
             playAgain.setVisible(true);
-            playAgain.addActionListener(e -> runGame()); //if clicked, play the game again
+            playAgain.addActionListener(_ -> runGame()); //if clicked, play the game again
         }
 
         public void updateDisplayLabel(StringBuilder toDisplay){
@@ -161,36 +163,36 @@ public class Main {
             nextPos = position + modifier;
             checkBorders(); //checks if snake is hitting an edge cell (this must be done AFTER the next cell is ran through validity checks because if it isnt then the snake will advance to the invalid cell before borderchecks are run and crash the game
             snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
-            new Board(true);
-            cellAgeDeprecation();
+            new Board();
         }
 
         //checks to see if player ran into a wall
-        private static void checkBorders() {
+        private static boolean checkBorders() {
             Cell targetCell = cellList[position];
             //final boolean check = isCheck();
             final boolean check = isCheck();
             final boolean ego = Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_SNAKE.value); //is snake eating itself
-            //System.out.println("----------------------------\nCURRENT ROW: "+row+" NEXT ROW: "+nextRow+"\nCURRENT COLUMN: "+column+" NEXT COLUMN: "+nextCol+"\nCURRENT POS: "+position+" NEXT POS:  "+nextPos+"\nDIRECTION: "+direction+" HORIZONTAL: "+HORIZONTAL+"\nMODIFIER: "+modifier+"\n----------------------------");
             //VERY LONG DEBUG STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
 
             if(check||ego){
                 new GameManager(false);
             }
+
+            return check;
         }
 
+        //idk why this method is here intellij was givin me a warnin like "u could wrap this in a method" and so i clicked quick fix and it did this so idc
         private static boolean isCheck() {
             final boolean HORIZONTAL = direction.equals(Direction.LEFT) || direction.equals(Direction.RIGHT);
             final int column = position % INT_CONSTANTS.BOARD_SIZE.value; //gets the current column of the snake by dividing the position by the board size and getting the remainder
             final int row = position / INT_CONSTANTS.BOARD_SIZE.value; //gets the current row of the snake by dividing the position of the board size and truncating any decimal slots
             final int nextRow = nextPos / INT_CONSTANTS.BOARD_SIZE.value; //these nextRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable
             final int nextCol = nextPos % INT_CONSTANTS.BOARD_SIZE.value;
+            System.out.println("----------------------------\nCURRENT ROW: "+row+" NEXT ROW: "+nextRow+"\nCURRENT COLUMN: "+column+" NEXT COLUMN: "+nextCol+"\nCURRENT POS: "+position+" NEXT POS:  "+nextPos+"\nDIRECTION: "+direction+" HORIZONTAL: "+HORIZONTAL+"\nMODIFIER: "+modifier+"\n----------------------------");
+
             return (HORIZONTAL&&nextRow!=row)||(!HORIZONTAL&&nextCol!=column)||nextPos>INT_CONSTANTS.CELL_COUNT.value||nextPos<= 0;
         }
 
-
-
-        //TODO: this entire set of direction methods does not work
 
         //contains the opposite direction for each key input (so u dont hit left key while going right and u move inside of yourself and instalose)
         private static final Map<Integer, Direction> directionMap = Map.of(
@@ -239,19 +241,18 @@ public class Main {
         protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
         public static Cell[] cellList = new Cell[INT_CONSTANTS.CELL_COUNT.value+1]; //adds +1 because positions start at 1
 
-        private Board(){} //this stupid constructor that does nothing has to be here cause snake wont run if there's no parameterless value or something
-
-        //constructor that initializes all cell values into the board
-        protected Board(boolean isInitialized) {
-            if(!isInitialized){for (int position = 1; position <= INT_CONSTANTS.CELL_COUNT.value; position++){new Cell(position);}}
-            //creates a cell object for each position and age of 0
-            //TODO: this could have cell age dep in here instead of it being in snake and also i feel like it would be better if these were seperate constructors because initing and doing frame-by-frame snake operations is different
-
+        private Board(){
+            cellAgeDeprecation();
             updateDisplayLabel(drawBoard());
         }
 
-        //CONSTRUCTOR: calls both methods that snake needs
-        //there's a useless param here that does nothing bc the board already has a paramless method and the snake class needs to call these methods
+        //constructor that initializes all cell values into the board
+        //there's a stupid useless param here that does nothing bc the board already has a paramless method and the snake class needs to call these methods
+        protected Board(boolean isInitialized) {
+            for (int position = 1; position <= INT_CONSTANTS.CELL_COUNT.value; position++){new Cell(position);} //creates a cell object for each position and age of 0
+
+            updateDisplayLabel(drawBoard());
+        }
 
         //redraws the board tbh //EDIT: bro what was i thinking this is the worst comment of all time
         public StringBuilder drawBoard() {
@@ -292,12 +293,11 @@ public class Main {
             for(Cell cell:cellsToRemove){snakeCells.remove(cell);}
         }
 
-        //TODO: u could make a lsit of 
         protected static void createFood() {
             Random rand = new Random(); //gets random class to call random cell pos
             Cell targetCell = cellList[rand.nextInt(INT_CONSTANTS.CELL_COUNT.value) + 1]; //inits to placeholder cell
 
-            while (!Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_FIELD.value)) { //if selected cell is snake
+            while (snakeCells.contains(targetCell)) { //if selected cell is snake
                 int position = rand.nextInt(INT_CONSTANTS.CELL_COUNT.value) + 1; //must be ++ because rolls start at 0
                 targetCell = cellList[position]; //gets atts of cell currently selected
             }

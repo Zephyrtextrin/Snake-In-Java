@@ -3,9 +3,6 @@
     *PROBLEM: snake will lose game even if ur 2 blocks away from border but apparently only if ur direction's RIGHT???
     *NOTES: dude im hoping its just lag because i have no clue
 
-    *PROBLEM: snake isnt moving
-    *NOTES: proly smth related to all the shit i did today idk bro its 2 am im tired ill fix it tomorrow
-
   [[[---RESOLVED---]]]
     *PROBLEM: you can go insanely fast by going diagonal and/or holding down the arrow keys or pressing keys in the opposite direction
     *SOLUTION: this is an easy fix but its really fun and isnt hurting anyone (you can just choose to not hold down the keys) so it's a feature now

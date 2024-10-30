@@ -100,7 +100,7 @@ public class Main {
                 }
             });
 
-            final int FPS = 350; //how often the frame refreshes, in MILLISECONDS (this is 1000/4 instead of just 250 bc its easier to work with)
+            final int FPS = 250; //how often the frame refreshes, in MILLISECONDS (this is 1000/4 instead of just 250 bc its easier to work with)
             Timer timer = new Timer(); //new timer instance
             Snake.updateMovement(); //inits snake at positiion of 1
 
@@ -154,18 +154,13 @@ public class Main {
         }
 
         public static void updateMovement() {
-            if (nextPos>INT_CONSTANTS.CELL_COUNT.value&&nextPos<= 0) {
-                new GameManager(false); //ERR HANDLER: if the next position would be out-of-bounds or otherwise invalid, stop the game
-
-            }else{
-                Cell targetCell = cellsByPosition.get(position);
-                position += modifier; //makes the snake advance by however many tiles the direction needs them to advance in
-                nextPos = position + modifier;
-                checkBorders(); //checks if snake is hitting an edge cell (this must be done AFTER the next cell is ran through validity checks because if it isnt then the snake will advance to the invalid cell before borderchecks are run and crash the game
-                snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
-                new Board(true);
-                cellAgeDeprecation();
-            }
+            Cell targetCell = cellsByPosition.get(position);
+            position += modifier; //makes the snake advance by however many tiles the direction needs them to advance in
+            nextPos = position + modifier;
+            checkBorders(); //checks if snake is hitting an edge cell (this must be done AFTER the next cell is ran through validity checks because if it isnt then the snake will advance to the invalid cell before borderchecks are run and crash the game
+            snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
+            new Board(true);
+            cellAgeDeprecation();
         }
 
         //checks to see if player ran into a wall
@@ -174,7 +169,6 @@ public class Main {
             //final boolean check = isCheck();
             final boolean check = isCheck();
             final boolean ego = Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_SNAKE.value); //is snake eating itself
-
             //System.out.println("----------------------------\nCURRENT ROW: "+row+" NEXT ROW: "+nextRow+"\nCURRENT COLUMN: "+column+" NEXT COLUMN: "+nextCol+"\nCURRENT POS: "+position+" NEXT POS:  "+nextPos+"\nDIRECTION: "+direction+" HORIZONTAL: "+HORIZONTAL+"\nMODIFIER: "+modifier+"\n----------------------------");
             //VERY LONG DEBUG STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
 
@@ -189,7 +183,7 @@ public class Main {
             final int row = position / INT_CONSTANTS.BOARD_SIZE.value; //gets the current row of the snake by dividing the position of the board size and truncating any decimal slots
             final int nextRow = nextPos / INT_CONSTANTS.BOARD_SIZE.value; //these nextRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable
             final int nextCol = nextPos % INT_CONSTANTS.BOARD_SIZE.value;
-            return (HORIZONTAL&&nextRow!=row)||(!HORIZONTAL&&nextCol!=column);
+            return (HORIZONTAL&&nextRow!=row)||(!HORIZONTAL&&nextCol!=column)||nextPos>INT_CONSTANTS.CELL_COUNT.value||nextPos<= 0;
         }
 
 
@@ -264,8 +258,8 @@ public class Main {
 
         //decreases age of all cells by 1 and removes any cells with an age of zero
         protected static void cellAgeDeprecation() {
-            for (int i = 0; i < snakeCells.size(); i++) {
-                Cell currentCell = snakeCells.get(i);
+            ArrayList<Cell> cellsToRemove = new ArrayList<>();
+            for(Cell currentCell:snakeCells){
                 //depreciates age by 1
                 currentCell.age--;
 
@@ -273,9 +267,11 @@ public class Main {
                 if (currentCell.age <= 0) {
                     currentCell.type = STRING_CONSTANTS.TYPE_FIELD.value;
                     currentCell.changeAppearance(false); //sets appearance to regular ass cell LOL
-                    snakeCells.remove(i);
+                    cellsToRemove.add(currentCell);
                 }
             }
+            //loops through and removes all cells from cellList. u have to do this seperately instead of calling snakeCells.remove(Currentcell) bc that would give an exception cuse u cant edit an array while actively loopin thru it
+            for(Cell cell:cellsToRemove){snakeCells.remove(cell);}
         }
 
         protected static void createFood() {

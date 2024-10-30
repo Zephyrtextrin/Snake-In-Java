@@ -187,18 +187,34 @@ public class Main {
         }
 
 
-        private static void changeDirection(int key){
-            Direction newDirection = direction;
-                //sets values
-            if(key==KeyEvent.VK_RIGHT&&!Objects.equals(direction, Direction.LEFT)) {newDirection = Direction.RIGHT;
-            }else if(key==KeyEvent.VK_LEFT&&!Objects.equals(direction, Direction.RIGHT)) {newDirection = Direction.LEFT;
-            }else if(key==KeyEvent.VK_UP&&!Objects.equals(direction, Direction.DOWN)) {newDirection = Direction.UP;
-            }else if(key==KeyEvent.VK_DOWN&&!Objects.equals(direction, Direction.UP)) {newDirection = Direction.DOWN;}
 
-            direction = newDirection; //sets name to direction name
-            modifier = direction.value; //sets value to direction's sepcified value
+        //TODO: this entire set of direction methods does not work
 
-            updateMovement();
+        //contains the opposite direction for each key input (so u dont hit left key while going right and u move inside of yourself and instalose)
+        private static final Map<Integer, Direction> directionMap = Map.of(
+                KeyEvent.VK_RIGHT, Direction.RIGHT,
+                KeyEvent.VK_LEFT, Direction.LEFT,
+                KeyEvent.VK_UP, Direction.UP,
+                KeyEvent.VK_DOWN, Direction.DOWN
+        );
+
+        private static void changeDirection(int key) {
+            Direction newDirection = directionMap.get(key);
+            if (newDirection != null && !newDirection.equals(oppositeDirection(direction))) {
+                direction = newDirection; //updates to name of direction value
+                modifier = direction.value; //updartes to value of direction enum
+                updateMovement();
+            }
+        }
+
+        //CHAT... IM A GENIUS!!
+        private static Direction oppositeDirection(Direction direction) {
+            return switch (direction) {
+                case UP -> Direction.DOWN;
+                case DOWN -> Direction.UP;
+                case LEFT -> Direction.RIGHT;
+                case RIGHT -> Direction.LEFT;
+            };
         }
 
         //adds cells to snakeCell list

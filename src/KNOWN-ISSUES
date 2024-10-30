@@ -1,9 +1,10 @@
   [[[---KNOWN-ISSUES---]]]
-    *PROBLEM: game is very laggy
-    *NOTES: it's not very well optimized and there's a lot of methods running every frame cause i had bigger fish to fry for a while
 
     *PROBLEM: snake will lose game even if ur 2 blocks away from border but apparently only if ur direction's RIGHT???
     *NOTES: dude im hoping its just lag because i have no clue
+
+    *PROBLEM: snake isnt moving
+    *NOTES: proly smth related to all the shit i did today idk bro its 2 am im tired ill fix it tomorrow
 
   [[[---RESOLVED---]]]
     *PROBLEM: you can go insanely fast by going diagonal and/or holding down the arrow keys or pressing keys in the opposite direction
@@ -19,6 +20,8 @@
     *SOLUTION:  made new gamemanagar class
 
   [[[---POSSIBLE-FEATURES---]]]
+    turn the map into an array (regular array not arraylist)
+
     add a play again button wheb u lose
     and stats about how long u are
     maybe a high score too where it writes to a txt file your high score every time u lose and then it reads it to set the highscore variable but also that feels like someon can just open it and set it to 999999999999999999 so there would need to be an errchk

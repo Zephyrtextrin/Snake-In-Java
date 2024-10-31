@@ -97,10 +97,7 @@ public class Main {
             //IDK WHAT THIS DOES INTELLIJ JUST ADDED IT
             frame.addKeyListener(new KeyAdapter() {
                 public void keyPressed(KeyEvent e) {
-                    if(gameStatus) {
-                        int keyCode = e.getKeyCode();
-                        Snake.changeDirection(keyCode);
-                    }
+                    Snake.changeDirection(e.getKeyCode());
                 }
             });
 
@@ -114,8 +111,8 @@ public class Main {
                 @Override
                 public void run() {
 
-                    if(gameStatus){Snake.changeDirection(pressedKey[0]);
-                    }else{stopGame();}
+                    //if(gameStatus){Snake.changeDirection(pressedKey[0]);
+                    //}else{stopGame();}
                 }
             };
 
@@ -159,8 +156,9 @@ public class Main {
         public static void updateMovement() {
             if(checkBorders()) {
                 Cell targetCell = cellList[position];
+                //System.out.println(modifier);
                 snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
-                position += modifier; //makes the snake advance by however many tiles the direction needs them to advance in
+                //position += modifier; //makes the snake advance by however many tiles the direction needs them to advance in
                 new Board();
             }
         }
@@ -206,10 +204,14 @@ public class Main {
 
         private static void changeDirection(int key) {
             Direction newDirection = directionMap.get(key);
+            System.out.println("NEW DIR: "+newDirection);
             if (newDirection != null && !newDirection.equals(oppositeDirection(direction))) {
                 direction = newDirection; //updates to name of direction value
                 modifier = direction.value; //updartes to value of direction enum
+                System.out.println("DIRECTION: "+direction);
+                System.out.println("MOD: "+modifier);
             }
+            position+=modifier; //position must be changed here instead of in the updatemovement method because there was an issue where inputs would be behind by one frame advancement, since they used the modifier from the previous frame
             updateMovement();
         }
 

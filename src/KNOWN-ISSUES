@@ -1,7 +1,14 @@
   [[[---KNOWN-ISSUES---]]]
 
 dude one time the food just didnt spawn after a bit but idk if thats cause i had the fps at 100 or not
-  [[[---RESOLVED---]]]
+
+  [[[---POSSIBLE-FEATURES---]]]
+    TODO: fix this organization dawg
+    TODO: add a play again button wheb u lose
+    TODO: stats about how long u are
+    TODO: maybe a high score too where it writes to a txt file your high score every time u lose and then it reads it to set the highscore variable but also that feels like someon can just open it and set it to 999999999999999999 so there would need to be an errchk
+
+  [[[---RESOLVED-ISSUES---]]]
     *PROBLEM: you can go insanely fast by going diagonal and/or holding down the arrow keys or pressing keys in the opposite direction
     *SOLUTION: this is an easy fix but its really fun and isnt hurting anyone (you can just choose to not hold down the keys) so it's a feature now
 
@@ -19,9 +26,3 @@ dude one time the food just didnt spawn after a bit but idk if thats cause i had
 
     *PROBLEM: vertical checksum is dysfunctional
     *NOTES: this is probaly just smth that i need to change the if-statement order for EDIT: yeah kinda
-
-  [[[---POSSIBLE-FEATURES---]]]
-    TODO: fix this organization dawg
-    TODO: add a play again button wheb u lose
-    TODO: stats about how long u are
-    TODO: maybe a high score too where it writes to a txt file your high score every time u lose and then it reads it to set the highscore variable but also that feels like someon can just open it and set it to 999999999999999999 so there would need to be an errchk

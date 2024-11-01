@@ -55,14 +55,13 @@ public class Main {
         JPanel panel = new JPanel();
         JFrame frame = new JFrame("text-based snake in java+swing");
         JButton playAgain = new JButton("Play again");
-
-        //plays the game again
+        static boolean init = false;
+        //auto ends the game if false
         static boolean gameStatus = true;
 
 
         //CONSTRUCTOR
         GameManager(boolean gameStatus){
-
             if(gameStatus) {runGame();
             }else{stopGame();}
         }
@@ -73,6 +72,7 @@ public class Main {
         private void runGame() {
             //UI
             // create a window IM SOOOOOOOOOOO TIRED IDC NO MORE ILL FORMAT THIS STUPID UI BS TOMORROW
+            Timer timer = new Timer(); //new timer instance
             gameStatus = true;
 
             frame.setSize(INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
@@ -81,8 +81,6 @@ public class Main {
             frame.add(panel);
             panel.setBounds(0, 0, INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
             frame.setResizable(false);
-            new Board(false); //inits cells
-
 
             //inits the button to play again
             //inivisible before initialization
@@ -95,29 +93,31 @@ public class Main {
             //RUNS GAME METHODS
             final int[] pressedKey = new int[1]; //WHA THE ACTUAL freak IS INTELLIJ SMART SOLUTIONS MAKING MY CODE DO WHI IS THIS A FINAL INT ARRAY???
             //IDK WHAT THIS DOES INTELLIJ JUST ADDED IT
-            frame.addKeyListener(new KeyAdapter() {
-                public void keyPressed(KeyEvent e) {
-                    Snake.changeDirection(e.getKeyCode());
-                }
-            });
+
+            //inits all game elements
+            //this is not all values that need initialization but it's all values that need it only when the program is booted for the first time
+            if(!init){
+                //key listener to obtain player input
+                new Board(init); //inits cells
+                Snake.updateMovement(); //inits snake at positiion of 1
+            }
+
+            frame.addKeyListener(new KeyAdapter() {public void keyPressed(KeyEvent e) {Snake.changeDirection(e.getKeyCode());}});
 
             final int FPS = 150; //how often the frame refreshes, in MILLISECONDS (*9 is for debug only, usually 150 in normal play)
-            Timer timer = new Timer(); //new timer instance
-            Snake.updateMovement(); //inits snake at positiion of 1
 
             Board.createFood(); //initializes food item
-            //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
-            TimerTask snakeMovement = new TimerTask() {
-                @Override
-                public void run() {
 
-                    if(gameStatus){Snake.changeDirection(pressedKey[0]);
-                    }else{stopGame();}
+            //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
+            TimerTask snakeMovement = new TimerTask() {public void run() {
+                if(gameStatus){Snake.changeDirection(pressedKey[0]);
+                }else{
+                    timer.cancel();
+                    stopGame();}
                 }
             };
 
             timer.scheduleAtFixedRate(snakeMovement, 0, FPS);
-
         }
 
         public void stopGame() {
@@ -125,6 +125,8 @@ public class Main {
             display.setText("GAME OVER!");
             playAgain.setVisible(true);
             playAgain.addActionListener(_ -> runGame()); //if clicked, play the game again
+            Snake.position = 1;
+            Snake.length = 1;
         }
 
         public void updateDisplayLabel(StringBuilder toDisplay){
@@ -260,7 +262,6 @@ public class Main {
         //there's a stupid useless param here that does nothing bc the board already has a paramless method and the snake class needs to call these methods
         protected Board(boolean isInitialized) {
             for (int position = 1; position <= INT_CONSTANTS.CELL_COUNT.value; position++){new Cell(position);} //creates a cell object for each position and age of 0
-
             updateDisplayLabel(drawBoard());
         }
 
@@ -276,9 +277,7 @@ public class Main {
                 String input = " " + targetCell.appearance + " ";
 
                 toDisplay.append(input);
-                if (position % INT_CONSTANTS.BOARD_SIZE.value == 0) {
-                    toDisplay.append("<br>"); //adds new row
-                }
+                if (position % INT_CONSTANTS.BOARD_SIZE.value == 0) {toDisplay.append("<br>"); } //adds new row
             }
             toDisplay.append("</html>");
 

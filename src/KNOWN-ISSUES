@@ -21,6 +21,7 @@ dude one time the food just didnt spawn after a bit but idk if thats cause i had
     *NOTES: this is probaly just smth that i need to change the if-statement order for EDIT: yeah kinda
 
   [[[---POSSIBLE-FEATURES---]]]
-    add a play again button wheb u lose
-    and stats about how long u are
-    maybe a high score too where it writes to a txt file your high score every time u lose and then it reads it to set the highscore variable but also that feels like someon can just open it and set it to 999999999999999999 so there would need to be an errchk
+    TODO: fix this organization dawg
+    TODO: add a play again button wheb u lose
+    TODO: stats about how long u are
+    TODO: maybe a high score too where it writes to a txt file your high score every time u lose and then it reads it to set the highscore variable but also that feels like someon can just open it and set it to 999999999999999999 so there would need to be an errchk

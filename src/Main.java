@@ -56,7 +56,7 @@ public class Main {
         JFrame frame = new JFrame("text-based snake in java+swing");
         JButton playAgain = new JButton("Play again");
 
- //plays the game again
+        //plays the game again
         static boolean gameStatus = true;
 
 
@@ -101,7 +101,7 @@ public class Main {
                 }
             });
 
-            final int FPS = 150*9; //how often the frame refreshes, in MILLISECONDS (*9 is for debug only, usually 150 in normal play)
+            final int FPS = 150; //how often the frame refreshes, in MILLISECONDS (*9 is for debug only, usually 150 in normal play)
             Timer timer = new Timer(); //new timer instance
             Snake.updateMovement(); //inits snake at positiion of 1
 
@@ -111,8 +111,8 @@ public class Main {
                 @Override
                 public void run() {
 
-                    //if(gameStatus){Snake.changeDirection(pressedKey[0]);
-                    //}else{stopGame();}
+                    if(gameStatus){Snake.changeDirection(pressedKey[0]);
+                    }else{stopGame();}
                 }
             };
 
@@ -155,10 +155,10 @@ public class Main {
 
         public static void updateMovement() {
             if(checkBorders()) {
-                Cell targetCell = cellList[position];
+                Cell targetCell=cellList[position];
                 //System.out.println(modifier);
                 snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
-                //position += modifier; //makes the snake advance by however many tiles the direction needs them to advance in
+                //position+=modifier; //makes the snake advance by however many tiles the direction needs them to advance in [EDIT: BUGGED DO NOT USE]
                 new Board();
             }
         }
@@ -169,29 +169,33 @@ public class Main {
             //final boolean check = isCheck();
             final boolean check = isCheck();
             final boolean ego = Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_SNAKE.value); //is snake eating itself
-            System.out.println("EGO: "+ ego);
-            /*if(check||ego){
+            if(check||ego){
+                //System.out.println("\nIS SNAKE EATING ITSELF "+ego+"\nIS SNAKE HITTING A BORDER "+check);
                 new GameManager(false);
                 return false;
-            }*/
+            }
 
             return true;
         }
 
         //idk why this method is here intellij was givin me a warnin like "u could wrap this in a method" and so i clicked quick fix and it did this so idc
         private static boolean isCheck() {
-            final int nextPosLocal = position+modifier;
+            int posLocal = position-1;
+            int pastPos = posLocal-modifier;
+            if(pastPos<=0){pastPos=1;}
+            if(posLocal<=0){posLocal=1;} //prevent invalid cells or negative values
+            final boolean horizontal = direction.equals(Direction.LEFT) || direction.equals(Direction.RIGHT);
+            final int column = posLocal%INT_CONSTANTS.BOARD_SIZE.value; //gets the current column of the snake by dividing the position by the board size and getting the remainder
+            final int row = posLocal/INT_CONSTANTS.BOARD_SIZE.value; //gets the current row of the snake by dividing the position of the board size and truncating any decimal slots
+            final int lastRow = pastPos/INT_CONSTANTS.BOARD_SIZE.value; //these lastRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable
+            final int lastCol = pastPos%INT_CONSTANTS.BOARD_SIZE.value;
 
-            final boolean HORIZONTAL = direction.equals(Direction.LEFT) || direction.equals(Direction.RIGHT);
-            final int column = position%INT_CONSTANTS.BOARD_SIZE.value; //gets the current column of the snake by dividing the position by the board size and getting the remainder
-            final int row = position/INT_CONSTANTS.BOARD_SIZE.value; //gets the current row of the snake by dividing the position of the board size and truncating any decimal slots
-            final int nextRow = nextPosLocal/INT_CONSTANTS.BOARD_SIZE.value; //these nextRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable
-            final int nextCol = nextPosLocal%INT_CONSTANTS.BOARD_SIZE.value;
-
-            System.out.println("----------------------------\nCURRENT ROW: "+row+" NEXT ROW: "+nextRow+"\nCURRENT COLUMN: "+column+" NEXT COLUMN: "+nextCol+"\nCURRENT POS: "+position+" NEXT POS:  "+nextPosLocal+"\nDIRECTION: "+direction+" HORIZONTAL: "+HORIZONTAL+"\nMODIFIER: "+modifier+"\n----------------------------");
             //VERY LONG DEBUG STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
+            System.out.println("----------------------------\nCURRENT ROW: "+row+" PAST ROW: "+ lastRow +"\nCURRENT COLUMN: "+column+" PAST COLUMN: "+ lastCol +"\nCURRENT POS: "+posLocal+" PAST POS:  "+pastPos+"\nDIRECTION: "+direction+" horizontal: "+ horizontal +"\nMODIFIER: "+modifier+"\n----------------------------");
 
-            return (HORIZONTAL&&nextRow!=row)||(!HORIZONTAL&&nextCol!=column)||nextPosLocal>INT_CONSTANTS.CELL_COUNT.value||nextPosLocal<= 0;
+            //this is horizontal border check. vertical check must be performed prior because it causes exception errors due to invalid cell #s
+            boolean check = horizontal&&lastRow!=row;
+            return check;
         }
 
 
@@ -205,15 +209,20 @@ public class Main {
 
         private static void changeDirection(int key) {
             Direction newDirection = directionMap.get(key);
-            System.out.println("NEW DIR: "+newDirection);
+            //System.out.println("NEW DIR: "+newDirection);
             if (newDirection != null && !newDirection.equals(oppositeDirection(direction))) {
                 direction = newDirection; //updates to name of direction value
                 modifier = direction.value; //updartes to value of direction enum
-                System.out.println("DIRECTION: "+direction);
-                System.out.println("MOD: "+modifier);
+                //System.out.println("DIRECTION: "+direction);
+                //System.out.println("MOD: "+modifier);
             }
-            position+=modifier; //position must be changed here instead of in the updatemovement method because there was an issue where inputs would be behind by one frame advancement, since they used the modifier from the previous frame
-            updateMovement();
+            int nextPos = position+modifier;
+
+            if(nextPos<0||nextPos>INT_CONSTANTS.BOARD_SIZE.value){ //ensures the snake will not move if it would result in an invalid cell
+                //this check must be done before the bordercheck is performed because otherwise it would cause other issues such as the snake "eating" its own head
+                position += modifier; //position must be changed here instead of in the updatemovement method because there was an issue where inputs would be behind by one frame advancement, since they used the modifier from the previous frame
+                updateMovement();
+            }
         }
 
         //CHAT... IM A GENIUS!!

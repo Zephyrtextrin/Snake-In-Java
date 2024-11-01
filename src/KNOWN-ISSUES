@@ -1,7 +1,6 @@
   [[[---KNOWN-ISSUES---]]]
-
-    *PROBLEM: snake will lose game even if ur 2 blocks away from border but apparently only if ur direction's RIGHT???
-    *NOTES: dude im hoping its just lag because i have no clue
+    *PROBLEM: vertical checksum is dysfunctional
+    *NOTES: this is probaly just smth that i need to change the if-statement order for
 
   [[[---RESOLVED---]]]
     *PROBLEM: you can go insanely fast by going diagonal and/or holding down the arrow keys or pressing keys in the opposite direction
@@ -16,9 +15,10 @@
     *PROBLEM: the method for making the game end rn feels weird coding-wise
     *SOLUTION:  made new gamemanagar class
 
-  [[[---POSSIBLE-FEATURES---]]]
-    turn the map into an array (regular array not arraylist)
+    *PROBLEM: snake will lose game even if ur 2 blocks away from border but apparently only if ur direction's RIGHT???
+    *NOTES: IM A GENIUS OMG!! all i had to do is compare the previous position (instead of the next one) to the current one
 
+  [[[---POSSIBLE-FEATURES---]]]
     add a play again button wheb u lose
     and stats about how long u are
     maybe a high score too where it writes to a txt file your high score every time u lose and then it reads it to set the highscore variable but also that feels like someon can just open it and set it to 999999999999999999 so there would need to be an errchk

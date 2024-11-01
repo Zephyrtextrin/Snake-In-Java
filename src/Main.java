@@ -185,17 +185,14 @@ public class Main {
             if(pastPos<=0){pastPos=1;}
             if(posLocal<=0){posLocal=1;} //prevent invalid cells or negative values
             final boolean horizontal = direction.equals(Direction.LEFT) || direction.equals(Direction.RIGHT);
-            final int column = posLocal%INT_CONSTANTS.BOARD_SIZE.value; //gets the current column of the snake by dividing the position by the board size and getting the remainder
             final int row = posLocal/INT_CONSTANTS.BOARD_SIZE.value; //gets the current row of the snake by dividing the position of the board size and truncating any decimal slots
             final int lastRow = pastPos/INT_CONSTANTS.BOARD_SIZE.value; //these lastRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable
-            final int lastCol = pastPos%INT_CONSTANTS.BOARD_SIZE.value;
 
             //VERY LONG DEBUG STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
-            System.out.println("----------------------------\nCURRENT ROW: "+row+" PAST ROW: "+ lastRow +"\nCURRENT COLUMN: "+column+" PAST COLUMN: "+ lastCol +"\nCURRENT POS: "+posLocal+" PAST POS:  "+pastPos+"\nDIRECTION: "+direction+" horizontal: "+ horizontal +"\nMODIFIER: "+modifier+"\n----------------------------");
+            //System.out.println("----------------------------\nCURRENT ROW: "+row+" PAST ROW: "+ lastRow +"\nCURRENT COLUMN: "+column+" PAST COLUMN: "+ lastCol +"\nCURRENT POS: "+posLocal+" PAST POS:  "+pastPos+"\nDIRECTION: "+direction+" horizontal: "+ horizontal +"\nMODIFIER: "+modifier+"\n----------------------------");
 
             //this is horizontal border check. vertical check must be performed prior because it causes exception errors due to invalid cell #s
-            boolean check = horizontal&&lastRow!=row;
-            return check;
+            return horizontal&&lastRow!=row;
         }
 
 
@@ -216,13 +213,12 @@ public class Main {
                 //System.out.println("DIRECTION: "+direction);
                 //System.out.println("MOD: "+modifier);
             }
-            int nextPos = position+modifier;
+            position += modifier; //position must be changed here instead of in the updatemovement method because there was an issue where inputs would be behind by one frame advancement, since they used the modifier from the previous frame
+            //ensures the snake will not move if it would result in an invalid cell
+            //this check must be done before the bordercheck is performed because otherwise it would cause other issues such as the snake "eating" its own head
 
-            if(nextPos<0||nextPos>INT_CONSTANTS.BOARD_SIZE.value){ //ensures the snake will not move if it would result in an invalid cell
-                //this check must be done before the bordercheck is performed because otherwise it would cause other issues such as the snake "eating" its own head
-                position += modifier; //position must be changed here instead of in the updatemovement method because there was an issue where inputs would be behind by one frame advancement, since they used the modifier from the previous frame
-                updateMovement();
-            }
+            if(position<=INT_CONSTANTS.CELL_COUNT.value&&position>0){updateMovement();
+            }else{GameManager.gameStatus = false;}
         }
 
         //CHAT... IM A GENIUS!!

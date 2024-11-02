@@ -91,19 +91,23 @@ public class Main {
             frame.setVisible(true);
 
             //RUNS GAME METHODS
-            final int[] pressedKey = new int[1]; //WHA THE ACTUAL freak IS INTELLIJ SMART SOLUTIONS MAKING MY CODE DO WHI IS THIS A FINAL INT ARRAY???
-            //IDK WHAT THIS DOES INTELLIJ JUST ADDED IT
 
             //inits all game elements
             //this is not all values that need initialization but it's all values that need it only when the program is booted for the first time
             if(!init){
-                //key listener to obtain player input
                 new Board(init); //inits cells
                 Snake.updateMovement(); //inits snake at positiion of 1
+                init = true;
+
             }
 
-            frame.addKeyListener(new KeyAdapter() {public void keyPressed(KeyEvent e) {Snake.changeDirection(e.getKeyCode());}});
-
+            int keyInput = 0;
+            //key listener to obtain player input
+            frame.addKeyListener(new KeyAdapter() {
+                public void keyPressed(KeyEvent e) {
+                    Snake.changeDirection(e.getKeyCode());
+            }});
+            final int[] pressedKey = new int[1]; //WHA THE ACTUAL freak IS INTELLIJ SMART SOLUTIONS MAKING MY CODE DO WHI IS THIS A FINAL INT ARRAY???
             final int FPS = 150; //how often the frame refreshes, in MILLISECONDS (*9 is for debug only, usually 150 in normal play)
 
             Board.createFood(); //initializes food item
@@ -216,9 +220,9 @@ public class Main {
                 //System.out.println("MOD: "+modifier);
             }
             position += modifier; //position must be changed here instead of in the updatemovement method because there was an issue where inputs would be behind by one frame advancement, since they used the modifier from the previous frame
+
             //ensures the snake will not move if it would result in an invalid cell
             //this check must be done before the bordercheck is performed because otherwise it would cause other issues such as the snake "eating" its own head
-
             if(position<=INT_CONSTANTS.CELL_COUNT.value&&position>0){updateMovement();
             }else{GameManager.gameStatus = false;}
         }

@@ -3,7 +3,6 @@
 dude one time the food just didnt spawn after a bit but idk if thats cause i had the fps at 100 or not
 
   [[[---POSSIBLE-FEATURES---]]]
-    TODO: fix this organization dawg
     TODO: add a play again button wheb u lose
     TODO: stats about how long u are
     TODO: maybe a high score too where it writes to a txt file your high score every time u lose and then it reads it to set the highscore variable but also that feels like someon can just open it and set it to 999999999999999999 so there would need to be an errchk

@@ -102,14 +102,14 @@ public class Main {
 
             //key listener to obtain player input
             frame.addKeyListener(new KeyAdapter() {
-                public void keyPressed(KeyEvent e) {Snake.changeDirection(e.getKeyCode());}});
+                public void keyPressed(KeyEvent e) {Snake.changeDirection(e.getKeyCode(), true);}});
             final int FPS = 150; //how often the frame refreshes, in MILLISECONDS (*9 is for debug only, usually 150 in normal play)
 
             Board.createFood(); //initializes food item
 
             //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
             TimerTask snakeMovement = new TimerTask() {public void run() {
-                if(gameStatus){Snake.updateMovement(false);
+                if(gameStatus){Snake.changeDirection(0, false);
                 }else{
                     timer.cancel();
                     stopGame();}
@@ -205,16 +205,16 @@ public class Main {
                 KeyEvent.VK_DOWN, Direction.DOWN
         );
 
-        private static void changeDirection(int key) {
+        private static void changeDirection(int key, boolean keyChange) {
             Direction newDirection = directionMap.get(key);
             //System.out.println("NEW DIR: "+newDirection);
-            if (newDirection != null && !newDirection.equals(oppositeDirection(direction))) {
+            if(newDirection != null && !newDirection.equals(oppositeDirection(direction))&&keyChange) {
                 direction = newDirection; //updates to name of direction value
                 modifier = direction.value; //updartes to value of direction enum
                 //System.out.println("DIRECTION: "+direction);
                 //System.out.println("MOD: "+modifier);
             }
-            //position += modifier; //position must be changed here instead of in the updatemovement method because there was an issue where inputs would be behind by one frame advancement, since they used the modifier from the previous frame
+            if(!keyChange){position += modifier;} //position must be changed here instead of in the updatemovement method because there was an issue where inputs would be behind by one frame advancement, since they used the modifier from the previous frame
 
             //ensures the snake will not move if it would result in an invalid cell
             //this check must be done before the bordercheck is performed because otherwise it would cause other issues such as the snake "eating" its own head

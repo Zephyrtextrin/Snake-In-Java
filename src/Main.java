@@ -74,6 +74,8 @@ public class Main {
             // create a window IM SOOOOOOOOOOO TIRED IDC NO MORE ILL FORMAT THIS STUPID UI BS TOMORROW
             Timer timer = new Timer(); //new timer instance
             gameStatus = true;
+            final int FPS = 150; //how often the frame refreshes, in MILLISECONDS (*9 is for debug only, usually 150 in normal play)
+            Board.createFood(); //initializes food item
 
             frame.setSize(INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
 
@@ -98,23 +100,15 @@ public class Main {
                 new Board(init); //inits cells
                 Snake.updateMovement(); //inits snake at positiion of 1
                 init = true;
-
             }
 
-            int keyInput = 0;
             //key listener to obtain player input
-            frame.addKeyListener(new KeyAdapter() {
-                public void keyPressed(KeyEvent e) {
-                    Snake.changeDirection(e.getKeyCode());
-            }});
-            final int[] pressedKey = new int[1]; //WHA THE ACTUAL freak IS INTELLIJ SMART SOLUTIONS MAKING MY CODE DO WHI IS THIS A FINAL INT ARRAY???
-            final int FPS = 150; //how often the frame refreshes, in MILLISECONDS (*9 is for debug only, usually 150 in normal play)
+            frame.addKeyListener(new KeyAdapter() {public void keyPressed(KeyEvent e) {Snake.changeDirection(e.getKeyCode());}});
 
-            Board.createFood(); //initializes food item
 
             //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
             TimerTask snakeMovement = new TimerTask() {public void run() {
-                if(gameStatus){Snake.changeDirection(pressedKey[0]);
+                if(gameStatus){Snake.changeDirection(0);
                 }else{
                     timer.cancel();
                     stopGame();}

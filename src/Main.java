@@ -102,7 +102,7 @@ public class Main {
 
             //key listener to obtain player input
             frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e){Snake.changeDirection(e.getKeyCode());}});
-            
+
             //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
             Runnable snakeMovement = () -> {
                 if(gameStatus){Snake.changeDirection(pressedKey[0]);

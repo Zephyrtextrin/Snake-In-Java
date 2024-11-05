@@ -3,7 +3,7 @@ import java.util.Map;
 import java.util.Objects;
 
 //holds data for snake
-public class Snake extends Board {
+public class Snake extends Board{
     static int length = 1;
     static Direction direction = Direction.RIGHT;
     static int position = 1; //thithe position of the cell the snake's head is in
@@ -18,7 +18,7 @@ public class Snake extends Board {
         private final int value;
 
         //sets value according to input
-        Direction(int value){this.value = value;}
+        Direction(int value){this.value=value;}
     }
 
     public static void updateMovement(){

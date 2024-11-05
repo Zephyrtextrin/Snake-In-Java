@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.util.*;
-import java.util.Timer;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.Executors;
@@ -59,7 +58,6 @@ public class Main {
         JPanel panel = new JPanel();
         JFrame frame = new JFrame("text-based snake in java+swing");
         JButton playAgain = new JButton("Play again");
-        static boolean init = false;
         //auto ends the game if false
         static boolean gameStatus = true;
 
@@ -97,12 +95,8 @@ public class Main {
 
             //inits all game elements
             //this is not all values that need initialization but it's all values that need it only when the program is booted for the first time
-            if(!init){
-                new Board(init); //inits cells
-                Snake.updateMovement(); //inits snake at positiion of 1
-                init = true;
-
-            }
+            new Board(false); //inits cells
+            Snake.updateMovement(); //inits snake at positiion of 1
 
             //key listener to obtain player input
             frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e) {Snake.changeDirection(e.getKeyCode());}});
@@ -150,6 +144,8 @@ public class Main {
         static int position = 1; //thithe position of the cell the snake's head is in
         static int modifier = direction.value; //how mmany cells the snake will move by (aka: the direction)
 
+        private Snake(boolean init) {super(init);} //bc there is no parameterless constructor in board u must use super
+
         private enum Direction {
             //init var
             //sets values for each direction
@@ -166,7 +162,7 @@ public class Main {
                 //System.out.println(modifier);
                 snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
                 //position+=modifier; //makes the snake advance by however many tiles the direction needs them to advance in [EDIT: BUGGED DO NOT USE]
-                new Board();
+                new Board(true);
             }
         }
 
@@ -258,21 +254,19 @@ public class Main {
         protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
         public static Cell[] cellList = new Cell[INT_CONSTANTS.CELL_COUNT.value+1]; //adds +1 because positions start at 1
 
-        private Board(){
-            cellAgeDeprecation();
-            updateDisplayLabel(drawBoard());
-        }
-
-        //constructor that initializes all cell values into the board
-        //there's a stupid useless param here that does nothing bc the board already has a paramless method and the snake class needs to call these methods
-        protected Board(boolean isInitialized) {
-            for (int position = 1; position <= INT_CONSTANTS.CELL_COUNT.value; position++){new Cell(position);} //creates a cell object for each position and age of 0
-            updateDisplayLabel(drawBoard());
+        //inits values or updates snake
+        private Board(boolean init){
+            if(init) {
+                cellAgeDeprecation();
+                updateDisplayLabel(drawBoard());
+            }else{
+                for (int position = 1; position <= INT_CONSTANTS.CELL_COUNT.value; position++){new Cell(position);} //creates a cell object for each position and age of 0
+                updateDisplayLabel(drawBoard());
+            }
         }
 
         //redraws the board tbh //EDIT: bro what was i thinking this is the worst comment of all time
         public StringBuilder drawBoard() {
-
 
             StringBuilder toDisplay = new StringBuilder();
 

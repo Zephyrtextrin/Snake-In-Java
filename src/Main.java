@@ -3,6 +3,9 @@ import java.util.*;
 import java.util.Timer;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
@@ -103,25 +106,25 @@ public class Main {
 
             int keyInput = 0;
             //key listener to obtain player input
-            frame.addKeyListener(new KeyAdapter() {
-                public void keyPressed(KeyEvent e) {
-                    Snake.changeDirection(e.getKeyCode());
-            }});
+            frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e) {Snake.changeDirection(e.getKeyCode());}});
             final int[] pressedKey = new int[1]; //WHA THE ACTUAL freak IS INTELLIJ SMART SOLUTIONS MAKING MY CODE DO WHI IS THIS A FINAL INT ARRAY???
             final int FPS = 150; //how often the frame refreshes, in MILLISECONDS (*9 is for debug only, usually 150 in normal play)
 
             Board.createFood(); //initializes food item
 
             //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
-            TimerTask snakeMovement = new TimerTask() {public void run() {
+            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+            Runnable snakeMovement = ()->{
                 if(gameStatus){Snake.changeDirection(pressedKey[0]);
                 }else{
-                    timer.cancel();
-                    stopGame();}
+                    scheduler.shutdown();
+                    stopGame();
                 }
             };
 
-            timer.scheduleAtFixedRate(snakeMovement, 0, FPS);
+            // Schedule the task with a fixed rate
+            scheduler.scheduleAtFixedRate(snakeMovement, 0, FPS, TimeUnit.MILLISECONDS);
         }
 
         public void stopGame() {

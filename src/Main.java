@@ -25,7 +25,8 @@ public class Main {
         //INTEGERS: values that make the game work
         BOARD_SIZE(20), 
         WINDOW_SIZE(22*BOARD_SIZE.value), 
-        CELL_COUNT((int) Math.pow(BOARD_SIZE.value, 2));
+        CELL_COUNT((int) Math.pow(BOARD_SIZE.value, 2)),
+        FPS(150);
         private final int value;
 
         //constructor for strings (all type vaues)
@@ -75,7 +76,6 @@ public class Main {
         private void runGame() {
             //UI
             // create a window IM SOOOOOOOOOOO TIRED IDC NO MORE ILL FORMAT THIS STUPID UI BS TOMORROW
-            Timer timer = new Timer(); //new timer instance
             gameStatus = true;
 
             frame.setSize(INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
@@ -104,11 +104,9 @@ public class Main {
 
             }
 
-            int keyInput = 0;
             //key listener to obtain player input
             frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e) {Snake.changeDirection(e.getKeyCode());}});
             final int[] pressedKey = new int[1]; //WHA THE ACTUAL freak IS INTELLIJ SMART SOLUTIONS MAKING MY CODE DO WHI IS THIS A FINAL INT ARRAY???
-            final int FPS = 150; //how often the frame refreshes, in MILLISECONDS (*9 is for debug only, usually 150 in normal play)
 
             Board.createFood(); //initializes food item
 
@@ -124,7 +122,7 @@ public class Main {
             };
 
             // Schedule the task with a fixed rate
-            scheduler.scheduleAtFixedRate(snakeMovement, 0, FPS, TimeUnit.MILLISECONDS);
+            scheduler.scheduleAtFixedRate(snakeMovement, 0, INT_CONSTANTS.FPS.value, TimeUnit.MILLISECONDS);
         }
 
         public void stopGame() {

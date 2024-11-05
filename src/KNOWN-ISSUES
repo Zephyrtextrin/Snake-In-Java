@@ -5,6 +5,7 @@ TODO: (cont.) the thing is that the changedirection method increases the positio
 TODO: (Cont.) and i feel like it would make more sense for the movement update to be every frame and the direction is only called on keylistener and the direction doesnt update the movement
 TODO: (cont.) but if i do that then the movement breaks even more. idk what to do gang lmao
 
+THERES MORE FREAKING ISSUES WITH THE BORDERS
   [[[---POSSIBLE-FEATURES---]]]
     TODO: add a play again button wheb u lose
     TODO: stats about how long u are

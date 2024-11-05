@@ -16,9 +16,7 @@ public class Main {
         TYPE_FOOD("food");
         public final String value;
 
-        STRING_CONSTANTS(String type) {
-            this.value = type;
-        }
+        STRING_CONSTANTS(String type) {this.value = type;}
     }
 
     public enum INT_CONSTANTS {
@@ -26,13 +24,11 @@ public class Main {
         BOARD_SIZE(20),
         WINDOW_SIZE(22 * BOARD_SIZE.value),
         CELL_COUNT((int) Math.pow(BOARD_SIZE.value, 2)),
-        FPS(150);
+        FPS(300);
         public final int value;
 
         //constructor for strings (all type vaues)
-        INT_CONSTANTS(int value) {
-            this.value = value;
-        }
+        INT_CONSTANTS(int value) {this.value = value;}
     }
 
     //sets up frame, initializes some constructors, and runs method that actually makes the game work
@@ -61,7 +57,6 @@ public class Main {
         JButton playAgain = new JButton("Play again");
         //auto ends the game if false
         static boolean gameStatus = true;
-
 
         //CONSTRUCTOR to start/stop the game depending on the game status
         GameManager(boolean gameStatus) {
@@ -98,14 +93,14 @@ public class Main {
             new Board(false); //inits cells
             Board.createFood(); //initializes food item
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-            final int[] pressedKey = new int[1]; //WHA THE ACTUAL freak IS INTELLIJ SMART SOLUTIONS MAKING MY CODE DO WHI IS THIS A FINAL INT ARRAY???
+            //final int[] pressedKey = new int[1]; //WHA THE ACTUAL freak IS INTELLIJ SMART SOLUTIONS MAKING MY CODE DO WHI IS THIS A FINAL INT ARRAY???
 
             //key listener to obtain player input
             frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e){Snake.changeDirection(e.getKeyCode());}});
 
             //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
-            Runnable snakeMovement = () -> {
-                if(gameStatus){Snake.changeDirection(pressedKey[0]);
+            Runnable snakeMovement = ()->{
+                if(gameStatus){Snake.updateMovement();
                 }else{
                     scheduler.shutdown();
                     stopGame();
@@ -116,7 +111,8 @@ public class Main {
             scheduler.scheduleAtFixedRate(snakeMovement, 0, INT_CONSTANTS.FPS.value, TimeUnit.MILLISECONDS);
         }
 
-        public void stopGame() {
+        public void stopGame(){
+            System.out.println("HA");
             gameStatus = false;
             display.setText("GAME OVER!");
             playAgain.setVisible(true);

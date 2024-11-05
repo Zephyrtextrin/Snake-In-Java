@@ -22,11 +22,11 @@ public class Snake extends Board{
     }
 
     public static void updateMovement(){
-        if(checkBorders()){
-            Cell targetCell = cellList[position];
-            snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
-            new Board(true);
-        }
+        position+=modifier;
+        gameStatus = checkBorders();
+        Cell targetCell = cellList[position];
+        snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
+        new Board(true);
     }
 
     //checks to see if player ran into a wall
@@ -43,18 +43,19 @@ public class Snake extends Board{
 
     //this is horizontal border check only. vertical check must be performed prior because it causes exception errors due to invalid cell #s
     private static boolean isCheck(){
-        int posLocal = position - 1;
-        int pastPos = posLocal - modifier;
-        if (pastPos <= 0) {pastPos = 1;}
-        if (posLocal <= 0) {posLocal = 1;} //prevent invalid cells or negative values
-        final boolean horizontal = direction.equals(Direction.LEFT) || direction.equals(Direction.RIGHT);
-        final int row = posLocal / Main.INT_CONSTANTS.BOARD_SIZE.value; //gets the current row of the snake by dividing the position of the board size and truncating any decimal slots
-        final int lastRow = pastPos / Main.INT_CONSTANTS.BOARD_SIZE.value; //these lastRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable
+        int posLocal = position-1;
+        int pastPos = posLocal-modifier;
+        if(pastPos<=0){pastPos=1;}
+        if(posLocal<=0){posLocal=1;} //prevent invalid cells or negative values
+        final boolean horizontal = direction.equals(Direction.LEFT)||direction.equals(Direction.RIGHT);
+        final int row = posLocal/Main.INT_CONSTANTS.BOARD_SIZE.value; //gets the current row of the snake by dividing the position of the board size and truncating any decimal slots
+        final int lastRow = pastPos/Main.INT_CONSTANTS.BOARD_SIZE.value; //these lastRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable
+        boolean horizontalCheck = horizontal&&lastRow!=row;
 
-        //VERY LONG DEBUG STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
-        //System.out.println("----------------------------\nCURRENT ROW: "+row+" PAST ROW: "+ lastRow +"\nCURRENT COLUMN: "+column+" PAST COLUMN: "+ lastCol +"\nCURRENT POS: "+posLocal+" PAST POS:  "+pastPos+"\nDIRECTION: "+direction+" horizontal: "+ horizontal +"\nMODIFIER: "+modifier+"\n----------------------------");
-
-        return horizontal&&lastRow!=row;
+        //VERY LONG DEBUG ]]]STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
+        System.out.println("----------------------------\nCURRENT ROW: "+row+" PAST ROW: "+ lastRow +"\nCURRENT POS: "+posLocal+" PAST POS:  "+pastPos+"\nDIRECTION: "+direction+" horizontal: "+ horizontal +"\nMODIFIER: "+modifier+"\n----------------------------");
+        System.out.println(position);
+        return horizontalCheck;
     }
 
 
@@ -63,27 +64,19 @@ public class Snake extends Board{
 
     static void changeDirection(int key){
         Direction newDirection = directionMap.get(key);
-        //System.out.println("NEW DIR: "+newDirection);
-        if (newDirection != null && !newDirection.equals(oppositeDirection(direction))) {
+        if (newDirection != null&&!newDirection.equals(oppositeDirection(direction))){
             direction = newDirection; //updates to name of direction value
             modifier = direction.value; //updartes to value of direction enum
-            //System.out.println("DIRECTION: "+direction);
-            //System.out.println("MOD: "+modifier);
         }
-        position += modifier; //position must be changed here instead of in the updatemovement method because there was an issue where inputs would be behind by one frame advancement, since they used the modifier from the previous frame
-
-        //ensures the snake will not move if it would result in an invalid cell //this check must be done before the bordercheck is performed because otherwise it would cause other issues such as the snake "eating" its own head
-        if(position<=Main.INT_CONSTANTS.CELL_COUNT.value&&position > 0) {updateMovement();
-        }else{Main.GameManager.gameStatus = false;}
     }
 
     //CHAT... IM A GENIUS!!
-    private static Direction oppositeDirection(Direction direction) {return switch (direction) {case UP -> Direction.DOWN; case DOWN -> Direction.UP; case LEFT -> Direction.RIGHT; case RIGHT -> Direction.LEFT;};}
+    private static Direction oppositeDirection(Direction direction){return switch (direction){case UP -> Direction.DOWN; case DOWN -> Direction.UP; case LEFT -> Direction.RIGHT; case RIGHT -> Direction.LEFT;};}
 
     //adds cells to snakeCell list
-    private static void snakeCellsManagement(Cell targetCell) {
+    private static void snakeCellsManagement(Cell targetCell){
         targetCell.changeAppearance(true); //changes target cell into its activated appearance (since snake cells are the activated appearance of a shaded-in block
-        if (Objects.equals(targetCell.type, Main.STRING_CONSTANTS.TYPE_FOOD.value)) { //this looks incredibly dumb but you have to have this if statement inside the else
+        if (Objects.equals(targetCell.type, Main.STRING_CONSTANTS.TYPE_FOOD.value)){ //this looks incredibly dumb but you have to have this if statement inside the else
             Snake.length++;
             Board.createFood();
         }

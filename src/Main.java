@@ -45,13 +45,9 @@ public class Main {
                     break;
                 }
             }
-        } catch (Exception e) {
-            System.out.println("error with look and feel!\n------DETAILS------\n" + e.getMessage());
-        }
+        }catch (Exception e){System.out.println("error with look and feel!\n------DETAILS------\n" + e.getMessage());}
 
         GameManager game = new GameManager(true); //creates new instance of game manager
-        //new Board(); //inits cell values
-        //CREATES UI VALUES
 
         //adds jlabel that does the things
         display.setBounds(0, 0, INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
@@ -97,30 +93,17 @@ public class Main {
         }
 
         //manages game; initializes variables and sets timer
-        private void runGame() {
-            //UI
-            // create a window IM SOOOOOOOOOOO TIRED IDC NO MORE ILL FORMAT THIS STUPID UI BS TOMORROW
-
-            //RUNS GAME METHODS
-
+        private void runGame(){
             //inits all game elements
-            //this is not all values that need initialization but it's all values that need it only when the program is booted for the first time
             new Board(false); //inits cells
-            Snake.updateMovement(); //inits snake at positiion of 1
-
-            //key listener to obtain player input
-            frame.addKeyListener(new KeyAdapter() {
-                public void keyPressed(KeyEvent e) {
-                    Snake.changeDirection(e.getKeyCode());
-                }
-            });
+            Board.createFood(); //initializes food item
+            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
             final int[] pressedKey = new int[1]; //WHA THE ACTUAL freak IS INTELLIJ SMART SOLUTIONS MAKING MY CODE DO WHI IS THIS A FINAL INT ARRAY???
 
-            Board.createFood(); //initializes food item
-
+            //key listener to obtain player input
+            frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e){Snake.changeDirection(e.getKeyCode());}});
+            
             //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
-            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
             Runnable snakeMovement = () -> {
                 if(gameStatus){Snake.changeDirection(pressedKey[0]);
                 }else{

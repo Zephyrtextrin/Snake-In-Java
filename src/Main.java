@@ -6,6 +6,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
+    static boolean init = true;
 
     public static JLabel display = new JLabel();
 
@@ -24,7 +25,7 @@ public class Main {
         BOARD_SIZE(20),
         WINDOW_SIZE(22 * BOARD_SIZE.value),
         CELL_COUNT((int) Math.pow(BOARD_SIZE.value, 2)),
-        FPS(300);
+        FPS(75);
         public final int value;
 
         //constructor for strings (all type vaues)
@@ -45,7 +46,7 @@ public class Main {
 
         GameManager game = new GameManager(true); //creates new instance of game manager
 
-        //adds jlabel that does the things
+        //adds jlabel that does the things EDIT: THIS IS THE WORST COMMENT OF ALL TIME WHAT WAS I THINKING LOL
         display.setBounds(0, 0, INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
         game.panel.add(display);
     }
@@ -55,8 +56,7 @@ public class Main {
         JPanel panel = new JPanel();
         JFrame frame = new JFrame("text-based snake in java+swing");
         JButton playAgain = new JButton("Play again");
-        //auto ends the game if false
-        static boolean gameStatus = true;
+        static boolean gameStatus = true; //auto ends the game if false
 
         //CONSTRUCTOR to start/stop the game depending on the game status
         GameManager(boolean gameStatus) {
@@ -80,50 +80,63 @@ public class Main {
 
             //inits the button to play again
             //inivisible before initialization
-            playAgain.setBounds(INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 3, INT_CONSTANTS.WINDOW_SIZE.value / 5);
-            panel.add(playAgain);
-            playAgain.setVisible(false);
 
-            frame.setVisible(true);
+
+
+            //if this is the first time the game is initialized, make a new frame. if this is  not initialization (ie, hitting the play again button) dont make a new frame and hide the play again button
+            if(init){
+                frame.setVisible(true);
+                playAgain.setBounds(INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 3, INT_CONSTANTS.WINDOW_SIZE.value / 5);
+                panel.add(playAgain);
+            }else{playAgain.setVisible(false);}
+
+                playAgain.setVisible(false);
         }
 
         //manages game; initializes variables and sets timer
         private void runGame(){
-            //inits all game elements
-            new Board(false); //inits cells
-            Board.createFood(); //initializes food item
+            gameStatus = true;
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-            //final int[] pressedKey = new int[1]; //WHA THE ACTUAL freak IS INTELLIJ SMART SOLUTIONS MAKING MY CODE DO WHI IS THIS A FINAL INT ARRAY???
+            new Board(false); //inits board of all cells
+            Board.createFood(); //initializes food item
 
             //key listener to obtain player input
             frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e){Snake.changeDirection(e.getKeyCode());}});
+            playAgain.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e){Snake.changeDirection(e.getKeyCode());}});
+
+            //inits snake to default positions
+            Snake.direction = Snake.Direction.RIGHT;
+            Snake.position = 1;
+            Snake.updateMovement();
 
             //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
             Runnable snakeMovement = ()->{
-                if(gameStatus){Snake.updateMovement();
+                if(gameStatus){
+                    try {Snake.updateMovement();
+                    }catch(Exception e){gameStatus = false;}
                 }else{
                     scheduler.shutdown();
                     stopGame();
                 }
             };
-
-            // Schedule the task with a fixed rate
             scheduler.scheduleAtFixedRate(snakeMovement, 0, INT_CONSTANTS.FPS.value, TimeUnit.MILLISECONDS);
         }
 
         public void stopGame(){
-            System.out.println("HA");
             gameStatus = false;
+            init = false;
             display.setText("GAME OVER!");
             playAgain.setVisible(true);
-            playAgain.addActionListener(_ -> runGame()); //if clicked, play the game again
-            Snake.position = 1;
-            Snake.length = 1;
+            //logic for what happens when u click play again
+            //TODO: where did my inputs go bruh imma go insane
+            playAgain.addActionListener(_ -> {
+                new GameManager(true);
+                playAgain.setVisible(false);
+            });
         }
 
         public void updateDisplayLabel(StringBuilder toDisplay) {
             display.setText(String.valueOf(toDisplay)); //sets display text to the drawn board
-            //System.out.println(display.getText());
             panel.repaint();
             panel.revalidate();
         }

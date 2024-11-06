@@ -8,10 +8,11 @@ public class Snake extends Board{
     static Direction direction = Direction.RIGHT;
     static int position = 1; //thithe position of the cell the snake's head is in
     static int modifier = direction.value; //how mmany cells the snake will move by (aka: the direction)
+    static int pastPos;
 
     private Snake(boolean init){super(init);} //bc there is no parameterless constructor in board u must use super
 
-    private enum Direction{
+    enum Direction{
         //init var
         //sets values for each direction
         UP(-Main.INT_CONSTANTS.BOARD_SIZE.value), DOWN(Main.INT_CONSTANTS.BOARD_SIZE.value), LEFT(-1), RIGHT(1);
@@ -22,6 +23,8 @@ public class Snake extends Board{
     }
 
     public static void updateMovement(){
+        modifier = direction.value;
+        pastPos = position-1;
         position+=modifier;
         gameStatus = checkBorders();
         Cell targetCell = cellList[position];
@@ -34,7 +37,7 @@ public class Snake extends Board{
         Cell targetCell = cellList[position];
         final boolean check = isCheck();
         final boolean ego = Objects.equals(targetCell.type, Main.STRING_CONSTANTS.TYPE_SNAKE.value); //is snake eating itself
-        if (check||ego){
+        if (ego||check){
             new Main.GameManager(false);
             return false;
         }
@@ -44,7 +47,6 @@ public class Snake extends Board{
     //this is horizontal border check only. vertical check must be performed prior because it causes exception errors due to invalid cell #s
     private static boolean isCheck(){
         int posLocal = position-1;
-        int pastPos = posLocal-modifier;
         if(pastPos<=0){pastPos=1;}
         if(posLocal<=0){posLocal=1;} //prevent invalid cells or negative values
         final boolean horizontal = direction.equals(Direction.LEFT)||direction.equals(Direction.RIGHT);
@@ -53,8 +55,8 @@ public class Snake extends Board{
         boolean horizontalCheck = horizontal&&lastRow!=row;
 
         //VERY LONG DEBUG ]]]STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
-        System.out.println("----------------------------\nCURRENT ROW: "+row+" PAST ROW: "+ lastRow +"\nCURRENT POS: "+posLocal+" PAST POS:  "+pastPos+"\nDIRECTION: "+direction+" horizontal: "+ horizontal +"\nMODIFIER: "+modifier+"\n----------------------------");
-        System.out.println(position);
+        //System.out.println("----------------------------\nCURRENT ROW: "+row+" PAST ROW: "+ lastRow +"\nCURRENT POS: "+posLocal+" PAST POS:  "+pastPos+"\nDIRECTION: "+direction+" horizontal: "+ horizontal +"\nMODIFIER: "+modifier+"\n----------------------------");
+
         return horizontalCheck;
     }
 

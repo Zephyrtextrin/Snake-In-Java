@@ -66,37 +66,37 @@ public class Main {
             }else{stopGame();}
         }
 
-        GameManager() {} //this feels stupid but sometimes they dont want params in a constructor
+        GameManager(){} //this feels stupid but sometimes they dont want params in a constructor
 
         private void UIInit(){
             gameStatus = true;
 
+            //window
             frame.setSize(INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
-
-            //adds panel
-            frame.add(panel);
-            panel.setBounds(0, 0, INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
             frame.setResizable(false);
 
+            //panel that all the display elements go on
+            panel.setBounds(0, 0, INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
+            panel.setFocusable(false); //i dont think anyone will ever focus on the panel but this is just in case yk (explanation under the play again button comments)
+            frame.add(panel);
+
             //inits the button to play again
-            //inivisible before initialization
-
-
-            playAgain.setFocusable(false);
-            //if this is the first time the game is initialized, make a new frame. if this is  not initialization (ie, hitting the play again button) dont make a new frame and hide the play again button
-            if(init){
-                frame.setVisible(true);
-                playAgain.setBounds(INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 3, INT_CONSTANTS.WINDOW_SIZE.value / 5);
-                panel.add(playAgain);
-            }
+            //this isnt actually added to the panel until you lose for the first time
+            playAgain.setSize(INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 2);
+            playAgain.setFocusable(false); //this cannot be focusable: if it is focusable, you can click on it and steal focus from the frame, and the frame needs to be focused all the time because the input listener only works when the component its applied to is focused
+            panel.add(playAgain);
             playAgain.setVisible(false);
+
+            display.setFocusable(false); //this is likely not needed but its worth doing just in case (explanation under the play again button comments)
+
+            //if this is the first time the game is initialized, make a new frame (bc u dont want a new window openign every time u play again cause the game's already on the previous window)
+            if(init){frame.setVisible(true);}
 
         }
 
         //manages game; initializes variables and sets timer
         private void runGame(){
             gameStatus = true;
-            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
             new Board(false); //inits board of all cells
             Board.createFood(); //initializes food item
 
@@ -109,29 +109,41 @@ public class Main {
             Snake.length = 1;
             Snake.updateMovement();
 
+            if(init){frameAdvancement();}
+        }
+
+        private void stopGame(){
+            gameStatus = false;
+            init = false;
+            display.setText("GAME OVER!");
+            playAgain.setSize(INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 2);
+            playAgain.validate();
+            playAgain.setEnabled(true);
+
+            System.out.println(playAgain.isVisible());
+            System.out.println(playAgain.isValid());
+            //logic for what happens when u click play again
+            playAgain.addActionListener(_ -> {
+                runGame();
+                playAgain.setVisible(false);
+            });
+        }
+
+        private static void frameAdvancement(){
+            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
             //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
             Runnable snakeMovement = ()->{
                 if(gameStatus){
+                    //you have to try/catch for an exception here because executorservices just hang the program instead of throwing an exception even tho i kinda need it to not do that cause of the gameover logic relying on the snake being out of bounds
                     try {Snake.updateMovement();
                     }catch(Exception e){gameStatus = false;}
                 }else{
                     scheduler.shutdown();
-                    stopGame();
+                    new GameManager(false);
                 }
             };
             scheduler.scheduleAtFixedRate(snakeMovement, 0, INT_CONSTANTS.FPS.value, TimeUnit.MILLISECONDS);
-        }
-
-        public void stopGame(){
-            gameStatus = false;
-            init = false;
-            display.setText("GAME OVER!");
-            playAgain.setVisible(true);
-            //logic for what happens when u click play again
-            playAgain.addActionListener(_ -> {
-                new GameManager(true);
-                playAgain.setVisible(false);
-            });
         }
 
         public void updateDisplayLabel(StringBuilder toDisplay) {

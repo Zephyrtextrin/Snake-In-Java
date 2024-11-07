@@ -106,6 +106,7 @@ public class Main {
             //inits snake to default positions
             Snake.direction = Snake.Direction.RIGHT;
             Snake.position = 1;
+            Snake.length = 1;
             Snake.updateMovement();
 
             //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
@@ -129,7 +130,7 @@ public class Main {
             //logic for what happens when u click play again
             playAgain.addActionListener(_ -> {
                 new GameManager(true);
-               playAgain.setVisible(false);
+                playAgain.setVisible(false);
             });
         }
 

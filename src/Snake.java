@@ -45,8 +45,6 @@ public class Snake extends Board{
     private static boolean isCheck(){
         int posLocal = position-1;
         int pastPos = posLocal-direction.value;
-        if(pastPos<=0){pastPos=1;}
-        if(posLocal<=0){posLocal=1;} //prevent invalid cells or negative values
         final boolean horizontal = direction.equals(Direction.LEFT)||direction.equals(Direction.RIGHT);
         final int row = posLocal/Main.INT_CONSTANTS.BOARD_SIZE.value; //gets the current row of the snake by dividing the position of the board size and truncating any decimal slots
         final int lastRow = pastPos/Main.INT_CONSTANTS.BOARD_SIZE.value; //these lastRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable

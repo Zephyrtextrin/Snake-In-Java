@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -9,6 +10,7 @@ public class Main {
     static boolean init = true;
 
     public static JLabel display = new JLabel();
+    public static JButton playAgain = new JButton();
 
     public enum STRING_CONSTANTS {
         //TYPE VALUES: allows you to set celltypes without using direct strings and ensures no compatibility issues
@@ -87,7 +89,7 @@ public class Main {
             panel.add(playAgain);
             playAgain.setVisible(false);
 
-            display.setFocusable(false); //this is likely not needed but its worth doing just in case (explanation under the play again button comments)
+            display.setEnabled(false); //this is likely not needed but its worth doing just in case (explanation under the play again button comments)
 
             //if this is the first time the game is initialized, make a new frame (bc u dont want a new window openign every time u play again cause the game's already on the previous window)
             if(init){frame.setVisible(true);}
@@ -116,12 +118,13 @@ public class Main {
             gameStatus = false;
             init = false;
             display.setText("GAME OVER!");
-            playAgain.setSize(INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 2);
-            playAgain.validate();
             playAgain.setEnabled(true);
+            playAgain.setVisible(true);
 
-            System.out.println(playAgain.isVisible());
-            System.out.println(playAgain.isValid());
+            panel.repaint();
+            panel.revalidate();
+
+
             //logic for what happens when u click play again
             playAgain.addActionListener(_ -> {
                 runGame();

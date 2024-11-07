@@ -82,15 +82,15 @@ public class Main {
             //inivisible before initialization
 
 
-
+            playAgain.setFocusable(false);
             //if this is the first time the game is initialized, make a new frame. if this is  not initialization (ie, hitting the play again button) dont make a new frame and hide the play again button
             if(init){
                 frame.setVisible(true);
                 playAgain.setBounds(INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 3, INT_CONSTANTS.WINDOW_SIZE.value / 5);
                 panel.add(playAgain);
-            }else{playAgain.setVisible(false);}
+            }
+            playAgain.setVisible(false);
 
-                playAgain.setVisible(false);
         }
 
         //manages game; initializes variables and sets timer
@@ -102,7 +102,6 @@ public class Main {
 
             //key listener to obtain player input
             frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e){Snake.changeDirection(e.getKeyCode());}});
-            playAgain.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e){Snake.changeDirection(e.getKeyCode());}});
 
             //inits snake to default positions
             Snake.direction = Snake.Direction.RIGHT;
@@ -128,10 +127,9 @@ public class Main {
             display.setText("GAME OVER!");
             playAgain.setVisible(true);
             //logic for what happens when u click play again
-            //TODO: where did my inputs go bruh imma go insane
             playAgain.addActionListener(_ -> {
                 new GameManager(true);
-                playAgain.setVisible(false);
+               playAgain.setVisible(false);
             });
         }
 

@@ -1,9 +1,6 @@
   [[[---KNOWN-ISSUES---]]]
 
-TODO: there's that one issue where the snake moves twice? idk if that's just a skill issue where i dont hit it in time or if its an actual frame advancement issue.
-TODO: (cont.) the thing is that the changedirection method increases the position and then calls updateMovement. but the frame advancement calls changedir instead of movement every frame
-TODO: (Cont.) and i feel like it would make more sense for the movement update to be every frame and the direction is only called on keylistener and the direction doesnt update the movement
-TODO: (cont.) but if i do that then the movement breaks even more. idk what to do gang lmao
+    *PROBLEM: play again button only shows up once and length isnt decreased
 
 THERES MORE FREAKING ISSUES WITH THE BORDERS
   [[[---POSSIBLE-FEATURES---]]]

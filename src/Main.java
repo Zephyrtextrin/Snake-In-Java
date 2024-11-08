@@ -10,7 +10,8 @@ public class Main {
     static boolean init = true;
 
     public static JLabel display = new JLabel();
-    public static JButton playAgain = new JButton();
+    public static JButton playAgain = new JButton("Play again");
+
 
     public enum STRING_CONSTANTS {
         //TYPE VALUES: allows you to set celltypes without using direct strings and ensures no compatibility issues
@@ -51,13 +52,13 @@ public class Main {
         //adds jlabel that does the things EDIT: THIS IS THE WORST COMMENT OF ALL TIME WHAT WAS I THINKING LOL
         display.setBounds(0, 0, INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
         game.panel.add(display);
+        game.panel.add(playAgain);
     }
 
     //starts and stops game, initializes variables
     protected static class GameManager {
         JPanel panel = new JPanel();
         JFrame frame = new JFrame("text-based snake in java+swing");
-        JButton playAgain = new JButton("Play again");
         static boolean gameStatus = true; //auto ends the game if false
 
         //CONSTRUCTOR to start/stop the game depending on the game status
@@ -78,22 +79,22 @@ public class Main {
             frame.setResizable(false);
 
             //panel that all the display elements go on
-            panel.setBounds(0, 0, INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
+            panel.setSize(INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
             panel.setFocusable(false); //i dont think anyone will ever focus on the panel but this is just in case yk (explanation under the play again button comments)
             frame.add(panel);
 
-            //inits the button to play again
-            //this isnt actually added to the panel until you lose for the first time
-            playAgain.setSize(INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 2);
+            //button to play again
+            playAgain.setBounds(INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 2, 100, 100);
             playAgain.setFocusable(false); //this cannot be focusable: if it is focusable, you can click on it and steal focus from the frame, and the frame needs to be focused all the time because the input listener only works when the component its applied to is focused
-            panel.add(playAgain);
             playAgain.setVisible(false);
 
-            display.setEnabled(false); //this is likely not needed but its worth doing just in case (explanation under the play again button comments)
-
+            display.setFocusable(false); //this is likely not needed but its worth doing just in case (explanation under the play again button comments)
+            display.setSize(INT_CONSTANTS.BOARD_SIZE.value, INT_CONSTANTS.BOARD_SIZE.value);
             //if this is the first time the game is initialized, make a new frame (bc u dont want a new window openign every time u play again cause the game's already on the previous window)
             if(init){frame.setVisible(true);}
 
+            panel.repaint();
+            panel.revalidate();
         }
 
         //manages game; initializes variables and sets timer
@@ -111,19 +112,15 @@ public class Main {
             Snake.length = 1;
             Snake.updateMovement();
 
-            if(init){frameAdvancement();}
+            frameAdvancement();
         }
 
         private void stopGame(){
             gameStatus = false;
             init = false;
+
             display.setText("GAME OVER!");
-            playAgain.setEnabled(true);
             playAgain.setVisible(true);
-
-            panel.repaint();
-            panel.revalidate();
-
 
             //logic for what happens when u click play again
             playAgain.addActionListener(_ -> {
@@ -134,7 +131,6 @@ public class Main {
 
         private static void frameAdvancement(){
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
             //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
             Runnable snakeMovement = ()->{
                 if(gameStatus){

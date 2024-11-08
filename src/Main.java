@@ -10,6 +10,9 @@ public class Main {
 
     public static JLabel display = new JLabel();
     public static JButton playAgain = new JButton("Play again");
+    public static JLabel lengthLabel = new JLabel("Length: 1");
+    public static JPanel lengthPanel = new JPanel();
+
 
 
     public enum STRING_CONSTANTS {
@@ -46,17 +49,20 @@ public class Main {
             }
         }catch (Exception e){System.out.println("error with look and feel!\n------DETAILS------\n" + e.getMessage());}
 
-        GameManager game = new GameManager(true); //creates new instance of game manager
+        final GameManager game = new GameManager(true); //creates new instance of game manager
 
-        //adds jlabel that does the things EDIT: THIS IS THE WORST COMMENT OF ALL TIME WHAT WAS I THINKING LOL
-        display.setBounds(0, 0, INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
+        //i dont usually like relying on static vars but this is necessary for some reason they will not show up if they're not static wtf lmao
         game.panel.add(display);
+        game.frame.add(lengthPanel);
         game.panel.add(playAgain);
+        lengthLabel.setBounds(0,0,100,100);
+        lengthPanel.add(lengthLabel);
     }
 
     //starts and stops game, initializes variables
     protected static class GameManager {
         JPanel panel = new JPanel();
+
         JFrame frame = new JFrame("text-based snake in java+swing");
         static boolean gameStatus = true; //auto ends the game if false
 
@@ -78,22 +84,37 @@ public class Main {
             frame.setResizable(false);
 
             //panel that all the display elements go on
-            panel.setSize(INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
+            panel.setSize(INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value-INT_CONSTANTS.WINDOW_SIZE.value/6);
             panel.setFocusable(false); //i dont think anyone will ever focus on the panel but this is just in case yk (explanation under the play again button comments)
             frame.add(panel);
 
+            //panel that displays the length and stuff
+            lengthPanel.setSize(INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value/2);
+            lengthPanel.setLayout(null);
+            lengthPanel.setFocusable(false);
+            frame.add(lengthPanel);
+
+            //label to display length
+            lengthLabel.setBounds(0,0,100,100);
+            lengthLabel.setFocusable(false);
+
             //button to play again
-            playAgain.setBounds(INT_CONSTANTS.WINDOW_SIZE.value / 2, INT_CONSTANTS.WINDOW_SIZE.value / 2, 100, 100);
             playAgain.setFocusable(false); //this cannot be focusable: if it is focusable, you can click on it and steal focus from the frame, and the frame needs to be focused all the time because the input listener only works when the component its applied to is focused
             playAgain.setVisible(false);
 
+            //display label that displays all the cubes
             display.setFocusable(false); //this is likely not needed but its worth doing just in case (explanation under the play again button comments)
             display.setSize(INT_CONSTANTS.BOARD_SIZE.value, INT_CONSTANTS.BOARD_SIZE.value);
+
             //if this is the first time the game is initialized, make a new frame (bc u dont want a new window openign every time u play again cause the game's already on the previous window)
             if(init){frame.setVisible(true);}
 
+            //reloads panels
             panel.repaint();
             panel.revalidate();
+
+            lengthPanel.repaint();
+            lengthPanel.revalidate();
         }
 
         //manages game; initializes variables and sets timer
@@ -118,7 +139,7 @@ public class Main {
             gameStatus = false;
             init = false;
 
-            display.setText("GAME OVER!");
+            display.setText("GAME OVER! Length: "+Snake.length);
             playAgain.setVisible(true);
 
             //logic for what happens when u click play again
@@ -147,6 +168,8 @@ public class Main {
             display.setText(String.valueOf(toDisplay)); //sets display text to the drawn board
             panel.repaint();
             panel.revalidate();
+            lengthPanel.repaint();
+            lengthPanel.revalidate();
         }
     }
 }

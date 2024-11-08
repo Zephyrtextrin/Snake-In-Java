@@ -1,12 +1,9 @@
   [[[---KNOWN-ISSUES---]]]
+        im a genius :)
 
-    *PROBLEM: play again button only shows up once and length isnt decreased
-
-THERES MORE FREAKING ISSUES WITH THE BORDERS
   [[[---POSSIBLE-FEATURES---]]]
-    TODO: add a play again button wheb u lose
-    TODO: stats about how long u are
-    TODO: maybe a high score too where it writes to a txt file your high score every time u lose and then it reads it to set the highscore variable but also that feels like someon can just open it and set it to 999999999999999999 so there would need to be an errchk
+    TODO: a high score too where it writes to a txt file your high score every time u lose and then it reads it to set the highscore variable and make a cap of the cellCount cause obv u cant have a score higher than the board size
+    TODO: a button where you can change the speed (fps) and the board size (put this on the side when the game is running and put it on the gameover menu too
 
   [[[---RESOLVED-ISSUES---]]]
     *PROBLEM: you can go insanely fast by going diagonal and/or holding down the arrow keys or pressing keys in the opposite direction
@@ -16,7 +13,7 @@ THERES MORE FREAKING ISSUES WITH THE BORDERS
     *SOLUTION: forgot to update the nextPos var lol so it only updated upon initialization and it would always be 2
 
     *PROBLEM: unable to lose via hitting game edges (you can lose by hitting urself tho)
-    *SOLUTION: all i had to do is calc the row/col vals on the fly by dividing the positional value by the
+    *SOLUTION: all i had to do is calc the row/col vals on the fly by dividing the positional value by the cellCount
 
     *PROBLEM: the method for making the game end rn feels weird coding-wise
     *SOLUTION:  made new gamemanagar class
@@ -25,4 +22,7 @@ THERES MORE FREAKING ISSUES WITH THE BORDERS
     *SOLUTION: IM A GENIUS OMG!! all i had to do is compare the previous position (instead of the next one) to the current one
 
     *PROBLEM: vertical checksum is dysfunctional
-    *NOTES: this is probaly just smth that i need to change the if-statement order for EDIT: yeah kinda
+    *SOLUTION: this is probaly just smth that i need to change the if-statement order for EDIT: yeah kinda
+
+    *PROBLEM: game hangs when hitting top/bottom borders instead of game over
+    *SOLUTION: this is cause of the scheduledexecutorservice u just have to do try/catch in the frameadvancement command isntead of putting the horizontal border logic in the bordercheck

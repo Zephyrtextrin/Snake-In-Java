@@ -79,6 +79,7 @@ public class Snake extends Board{
         if (Objects.equals(targetCell.type, Main.STRING_CONSTANTS.TYPE_FOOD.value)){ //this looks incredibly dumb but you have to have this if statement inside the else
             Snake.length++;
             Board.createFood();
+            Main.lengthLabel.setText("Length: "+length);
         }
 
         targetCell.type = Main.STRING_CONSTANTS.TYPE_SNAKE.value;

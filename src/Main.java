@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -112,7 +111,7 @@ public class Main {
             Snake.length = 1;
             Snake.updateMovement();
 
-            frameAdvancement();
+            if(init){frameAdvancement();}
         }
 
         private void stopGame(){
@@ -137,12 +136,11 @@ public class Main {
                     //you have to try/catch for an exception here because executorservices just hang the program instead of throwing an exception even tho i kinda need it to not do that cause of the gameover logic relying on the snake being out of bounds
                     try {Snake.updateMovement();
                     }catch(Exception e){gameStatus = false;}
-                }else{
-                    scheduler.shutdown();
-                    new GameManager(false);
-                }
+                }else{new GameManager(false);}
             };
-            scheduler.scheduleAtFixedRate(snakeMovement, 0, INT_CONSTANTS.FPS.value, TimeUnit.MILLISECONDS);
+            //scheduler.scheduleAtFixedRate(snakeMovement, 0, INT_CONSTANTS.FPS.value, TimeUnit.MILLISECONDS);
+            scheduler.scheduleAtFixedRate(snakeMovement, 1, INT_CONSTANTS.FPS.value, TimeUnit.MILLISECONDS);
+
         }
 
         public void updateDisplayLabel(StringBuilder toDisplay) {

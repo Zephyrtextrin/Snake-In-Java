@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.Executors;
@@ -16,9 +17,9 @@ public class Main extends JFrame{
     public enum INT_CONSTANTS {
         //INTEGERS: values that make the game work
         BOARD_SIZE(20),
-        WINDOW_SIZE(22 * BOARD_SIZE.value),
+        WINDOW_SIZE(25 * BOARD_SIZE.value),
         CELL_COUNT((int) Math.pow(BOARD_SIZE.value, 2)),
-        FPS(75);
+        FPS(900);
         public final int value;
 
         //constructor for strings (all type vaues)
@@ -40,16 +41,16 @@ public class Main extends JFrame{
         final GameManager game = new GameManager(true); //creates new instance of game manager
 
         //i dont usually like relying on static vars but this is necessary for some reason they will not show up if they're not static wtf lmao
-        game.panel.add(display);
+        //game.panel.add(display);
         game.frame.add(lengthPanel);
-        game.panel.add(playAgain);
+        GameManager.panel.add(playAgain);
         lengthLabel.setBounds(0,0,100,100);
         lengthPanel.add(lengthLabel);
     }
 
     //starts and stops game, initializes variables
     protected static class GameManager {
-        JPanel panel = new JPanel();
+        static JPanel panel = new JPanel();
 
         JFrame frame = new JFrame("text-based snake in java+swing");
         static boolean gameStatus = true; //auto ends the game if false
@@ -74,10 +75,11 @@ public class Main extends JFrame{
             //panel that all the display elements go on
             panel.setSize(INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value-INT_CONSTANTS.WINDOW_SIZE.value/6);
             panel.setFocusable(false); //i dont think anyone will ever focus on the panel but this is just in case yk (explanation under the play again button comments)
+            panel.setLayout(new GridLayout(INT_CONSTANTS.BOARD_SIZE.value, INT_CONSTANTS.BOARD_SIZE.value));
             frame.add(panel);
 
             //panel that displays the length and stuff
-            lengthPanel.setSize(INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value/2);
+            lengthPanel.setBounds(0, INT_CONSTANTS.WINDOW_SIZE.value-INT_CONSTANTS.WINDOW_SIZE.value/6, INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value/6);
             lengthPanel.setLayout(null);
             lengthPanel.setFocusable(false);
             frame.add(lengthPanel);
@@ -108,7 +110,7 @@ public class Main extends JFrame{
         //manages game; initializes variables and sets timer
         private void runGame(){
             gameStatus = true;
-            new Board(false); //inits board of all cells
+            new Board(true); //inits board of all cells
             Board.createFood(); //initializes food item
 
             //key listener to obtain player input
@@ -152,12 +154,13 @@ public class Main extends JFrame{
 
         }
 
-        public void updateDisplayLabel(StringBuilder toDisplay) {
-            display.setText(String.valueOf(toDisplay)); //sets display text to the drawn board
+        public void repaintPanels(){
             panel.repaint();
             panel.revalidate();
             lengthPanel.repaint();
             lengthPanel.revalidate();
         }
+
+        public static void setCell(JTextField cell){panel.add(cell);}
     }
 }

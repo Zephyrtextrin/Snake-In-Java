@@ -7,9 +7,6 @@ public class Snake extends Board{
     static int length = 1;
     static Direction direction = Direction.RIGHT;
     static int position = 1; //thithe position of the cell the snake's head is in
-    //static int modifier = direction.value; //how mmany cells the snake will move by (aka: the direction)
-
-    private Snake(boolean init){super(init);} //bc there is no parameterless constructor in board u must use super
 
     enum Direction{
         //init var
@@ -26,7 +23,8 @@ public class Snake extends Board{
         gameStatus = checkBorders();
         Cell targetCell = cellList[position];
         snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
-        new Board(true);
+        new Board(false);
+        System.out.println("movement");
     }
 
     //checks to see if player ran into a wall
@@ -59,7 +57,6 @@ public class Snake extends Board{
     //contains the opposite direction for each key input (so u dont hit left key while going right and u move inside of yourself and instalose)
     private static final Map<Integer, Direction> directionMap = Map.of(KeyEvent.VK_RIGHT, Direction.RIGHT, KeyEvent.VK_LEFT, Direction.LEFT, KeyEvent.VK_UP, Direction.UP, KeyEvent.VK_DOWN, Direction.DOWN);
 
-    //TODO: oppositedirection is kinda fucky wucky
     static void changeDirection(int key){
         Direction newDirection = directionMap.get(key);
         if (newDirection != null&&!newDirection.equals(oppositeDirection(direction))){direction = newDirection;}

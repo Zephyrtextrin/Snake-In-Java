@@ -6,6 +6,13 @@ public class Board extends Main.GameManager{
     protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
     public static Cell[] cellList = new Cell[Main.INT_CONSTANTS.CELL_COUNT.value+1]; //adds +1 because positions start at 1
 
+    public enum STRING_CONSTANTS {
+        //TYPE VALUES: allows you to set celltypes without using direct strings and ensures no compatibility issues
+        TYPE_FIELD,
+        TYPE_SNAKE,
+        TYPE_FOOD
+    }
+
     //inits values or updates snake depending on bool
     Board(boolean init){
         if(init){ //frame-by-frame snake management and redraws
@@ -44,7 +51,7 @@ public class Board extends Main.GameManager{
 
             //if 0, turn back into a regular board cell
             if (currentCell.age <= 0) {
-                currentCell.type = Main.STRING_CONSTANTS.TYPE_FIELD.value;
+                currentCell.type = STRING_CONSTANTS.TYPE_FIELD;
                 currentCell.changeAppearance(false); //sets appearance to regular ass cell LOL
                 cellsToRemove.add(currentCell);
             }
@@ -63,7 +70,7 @@ public class Board extends Main.GameManager{
         }
 
         //changes type to food and changes appearance to activated char
-        targetCell.type = Main.STRING_CONSTANTS.TYPE_FOOD.value;
+        targetCell.type = STRING_CONSTANTS.TYPE_FOOD;
         targetCell.changeAppearance(true);
     }
 
@@ -73,13 +80,13 @@ public class Board extends Main.GameManager{
         char appearance; //actual display of the cell
         int POSITION; //this is the location data and is effectively rows+col. this is used because you have to run the values through a map to sort by an element and running 2 maps for rows and cols is lag-inducing
         int age; //used to determine which cell is cleared when the snake moves
-        String type; //accepted params: TILE [regular floor tiles] | SNAKE [snake's body] | FOOD [grow the snake]
+        STRING_CONSTANTS type; //accepted params are in the enum
 
         //constructor method used for initialization: sets X/Y position
         private Cell(int position){
             POSITION = position;
             this.appearance = changeAppearance(false);
-            this.type = Main.STRING_CONSTANTS.TYPE_FIELD.value;
+            this.type = STRING_CONSTANTS.TYPE_FIELD;
             this.age = 0;
 
             //allCells.add(this);

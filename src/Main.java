@@ -5,25 +5,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class Main {
+public class Main extends JFrame{
     static boolean init = true;
 
     public static JLabel display = new JLabel();
     public static JButton playAgain = new JButton("Play again");
     public static JLabel lengthLabel = new JLabel("Length: 1");
     public static JPanel lengthPanel = new JPanel();
-
-
-
-    public enum STRING_CONSTANTS {
-        //TYPE VALUES: allows you to set celltypes without using direct strings and ensures no compatibility issues
-        TYPE_FIELD("tile"),
-        TYPE_SNAKE("snake"),
-        TYPE_FOOD("food");
-        public final String value;
-
-        STRING_CONSTANTS(String type) {this.value = type;}
-    }
 
     public enum INT_CONSTANTS {
         //INTEGERS: values that make the game work

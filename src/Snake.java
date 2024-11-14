@@ -33,7 +33,7 @@ public class Snake extends Board{
     private static boolean checkBorders(){
         Cell targetCell = cellList[position];
         final boolean check = isCheck();
-        final boolean ego = Objects.equals(targetCell.type, Main.STRING_CONSTANTS.TYPE_SNAKE.value); //is snake eating itself
+        final boolean ego = Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_SNAKE); //is snake eating itself
         if (check||ego){
             new Main.GameManager(false);
             return false;
@@ -76,13 +76,13 @@ public class Snake extends Board{
     //adds cells to snakeCell list
     private static void snakeCellsManagement(Cell targetCell){
         targetCell.changeAppearance(true); //changes target cell into its activated appearance (since snake cells are the activated appearance of a shaded-in block
-        if (Objects.equals(targetCell.type, Main.STRING_CONSTANTS.TYPE_FOOD.value)){ //this looks incredibly dumb but you have to have this if statement inside the else
+        if (Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_FOOD)){ //this looks incredibly dumb but you have to have this if statement inside the else
             Snake.length++;
             Board.createFood();
             Main.lengthLabel.setText("Length: "+length);
         }
 
-        targetCell.type = Main.STRING_CONSTANTS.TYPE_SNAKE.value;
+        targetCell.type = STRING_CONSTANTS.TYPE_SNAKE;
         targetCell.age = Snake.length + 1; //add one because the cells would immediately get depreciated to (length-1)
         snakeCells.add(targetCell);
     }

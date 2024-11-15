@@ -1,4 +1,5 @@
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -18,17 +19,16 @@ public class Snake extends Board{
         Direction(int value){this.value=value;}
     }
 
-    public static void updateMovement(){
+    public static void updateMovement() throws IOException {
         position+=direction.value;
         gameStatus = checkBorders();
         Cell targetCell = cellList[position];
         snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
         new Board(false);
-        System.out.println("movement");
     }
 
     //checks to see if player ran into a wall
-    private static boolean checkBorders(){
+    private static boolean checkBorders() throws IOException {
         Cell targetCell = cellList[position];
         final boolean check = isCheck();
         final boolean ego = Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_SNAKE); //is snake eating itself
@@ -71,12 +71,12 @@ public class Snake extends Board{
     };}
 
     //adds cells to snakeCell list
-    private static void snakeCellsManagement(Cell targetCell){
+    private static void snakeCellsManagement(Cell targetCell) throws IOException {
         targetCell.changeAppearance(true); //changes target cell into its activated appearance (since snake cells are the activated appearance of a shaded-in block
         if (Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_FOOD)){ //this looks incredibly dumb but you have to have this if statement inside the else
             Snake.length++;
             Board.createFood();
-            Main.lengthLabel.setText("Length: "+length);
+            Main.GameManager.highScoreUpdater(Main.lengthLabel);
         }
 
         targetCell.type = STRING_CONSTANTS.TYPE_SNAKE;

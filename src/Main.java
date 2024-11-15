@@ -7,7 +7,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Main extends JFrame{
-    static boolean init = true;
+    public static boolean init = true;
 
     public static JLabel display = new JLabel();
     public static JButton playAgain = new JButton("Play again");
@@ -17,9 +17,9 @@ public class Main extends JFrame{
     public enum INT_CONSTANTS {
         //INTEGERS: values that make the game work
         BOARD_SIZE(20),
-        WINDOW_SIZE(25 * BOARD_SIZE.value),
+        WINDOW_SIZE(35 * BOARD_SIZE.value),
         CELL_COUNT((int) Math.pow(BOARD_SIZE.value, 2)),
-        FPS(900);
+        FPS(75);
         public final int value;
 
         //constructor for strings (all type vaues)
@@ -45,7 +45,6 @@ public class Main extends JFrame{
         game.frame.add(lengthPanel);
         GameManager.panel.add(playAgain);
         lengthLabel.setBounds(0,0,100,100);
-        lengthPanel.add(lengthLabel);
     }
 
     //starts and stops game, initializes variables
@@ -73,13 +72,13 @@ public class Main extends JFrame{
             frame.setResizable(false);
 
             //panel that all the display elements go on
-            panel.setSize(INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value-INT_CONSTANTS.WINDOW_SIZE.value/6);
+            panel.setBounds(30, 0,INT_CONSTANTS.WINDOW_SIZE.value-60, INT_CONSTANTS.WINDOW_SIZE.value-INT_CONSTANTS.WINDOW_SIZE.value/6);
             panel.setFocusable(false); //i dont think anyone will ever focus on the panel but this is just in case yk (explanation under the play again button comments)
             panel.setLayout(new GridLayout(INT_CONSTANTS.BOARD_SIZE.value, INT_CONSTANTS.BOARD_SIZE.value));
             frame.add(panel);
 
             //panel that displays the length and stuff
-            lengthPanel.setBounds(0, INT_CONSTANTS.WINDOW_SIZE.value-INT_CONSTANTS.WINDOW_SIZE.value/6, INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value/6);
+            lengthPanel.setBounds(0, frame.getHeight()-INT_CONSTANTS.WINDOW_SIZE.value/6, frame.getWidth(), frame.getHeight()/6);
             lengthPanel.setLayout(null);
             lengthPanel.setFocusable(false);
             frame.add(lengthPanel);
@@ -87,6 +86,8 @@ public class Main extends JFrame{
             //label to display length
             lengthLabel.setBounds(0,0,100,100);
             lengthLabel.setFocusable(false);
+            lengthPanel.add(lengthLabel);
+
 
             //button to play again
             playAgain.setFocusable(false); //this cannot be focusable: if it is focusable, you can click on it and steal focus from the frame, and the frame needs to be focused all the time because the input listener only works when the component its applied to is focused
@@ -97,20 +98,17 @@ public class Main extends JFrame{
             display.setSize(INT_CONSTANTS.BOARD_SIZE.value, INT_CONSTANTS.BOARD_SIZE.value);
 
             //if this is the first time the game is initialized, make a new frame (bc u dont want a new window openign every time u play again cause the game's already on the previous window)
-            if(init){frame.setVisible(true);}
+            if(init){
+                frame.setVisible(true);
+                new Board(true); //inits board of all cells
+            }
 
-            //reloads panels
-            panel.repaint();
-            panel.revalidate();
-
-            lengthPanel.repaint();
-            lengthPanel.revalidate();
+            repaintPanels();
         }
 
         //manages game; initializes variables and sets timer
         private void runGame(){
             gameStatus = true;
-            new Board(true); //inits board of all cells
             Board.createFood(); //initializes food item
 
             //key listener to obtain player input
@@ -128,6 +126,8 @@ public class Main extends JFrame{
         private void stopGame(){
             gameStatus = false;
             init = false;
+            panel.setEnabled(false);
+            panel.setVisible(false);
 
             display.setText("GAME OVER! Length: "+Snake.length);
             playAgain.setVisible(true);
@@ -137,6 +137,9 @@ public class Main extends JFrame{
                 runGame();
                 playAgain.setVisible(false);
             });
+
+            repaintPanels();
+
         }
 
         private static void frameAdvancement(){
@@ -151,7 +154,7 @@ public class Main extends JFrame{
             };
             //scheduler.scheduleAtFixedRate(snakeMovement, 0, INT_CONSTANTS.FPS.value, TimeUnit.MILLISECONDS);
             scheduler.scheduleAtFixedRate(snakeMovement, 1, INT_CONSTANTS.FPS.value, TimeUnit.MILLISECONDS);
-
+            init = false;
         }
 
         public void repaintPanels(){

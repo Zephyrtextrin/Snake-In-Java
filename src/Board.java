@@ -6,7 +6,7 @@ import java.util.Random;
 public class Board extends Main.GameManager{
     //init var
     protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
-    public static Cell[] cellList = new Cell[Main.INT_CONSTANTS.CELL_COUNT.value+1]; //adds +1 because positions start at 1
+    public static Cell[] cellList = new Cell[Main.INT_CONSTANTS.CELL_COUNT.value]; //adds +1 because positions start at 1
 
     public enum STRING_CONSTANTS {
         //TYPE VALUES: allows you to set celltypes without using direct strings and ensures no compatibility issues
@@ -19,8 +19,7 @@ public class Board extends Main.GameManager{
     Board(boolean init){
         if(!init){cellAgeDeprecation();
         }else{ //inits all cells into board
-            for(int position = 1; position <= Main.INT_CONSTANTS.CELL_COUNT.value; position++){new Cell(position);
-                System.out.println("all cells added");}
+            for(int position = 1; position < Main.INT_CONSTANTS.CELL_COUNT.value; position++){new Cell(position);}
             repaintPanels();
         }  //creates a cell object for each position and age of 0
     }
@@ -68,15 +67,17 @@ public class Board extends Main.GameManager{
         JTextField cellField = new JTextField();
 
         //constructor method used for initialization: sets X/Y position
-        private Cell(int position){
-            POSITION = position;
-            this.type = STRING_CONSTANTS.TYPE_FIELD;
-            this.age = 0;
-            this.changeAppearance(false);
-            cellField.setEditable(false);
+        private Cell(int position) {
+            if (Main.init){
+                POSITION = position;
+                this.type = STRING_CONSTANTS.TYPE_FIELD;
+                this.age = 0;
+                this.changeAppearance(false);
+                cellField.setEditable(false);
 
-            cellList[position] = this;
-            setCell(cellField);
+                cellList[position] = this;
+                setCell(cellField);
+            }
         }
 
         protected void changeAppearance(boolean status){

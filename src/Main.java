@@ -74,6 +74,7 @@ public class Main extends JFrame{
             //window
             frame.setSize(INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value);
             frame.setResizable(false);
+            frame.setFocusable(true);
 
             //cellPanel that all the display elements go on
             cellPanel.setBounds(30, 0,INT_CONSTANTS.WINDOW_SIZE.value-60, INT_CONSTANTS.WINDOW_SIZE.value-INT_CONSTANTS.WINDOW_SIZE.value/6);
@@ -89,7 +90,7 @@ public class Main extends JFrame{
             //button to play again
             playAgain.setFocusable(false); //this cannot be focusable: if it is focusable, you can click on it and steal focus from the frame, and the frame needs to be focused all the time because the input listener only works when the component its applied to is focused
             playAgain.setVisible(false);
-            cellPanel.add(playAgain);
+            lengthPanel.add(playAgain);
 
             //display label that displays all the cubes
             //display.setFocusable(false); //this is likely not needed but its worth doing just in case (explanation under the play again button comments)
@@ -116,7 +117,8 @@ public class Main extends JFrame{
 
             //inits snake to default positions
             Snake.direction = Snake.Direction.RIGHT;
-            Snake.position = 1;
+            Snake.row = 1;
+            Snake.column = 1;
             Snake.length = 1;
             Snake.updateMovement();
 
@@ -175,8 +177,8 @@ public class Main extends JFrame{
             if(Snake.length>highScore){
                 highScore = Snake.length;
                 DataReadingInterface.writeFile(String.valueOf(highScore));
-                lengthLabel.setText(lengthTextTemplate());
             }
+            lengthLabel.setText(lengthTextTemplate());
         }
 
         private static String lengthTextTemplate(){return "Length: "+Snake.length+" || High Score: "+highScore;}

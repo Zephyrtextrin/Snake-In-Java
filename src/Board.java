@@ -46,11 +46,11 @@ public class Board extends Main.GameManager{
 
     protected static void createFood(){
         Random rand = new Random(); //gets random class to call random cell pos
-        Cell targetCell = cellList[rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value) + 1][rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value) + 1]; //inits to placeholder cell
+        Cell targetCell = cellList[rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value)][rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value)]; //inits to placeholder cell
 
-        while (snakeCells.contains(targetCell)) { //if selected cell is snake
-            int posRow = rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value) + 1; //must be ++ because rolls start at 0
-            int posCol = rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value) + 1;
+        while (snakeCells.contains(targetCell)||targetCell.ROW==0||targetCell.COLUMN==0) { //if selected cell is snake
+            int posRow = rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value);
+            int posCol = rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value);
             targetCell = cellList[posRow][posCol]; //gets atts of cell currently selected
         }
 

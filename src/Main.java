@@ -48,7 +48,8 @@ public class Main extends JFrame{
         System.out.println(game.lengthPanel.isShowing());
         //i dont usually like relying on static vars but this is necessary for some reason they will not show up if they're not static wtf lmao
 
-
+        //key listener to obtain player input
+        game.frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e){Snake.changeDirection(e.getKeyCode());}});
     }
 
     //starts and stops game, initializes variables
@@ -111,9 +112,9 @@ public class Main extends JFrame{
         private void runGame() throws IOException {
             gameStatus = true;
             Board.createFood(); //initializes food item
+            cellPanel.setEnabled(true);
+            cellPanel.setVisible(true);
 
-            //key listener to obtain player input
-            frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e){Snake.changeDirection(e.getKeyCode());}});
 
             //inits snake to default positions
             Snake.direction = Snake.Direction.RIGHT;
@@ -155,6 +156,7 @@ public class Main extends JFrame{
                     }catch(Exception e){gameStatus = false;}
                 }else{
                     try{new GameManager(false);
+                        System.out.println("MAIN LINE 158");
                     }catch(IOException e) {throw new RuntimeException(e);
                     }
                 }

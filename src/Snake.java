@@ -40,10 +40,11 @@ public class Snake extends Board{
         final boolean ego = Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_SNAKE);//is snake eating itself
 
         //VERY LONG DEBUG ]]]STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
-        //System.out.println("----------------------------\nCURRENT ROW: "+row+" PAST ROW: "+ lastRow +"\nCURRENT POS: "+posLocal+" PAST POS:  "+pastPos+"\nDIRECTION: "+direction+" horizontal: "+ horizontal +"\nMODIFIER: "+direction.value+"\n----------------------------");
-
+        System.out.println("----------------------------\nCURRENT ROW: "+row+" PAST ROW: "+ pastRow+"\nDIRECTION: "+direction+" horizontal: "+ horizontal +"\nMODIFIER: "+direction.value+"\nEGO: "+ego+"CHECK: "+check+"\n----------------------------");
+        System.out.println(targetCell.type);
         if (check||ego){
             new Main.GameManager(false);
+            System.out.println("SNAKE LINE 46");
             return false;
         }
         return true;

@@ -55,9 +55,6 @@ public class Main{
         new ErrorPrinter();
     }
 
-    private static void initErrors(){
-    }
-
     //starts and stops game, initializes variables
     protected static class GameManager {
         static JPanel cellPanel = new JPanel();
@@ -98,10 +95,6 @@ public class Main{
             playAgain.setFocusable(false); //this cannot be focusable: if it is focusable, you can click on it and steal focus from the frame, and the frame needs to be focused all the time because the input listener only works when the component its applied to is focused
             playAgain.setVisible(false);
             lengthPanel.add(playAgain);
-
-            //display label that displays all the cubes
-            //display.setFocusable(false); //this is likely not needed but its worth doing just in case (explanation under the play again button comments)
-            //display.setSize(INT_CONSTANTS.BOARD_SIZE.value, INT_CONSTANTS.BOARD_SIZE.value);
 
             //if this is the first time the game is initialized, make a new frame (bc u dont want a new window openign every time u play again cause the game's already on the previous window)
             if(init){
@@ -147,6 +140,7 @@ public class Main{
                 }catch(IOException e){throw new RuntimeException(e);}
                 playAgain.setVisible(false);
             });
+            System.out.println(gameStatus);
 
             if(!BROWHAT){
                 ErrorPrinter.errorHandler("XX_AUTOMATIC_DESTRUCTION"); //for when the game fucking shits itself
@@ -163,13 +157,14 @@ public class Main{
             //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
             Runnable snakeMovement = ()->{
                 if(gameStatus){
-                    //you have to try/catch for an exception here because executorservices just hang the program instead of throwing an exception even tho i kinda need it to not do that cause of the gameover logic relying on the snake being out of bounds
+                    //you have to try/catch for an exception here because going to an invalid block will throw an exception and executorservices just hangs the program instead of throwing an exception even tho i kinda need it to not do that cause of the gameover logic relying on the snake being out of bounds
                     try {Snake.updateMovement();
-                    }catch(Exception e){gameStatus = false;}
+                    }catch(Exception e){
+                        gameStatus = false;}
+
                 }else{
-                    try{new GameManager(false);
-                    }catch(IOException e) {throw new RuntimeException(e);
-                    }
+                    try {new GameManager(false);
+                    }catch (Exception e){throw new RuntimeException(e);}
                 }
             };
             //scheduler.scheduleAtFixedRate(snakeMovement, 0, INT_CONSTANTS.FPS.value, TimeUnit.MILLISECONDS);

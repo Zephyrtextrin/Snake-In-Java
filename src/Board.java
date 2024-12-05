@@ -46,17 +46,21 @@ public class Board extends Main.GameManager{
 
     protected static void createFood(){
         Random rand = new Random(); //gets random class to call random cell pos
-        Cell targetCell = cellList[rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value)][rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value)]; //inits to placeholder cell
+        int posRow = rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value);
+        int posCol = rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value);
 
-        while (snakeCells.contains(targetCell)||targetCell.ROW==0||targetCell.COLUMN==0) { //if selected cell is snake
-            int posRow = rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value);
-            int posCol = rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value);
-            targetCell = cellList[posRow][posCol]; //gets atts of cell currently selected
-        }
+        Cell cell = cellList[posRow][posCol]; //inits cell
+
+            while (snakeCells.contains(cell) || posRow ==0 || posCol == 0) { //if selected cell is snake
+                posRow = rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value);
+                posCol = rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value);
+            }
+
+        cell = cellList[posRow][posCol]; //gets atts of cell currently selected
 
         //changes type to food and changes appearance to activated char
-        targetCell.type = STRING_CONSTANTS.TYPE_FOOD;
-        targetCell.changeAppearance(true);
+        cell.type = STRING_CONSTANTS.TYPE_FOOD;
+        cell.changeAppearance(true);
     }
 
     //class manages attributes for individual cells

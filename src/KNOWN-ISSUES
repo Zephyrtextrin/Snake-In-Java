@@ -1,8 +1,6 @@
   [[[---KNOWN-ISSUES---]]]
-    TODO: WHY DOES IT LOSE WHEN YOU HIT A FOOD CELL WHEN THERE IS NO FUCKING LOSS CONDITONS CALLED EVER
 
   [[[---POSSIBLE-FEATURES---]]]
-    TODO: optimzie the error printer to make it so it autocorrects the amount of dashes and brackets depending on the err type
     TODO: a button where you can change the speed and the board size (put this on the side when the game is running and put it on the gameover menu too
 
 

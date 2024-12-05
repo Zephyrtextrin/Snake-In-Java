@@ -28,31 +28,22 @@ public class Snake extends Board{
         pastCol = column;
         if(direction.equals(Direction.LEFT)||direction.equals(Direction.RIGHT)) {column += modifier;
         }else{row+=modifier;}
-        //gameStatus = checkBorders();
         Cell targetCell = cellList[row][column];
         snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
         new Board(false);
     }
 
-    //checks to see if player ran into a wall
-    /*private static boolean checkBorders() throws IOException{
-        final boolean horizontal = direction.equals(Direction.LEFT)||direction.equals(Direction.RIGHT);
-        Cell targetCell = cellList[row][column];
-        final boolean check = horizontal&&pastRow!=row;
-        final boolean ego = Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_SNAKE);//is snake eating itself
+    //checks to see if player ran into themsleves
+    private static boolean checkSelf() throws IOException{
+        final boolean ego = Objects.equals(cellList[row][column].type, STRING_CONSTANTS.TYPE_SNAKE);//is snake eating itself
 
-        //VERY LONG DEBUG ]]]STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
-        System.out.println("----------------------------\nCURRENT COL: "+column+" PAST COL: "+ pastCol+"\nCURRENT ROW: "+row+" PAST ROW: "+ pastRow+"\nDIRECTION: "+direction+" horizontal: "+ horizontal +"\nMODIFIER: "+direction.value+"\nEGO: "+ego+"CHECK: "+check+"[TYPE]: "+targetCell.type+"\n----------------------------");
-        if(pastRow!=row&&pastCol!=column){ErrorPrinter.errorHandler("SK_IRREGULAR_MOVEMENT");} //for abnormal or diagonal movement
 
-        if (check||ego){
+        if (ego){
             System.out.println("[TEMP DEBUG ONLY] SNAKE LINE 46");
-            Main.BROWHAT = false;
-            return false;
+            gameStatus = false;
         }
-        Main.BROWHAT = true;
         return true;
-    }*/
+    }
 
 
     //contains the opposite direction for each key input (so u dont hit left key while going right and u move inside of yourself and instalose)
@@ -85,6 +76,8 @@ public class Snake extends Board{
 
         targetCell.type = STRING_CONSTANTS.TYPE_SNAKE;
         targetCell.age = Snake.length + 1; //add one because the cells would immediately get depreciated to (length-1)
+        targetCell.ROW = Snake.row;
+        targetCell.COLUMN = Snake.column;
         snakeCells.add(targetCell);
     }
 }

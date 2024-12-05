@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
@@ -6,7 +7,7 @@ import java.util.Scanner;
 public class DataReadingInterface{
 
     private static final String dataPath = "./LENGTHDATA.txt";
-    private static final File DATA_FILE = new File(dataPath); //path to the txt with all the shit that matters in it
+    public static final File DATA_FILE = new File(dataPath); //path to the txt with all the shit that matters in it
 
     public DataReadingInterface() throws IOException {readFile();}
 
@@ -36,5 +37,13 @@ public class DataReadingInterface{
         FileWriter myWriter = new FileWriter(dataPath);
         myWriter.write(output);
         myWriter.close();
+    }
+
+    //used exclusively for error output
+    public static String isReadable() throws FileNotFoundException {
+        final Scanner scan = new Scanner(DATA_FILE);
+        String abnormalValue = "(does not exist)";
+        if(scan.hasNextLine()){return scan.nextLine();}
+        return "(does not exist)";
     }
 }

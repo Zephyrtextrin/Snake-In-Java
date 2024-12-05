@@ -1,4 +1,5 @@
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -6,63 +7,59 @@ import java.util.Objects;
 public class Snake extends Board{
     static int length = 1;
     static Direction direction = Direction.RIGHT;
-    static int position = 1; //thithe position of the cell the snake's head is in
-    //static int modifier = direction.value; //how mmany cells the snake will move by (aka: the direction)
-
-    private Snake(boolean init){super(init);} //bc there is no parameterless constructor in board u must use super
+    static int row = 1; //thithe position of the cell the snake's head is in
+    static int column = 1;
+    static int modifier = direction.value;
+    static int pastRow;
 
     enum Direction{
         //init var
         //sets values for each direction
-        UP(-Main.INT_CONSTANTS.BOARD_SIZE.value), DOWN(Main.INT_CONSTANTS.BOARD_SIZE.value), LEFT(-1), RIGHT(1);
+        UP(-1), DOWN(1), LEFT(-1), RIGHT(1);
         private final int value;
 
         //sets value according to input
         Direction(int value){this.value=value;}
     }
 
-    public static void updateMovement(){
-        position+=direction.value;
+    public static void updateMovement() throws IOException{
+        pastRow = row;
+        if(direction.equals(Direction.LEFT)||direction.equals(Direction.RIGHT)) {column += modifier;
+        }else{row+=modifier;}
         gameStatus = checkBorders();
-        Cell targetCell = cellList[position];
+        Cell targetCell = cellList[row][column];
         snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
-        new Board(true);
+        new Board(false);
     }
 
     //checks to see if player ran into a wall
-    private static boolean checkBorders(){
-        Cell targetCell = cellList[position];
-        final boolean check = isCheck();
-        final boolean ego = Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_SNAKE); //is snake eating itself
+    private static boolean checkBorders() throws IOException{
+        final boolean horizontal = direction.equals(Direction.LEFT)||direction.equals(Direction.RIGHT);
+        Cell targetCell = cellList[row][column];
+        final boolean check = horizontal&&pastRow!=row;
+        final boolean ego = Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_SNAKE);//is snake eating itself
+
+        //VERY LONG DEBUG ]]]STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
+        System.out.println("----------------------------\nCURRENT ROW: "+row+" PAST ROW: "+ pastRow+"\nDIRECTION: "+direction+" horizontal: "+ horizontal +"\nMODIFIER: "+direction.value+"\nEGO: "+ego+"CHECK: "+check+"\n----------------------------");
+        System.out.println(targetCell.type);
         if (check||ego){
             new Main.GameManager(false);
+            System.out.println("SNAKE LINE 46");
             return false;
         }
         return true;
-    }
-
-    //this is horizontal border check only. vertical check must be performed prior because it causes exception errors due to invalid cell #s
-    private static boolean isCheck(){
-        int posLocal = position-1;
-        int pastPos = posLocal-direction.value;
-        final boolean horizontal = direction.equals(Direction.LEFT)||direction.equals(Direction.RIGHT);
-        final int row = posLocal/Main.INT_CONSTANTS.BOARD_SIZE.value; //gets the current row of the snake by dividing the position of the board size and truncating any decimal slots
-        final int lastRow = pastPos/Main.INT_CONSTANTS.BOARD_SIZE.value; //these lastRow/Col vars are not neccessary you can just use an entire statement for the if-statements but this is more readable
-
-        //VERY LONG DEBUG ]]]STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
-        //System.out.println("----------------------------\nCURRENT ROW: "+row+" PAST ROW: "+ lastRow +"\nCURRENT POS: "+posLocal+" PAST POS:  "+pastPos+"\nDIRECTION: "+direction+" horizontal: "+ horizontal +"\nMODIFIER: "+direction.value+"\n----------------------------");
-
-        return horizontal&&lastRow!=row;
     }
 
 
     //contains the opposite direction for each key input (so u dont hit left key while going right and u move inside of yourself and instalose)
     private static final Map<Integer, Direction> directionMap = Map.of(KeyEvent.VK_RIGHT, Direction.RIGHT, KeyEvent.VK_LEFT, Direction.LEFT, KeyEvent.VK_UP, Direction.UP, KeyEvent.VK_DOWN, Direction.DOWN);
 
-    //TODO: oppositedirection is kinda fucky wucky
     static void changeDirection(int key){
         Direction newDirection = directionMap.get(key);
-        if (newDirection != null&&!newDirection.equals(oppositeDirection(direction))){direction = newDirection;}
+        if (newDirection != null&&!newDirection.equals(oppositeDirection(direction))){
+            direction = newDirection;
+            modifier = direction.value;
+        }
     }
 
     //CHAT... IM A GENIUS!!
@@ -74,12 +71,12 @@ public class Snake extends Board{
     };}
 
     //adds cells to snakeCell list
-    private static void snakeCellsManagement(Cell targetCell){
+    private static void snakeCellsManagement(Cell targetCell) throws IOException {
         targetCell.changeAppearance(true); //changes target cell into its activated appearance (since snake cells are the activated appearance of a shaded-in block
         if (Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_FOOD)){ //this looks incredibly dumb but you have to have this if statement inside the else
             Snake.length++;
             Board.createFood();
-            Main.lengthLabel.setText("Length: "+length);
+            Main.GameManager.highScoreUpdater(Main.lengthLabel);
         }
 
         targetCell.type = STRING_CONSTANTS.TYPE_SNAKE;

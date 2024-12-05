@@ -1,10 +1,12 @@
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Board extends Main.GameManager{
     //init var
     protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
-    public static Cell[] cellList = new Cell[Main.INT_CONSTANTS.CELL_COUNT.value+1]; //adds +1 because positions start at 1
+    public static Cell[][] cellList = new Cell[Main.INT_CONSTANTS.BOARD_SIZE.value][Main.INT_CONSTANTS.BOARD_SIZE.value]; //adds +1 because positions start at 1
 
     public enum STRING_CONSTANTS {
         //TYPE VALUES: allows you to set celltypes without using direct strings and ensures no compatibility issues
@@ -15,32 +17,14 @@ public class Board extends Main.GameManager{
 
     //inits values or updates snake depending on bool
     Board(boolean init){
-        if(init){ //frame-by-frame snake management and redraws
-            cellAgeDeprecation();
-            updateDisplayLabel(drawBoard());
+        if(!init){cellAgeDeprecation();
         }else{ //inits all cells into board
-            for(int position = 1; position <= Main.INT_CONSTANTS.CELL_COUNT.value; position++){new Cell(position);} //creates a cell object for each position and age of 0
-            updateDisplayLabel(drawBoard());
-        }
+            for(int row = 1; row < Main.INT_CONSTANTS.BOARD_SIZE.value; row++){for(int col = 1; col < Main.INT_CONSTANTS.BOARD_SIZE.value; col++){new Cell(row, col);}}
+            repaintPanels();
+        }  //creates a cell object for each row and age of 0
     }
 
-    //redraws the board tbh //EDIT: bro what was i thinking this is the worst comment of all time
-    public StringBuilder drawBoard(){
-
-        StringBuilder toDisplay = new StringBuilder();
-
-        toDisplay.append("<html>"); //NGL I HAF NP IDEA HTML WAS POSSIBLE IN SWING AND I ONLY KNOW IT BECAUSE I HAD TO ADD LINEBREAKS TO THIS JLABEL
-        for(int position = 1; position <= Main.INT_CONSTANTS.CELL_COUNT.value; position++) {
-            Cell targetCell = cellList[position];
-            String input = " " + targetCell.appearance + " ";
-
-            toDisplay.append(input);
-            if(position%Main.INT_CONSTANTS.BOARD_SIZE.value == 0){toDisplay.append("<br>");} //adds new row
-        }
-        toDisplay.append("</html>");
-
-        return toDisplay;
-    }
+    Board(){} //this looks dumb but its required bc snake inherits board and it needs to have a parameterless constructor
 
     //decreases age of all cells by 1 and removes any cells with an age of zero
     protected static void cellAgeDeprecation(){
@@ -62,11 +46,12 @@ public class Board extends Main.GameManager{
 
     protected static void createFood(){
         Random rand = new Random(); //gets random class to call random cell pos
-        Cell targetCell = cellList[rand.nextInt(Main.INT_CONSTANTS.CELL_COUNT.value) + 1]; //inits to placeholder cell
+        Cell targetCell = cellList[rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value)][rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value)]; //inits to placeholder cell
 
-        while (snakeCells.contains(targetCell)) { //if selected cell is snake
-            int position = rand.nextInt(Main.INT_CONSTANTS.CELL_COUNT.value) + 1; //must be ++ because rolls start at 0
-            targetCell = cellList[position]; //gets atts of cell currently selected
+        while (snakeCells.contains(targetCell)||targetCell.ROW==0||targetCell.COLUMN==0) { //if selected cell is snake
+            int posRow = rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value);
+            int posCol = rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value);
+            targetCell = cellList[posRow][posCol]; //gets atts of cell currently selected
         }
 
         //changes type to food and changes appearance to activated char
@@ -75,36 +60,43 @@ public class Board extends Main.GameManager{
     }
 
     //class manages attributes for individual cells
-    protected static class Cell{
+    static class Cell{
         boolean status = false; //if FALSE: cell is represented by an O | if TRUE: cell is an X
-        char appearance; //actual display of the cell
-        int POSITION; //this is the location data and is effectively rows+col. this is used because you have to run the values through a map to sort by an element and running 2 maps for rows and cols is lag-inducing
+        int ROW; //this is the location data and is effectively rows+col. this is used because you have to run the values through a map to sort by an element and running 2 maps for rows and cols is lag-inducing
+        int COLUMN;
         int age; //used to determine which cell is cleared when the snake moves
         STRING_CONSTANTS type; //accepted params are in the enum
+        JTextField cellField = new JTextField();
 
         //constructor method used for initialization: sets X/Y position
-        private Cell(int position){
-            POSITION = position;
-            this.appearance = changeAppearance(false);
-            this.type = STRING_CONSTANTS.TYPE_FIELD;
-            this.age = 0;
+        private Cell(int row, int col) {
+            if (Main.init){
+                ROW = row;
+                COLUMN = col;
+                this.type = STRING_CONSTANTS.TYPE_FIELD;
+                this.age = 0;
+                this.changeAppearance(false);
+                cellField.setEditable(false);
 
-            //allCells.add(this);
-            cellList[position] = this;
+                cellList[row][col] = this;
+                setCell(cellField);
+            }
         }
 
-        //method used to change appearance of cell based on status
-        char changeAppearance(boolean status) { //true if snake false if no\t
-            //active/inactive vars may not be necessary but it's nice to have them easily configurable
-            final char ACTIVE = '■'; //active/inactive appearances for each cell (active is if there's a snake/food on that tile)
-            final char INACTIVE = '☐';
+        protected void changeAppearance(boolean status){
+            this.cellField.setBackground(statusColorsConstants(status));
+            this.cellField.repaint();
+            this.cellField.revalidate();
+        }
+
+        //sets color depending on input status
+        private Color statusColorsConstants(boolean status){
             this.status = status;
-
-            //idk if they should be formatted like this but it looks nicer
-            if(status){appearance = ACTIVE;
-            }else{appearance = INACTIVE;}
-
-            return appearance;
+            //intellij says "ermmm aktually u can just use an if statement here" WRONG if i do an if statement ill have to type return TWICE for both colors and this LOOKS CLEANER
+            return switch(status){
+                case true -> Color.BLACK;
+                default -> Color.WHITE;
+            };
         }
     }
 }

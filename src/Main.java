@@ -1,3 +1,5 @@
+import org.xml.sax.ErrorHandler;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -7,9 +9,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class Main extends JFrame{
+public class Main{
     public static boolean init = true;
     private static int highScore = 0;
+    static public boolean BROWHAT; //THIS IS VERY OBVIOUSLY A TEMP VARIABLE TO RESOLVE THE ISSUE WHERE THE SNAKE FUCKING DIES FOR NO REASON WHEN HITTING A FOOD ITEM
 
     public static JButton playAgain = new JButton("Play again");
     public static JLabel lengthLabel = new JLabel("Length: 1");
@@ -41,15 +44,18 @@ public class Main extends JFrame{
         final GameManager game = new GameManager(true); //creates new instance of game manager
 
         //cellPanel that displays the length and stuff
-        game.lengthPanel.setBounds(0, game.frame.getHeight()-game.frame.getHeight()/6, game.frame.getWidth(), game.frame.getHeight()/6);
+        GameManager.lengthPanel.setBounds(0, game.frame.getHeight()-game.frame.getHeight()/6, game.frame.getWidth(), game.frame.getHeight()/6);
         //game.lengthPanel.setFocusable(false);
-        game.lengthPanel.setVisible(true);
-        game.frame.add(game.lengthPanel);
-        System.out.println(game.lengthPanel.isShowing());
+        GameManager.lengthPanel.setVisible(true);
+        game.frame.add(GameManager.lengthPanel);
         //i dont usually like relying on static vars but this is necessary for some reason they will not show up if they're not static wtf lmao
 
         //key listener to obtain player input
         game.frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e){Snake.changeDirection(e.getKeyCode());}});
+        new ErrorPrinter();
+    }
+
+    private static void initErrors(){
     }
 
     //starts and stops game, initializes variables
@@ -142,6 +148,12 @@ public class Main extends JFrame{
                 playAgain.setVisible(false);
             });
 
+            if(!BROWHAT){
+                ErrorPrinter.errorHandler("XX_AUTOMATIC_DESTRUCTION"); //for when the game fucking shits itself
+            }
+
+            Thread.dumpStack();
+
             repaintPanels();
 
         }
@@ -156,7 +168,6 @@ public class Main extends JFrame{
                     }catch(Exception e){gameStatus = false;}
                 }else{
                     try{new GameManager(false);
-                        System.out.println("MAIN LINE 158");
                     }catch(IOException e) {throw new RuntimeException(e);
                     }
                 }

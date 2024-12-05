@@ -11,6 +11,7 @@ public class Snake extends Board{
     static int column = 1;
     static int modifier = direction.value;
     static int pastRow;
+    static int pastCol;
 
     enum Direction{
         //init var
@@ -24,31 +25,34 @@ public class Snake extends Board{
 
     public static void updateMovement() throws IOException{
         pastRow = row;
+        pastCol = column;
         if(direction.equals(Direction.LEFT)||direction.equals(Direction.RIGHT)) {column += modifier;
         }else{row+=modifier;}
-        gameStatus = checkBorders();
+        //gameStatus = checkBorders();
         Cell targetCell = cellList[row][column];
         snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
         new Board(false);
     }
 
     //checks to see if player ran into a wall
-    private static boolean checkBorders() throws IOException{
+    /*private static boolean checkBorders() throws IOException{
         final boolean horizontal = direction.equals(Direction.LEFT)||direction.equals(Direction.RIGHT);
         Cell targetCell = cellList[row][column];
         final boolean check = horizontal&&pastRow!=row;
         final boolean ego = Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_SNAKE);//is snake eating itself
 
         //VERY LONG DEBUG ]]]STRING DO NOT ENABLE UNLESS TESTING POSITIONING OR GAMEOVER CONDIITONALS
-        System.out.println("----------------------------\nCURRENT ROW: "+row+" PAST ROW: "+ pastRow+"\nDIRECTION: "+direction+" horizontal: "+ horizontal +"\nMODIFIER: "+direction.value+"\nEGO: "+ego+"CHECK: "+check+"\n----------------------------");
-        System.out.println(targetCell.type);
+        System.out.println("----------------------------\nCURRENT COL: "+column+" PAST COL: "+ pastCol+"\nCURRENT ROW: "+row+" PAST ROW: "+ pastRow+"\nDIRECTION: "+direction+" horizontal: "+ horizontal +"\nMODIFIER: "+direction.value+"\nEGO: "+ego+"CHECK: "+check+"[TYPE]: "+targetCell.type+"\n----------------------------");
+        if(pastRow!=row&&pastCol!=column){ErrorPrinter.errorHandler("SK_IRREGULAR_MOVEMENT");} //for abnormal or diagonal movement
+
         if (check||ego){
-            new Main.GameManager(false);
-            System.out.println("SNAKE LINE 46");
+            System.out.println("[TEMP DEBUG ONLY] SNAKE LINE 46");
+            Main.BROWHAT = false;
             return false;
         }
+        Main.BROWHAT = true;
         return true;
-    }
+    }*/
 
 
     //contains the opposite direction for each key input (so u dont hit left key while going right and u move inside of yourself and instalose)

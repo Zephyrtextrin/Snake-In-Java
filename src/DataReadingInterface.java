@@ -12,25 +12,21 @@ public class DataReadingInterface{
     public DataReadingInterface() throws IOException {readFile();}
 
     public static int readFile() throws IOException {
-        DATA_FILE.createNewFile(); //creates new lengthdata if it does not exist
+        DATA_FILE.createNewFile(); //creates new lengthdata if it does not exist FOR SOME REASON INTELLIJ CANT SHUT UP ABOUT THIS LINE BUT ITS ACTUALLY IMPORTANT
         final Scanner scan = new Scanner(DATA_FILE);
         int length;
-        String abnormalValue = "(does not exist)";
-        if(scan.hasNextInt()){length = scan.nextInt();
+        if(scan.hasNextInt()){
+            length = scan.nextInt();
+            if(length>Main.INT_CONSTANTS.BOARD_SIZE.value){
+                ErrorPrinter.errorHandler("HS_MALFORMED_SCORE");
+                return 0;
+            }
         }else{
-            if(scan.hasNextLine()){abnormalValue = scan.nextLine();}
-            System.out.println("----[[[[ERROR!]]]]----\nLength high-score not found or invalid!\n\n---[[[DETAILS]]]---\nDoes the high-score document exist? "+DATA_FILE.exists()+"\nIs there a readable integer in the file? "+scan.hasNextInt()+"\nValue read: "+abnormalValue+"\n\n---[[[WHAT TO DO]]]---\nIf this is your first time running the program, you can probably ignore this.\n(if it is not your first time running the program and this is a genuine error, please contact me.)");
+            ErrorPrinter.errorHandler("HS_DNE");
             return 0;
         }
 
-        if(length>Main.INT_CONSTANTS.BOARD_SIZE.value){
-            System.out.println("---[[[ABNORMALITY]]]---\nYour length high-score is abnormal!\n\n---[[[DETAILS]]]---\n[CAUSE]: Length exceeds the amount of cells on the board!\n[HIGH-SCORE]: "+length+"\nHIGH-SCORE DATA HAS BEEN ERASED.\n(if this is a mistake, please contact me)");
-            writeFile("0");
-        }else if(length<0){
-            System.out.println("---[[[ABNORMALITY]]]---\nYour length high-score is physically impossible!\n[CAUSE]: Length value is negative.\nHIGH-SCORE DATA HAS BEEN ERASED.\n(if this is a mistake, please contact me)");
-            writeFile("0");
-        }
-
+        return length;
     }
 
     public static void writeFile(String output) throws IOException {
@@ -40,9 +36,10 @@ public class DataReadingInterface{
     }
 
     //used exclusively for error output
-    public static String isReadable() throws FileNotFoundException {
+    public static String errorOutput() throws IOException {
+        DATA_FILE.createNewFile(); //creates new lengthdata if it does not exist FOR SOME REASON INTELLIJ CANT SHUT UP ABOUT THIS LINE BUT ITS ACTUALLY IMPORTANT
         final Scanner scan = new Scanner(DATA_FILE);
-        String abnormalValue = "(does not exist)";
+
         if(scan.hasNextLine()){return scan.nextLine();}
         return "(does not exist)";
     }

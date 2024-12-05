@@ -23,8 +23,6 @@ public class ErrorPrinter {
     }
 
     private class Error{
-        String tempstring = "----[[[[]]]]----\nLength high-score not found or invalid!\n\n---[[[DETAILS]]]---\nDoes the high-score document exist? "+DATA_FILE.exists()+"\nIs there a readable integer in the file? "+scan.hasNextInt()+"\nValue read: "+abnormalValue+"\n\n---[[[WHAT TO DO]]]---\nIf this is your first time running the program, you can probably ignore this.\n(if it is not your first time running the program and this is a genuine error, please contact me.)");
-
         String code;
         String cause;
         boolean isError;
@@ -43,8 +41,11 @@ public class ErrorPrinter {
         }
     }
 
-    private void Initialize() throws FileNotFoundException {
-        new Error("DNE", "Length high-score not found or invalid!", false, "Does the high-score document exist? "+DataReadingInterface.DATA_FILE.exists()+"\nIs there a readable integer in the file?\nValue read: "+DataReadingInterface.isReadable())
+    private void Initialize() throws FileNotFoundException{
+
+        //errors for highscore reading
+        new Error("HS_DNE", "Length high-score not found or invalid!", false, "Does the high-score document exist? "+DataReadingInterface.DATA_FILE.exists()+"\nIs there a readable integer in the file?\nValue read: "+DataReadingInterface.isReadable(),"The program has already created a new file and added a default value of 0, so the issue's resolved itself.\nIf this is your first time running the program, you can probably ignore this.\nIf this is NOT your first time running the program, please contact me.")
+        new Error("HS_MALFORMED", "Your length high-score is malformed!\nIt's either larger than the amount of cells in the board, or is negative.",false,"Amount of Cells in the board: "+Main.INT_CONSTANTS.CELL_COUNT.value+"\nHigh-Score: 
     }
 }
 

@@ -140,14 +140,7 @@ public class Main{
                 }catch(IOException e){throw new RuntimeException(e);}
                 playAgain.setVisible(false);
             });
-            System.out.println(gameStatus);
-
-            if(!BROWHAT){
-                ErrorPrinter.errorHandler("XX_AUTOMATIC_DESTRUCTION"); //for when the game fucking shits itself
-            }
-
-            Thread.dumpStack();
-
+            
             repaintPanels();
 
         }

@@ -12,8 +12,6 @@ import java.util.concurrent.TimeUnit;
 public class Main{
     public static boolean init = true;
     private static int highScore = 0;
-    static public boolean BROWHAT; //THIS IS VERY OBVIOUSLY A TEMP VARIABLE TO RESOLVE THE ISSUE WHERE THE SNAKE FUCKING DIES FOR NO REASON WHEN HITTING A FOOD ITEM
-
     public static JButton playAgain = new JButton("Play again");
     public static JLabel lengthLabel = new JLabel("Length: 1");
 
@@ -31,6 +29,8 @@ public class Main{
 
     //sets up frame, initializes some constructors, and runs method that actually makes the game work
     public static void main(String[] args) throws IOException {
+        new ErrorPrinter();
+
         //changes l&f to windows classic because im a basic bitch like that
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -52,7 +52,6 @@ public class Main{
 
         //key listener to obtain player input
         game.frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e){Snake.changeDirection(e.getKeyCode());}});
-        new ErrorPrinter();
     }
 
     //starts and stops game, initializes variables
@@ -133,16 +132,14 @@ public class Main{
 
             //display.setText("GAME OVER! Length: "+Snake.length);
             playAgain.setVisible(true);
-
             //logic for what happens when u click play again
             playAgain.addActionListener(_ -> {
                 try {runGame();
                 }catch(IOException e){throw new RuntimeException(e);}
                 playAgain.setVisible(false);
             });
-            
-            repaintPanels();
 
+            repaintPanels();
         }
 
         private static void frameAdvancement(){
@@ -152,9 +149,7 @@ public class Main{
                 if(gameStatus){
                     //you have to try/catch for an exception here because going to an invalid block will throw an exception and executorservices just hangs the program instead of throwing an exception even tho i kinda need it to not do that cause of the gameover logic relying on the snake being out of bounds
                     try {Snake.updateMovement();
-                    }catch(Exception e){
-                        gameStatus = false;}
-
+                    }catch(Exception e){gameStatus = false;}
                 }else{
                     try {new GameManager(false);
                     }catch (Exception e){throw new RuntimeException(e);}

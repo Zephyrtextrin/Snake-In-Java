@@ -12,6 +12,7 @@ public class Snake extends Board{
     static int modifier = direction.value;
     static int pastRow;
     static int pastCol;
+    static int placeHolder;
 
     enum Direction{
         //init var
@@ -24,34 +25,29 @@ public class Snake extends Board{
     }
 
     public static void updateMovement() throws IOException{
-        pastRow = row;
         pastCol = column;
-        checkSelf();
-        if(direction.equals(Direction.LEFT)||direction.equals(Direction.RIGHT)) {column += modifier;
-        }else{row+=modifier;}
-        Cell targetCell = cellList[row][column];
-        snakeCellsManagement(targetCell); //calls snakeCellsManagement method to add the cell into the list of snake cells
+        pastRow = row;
+
+        if(direction.equals(Direction.LEFT)||direction.equals(Direction.RIGHT)){
+            column += modifier;
+            if(column!=pastCol+modifier){ErrorPrinter.errorHandler("ABN_SK_IRREGULAR_MOVEMENT");} //error handler if ur movement is different from ur directional modifier
+        }else{
+            row+=modifier;
+            if(row!=pastRow+modifier){ErrorPrinter.errorHandler("ABN_SK_IRREGULAR_MOVEMENT");} //error handler if ur movement is different from ur directional modifier
+        }
+
+        if(pastRow!=row&&pastCol!=column){ErrorPrinter.errorHandler("ABN_SK_IRREGULAR_MOVEMENT");} //error handlers if u somehow move diagonally(these should always be false but its nice to have a handler)
+
+        snakeCellsManagement(cellList[row][column]); //calls snakeCellsManagement method to add the cell into the list of snake cells
         new Board(false);
     }
-
-    //checks to see if player ran into themsleves
-    private static boolean checkSelf() throws IOException{
-        final boolean ego = Objects.equals(cellList[row][column].type, STRING_CONSTANTS.TYPE_SNAKE);//is snake eating itself
-
-        if (ego){
-            System.out.println("[TEMP DEBUG ONLY] SNAKE LINE 46");
-            gameStatus = false;
-        }
-        return true;
-    }
-
 
     //contains the opposite direction for each key input (so u dont hit left key while going right and u move inside of yourself and instalose)
     private static final Map<Integer, Direction> directionMap = Map.of(KeyEvent.VK_RIGHT, Direction.RIGHT, KeyEvent.VK_LEFT, Direction.LEFT, KeyEvent.VK_UP, Direction.UP, KeyEvent.VK_DOWN, Direction.DOWN);
 
     static void changeDirection(int key){
         Direction newDirection = directionMap.get(key);
-        if (newDirection != null&&!newDirection.equals(oppositeDirection(direction))){
+        if (!newDirection.equals(oppositeDirection(direction))){
             direction = newDirection;
             modifier = direction.value;
         }
@@ -66,12 +62,14 @@ public class Snake extends Board{
     };}
 
     //adds cells to snakeCell list
-    private static void snakeCellsManagement(Cell targetCell) throws IOException {
+    private static void snakeCellsManagement(Cell targetCell) throws IOException{
         targetCell.changeAppearance(true); //changes target cell into its activated appearance (since snake cells are the activated appearance of a shaded-in block
-        if (Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_FOOD)){ //this looks incredibly dumb but you have to have this if statement inside the else
+        if(Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_FOOD)){ //this looks incredibly dumb but you have to have this if statement inside the else
             Snake.length++;
             Board.createFood();
             Main.GameManager.highScoreUpdater(Main.lengthLabel);
+        }else if(snakeCells.contains(targetCell)){
+            gameStatus = false;
         }
 
         targetCell.type = STRING_CONSTANTS.TYPE_SNAKE;

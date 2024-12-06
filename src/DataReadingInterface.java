@@ -17,12 +17,15 @@ public class DataReadingInterface{
         int length;
         if(scan.hasNextInt()){
             length = scan.nextInt();
-            if(length>Main.INT_CONSTANTS.BOARD_SIZE.value){
-                ErrorPrinter.errorHandler("HS_MALFORMED_SCORE");
+            if(length>Main.INT_CONSTANTS.BOARD_SIZE.value){ //err handler if data is malformed
+                ErrorPrinter.errorHandler("ABN_HS_MALFORMED");
+
+                writeFile("0");
                 return 0;
             }
-        }else{
-            ErrorPrinter.errorHandler("HS_DNE");
+        }else{ //error handler in case highscore data does not exist
+            ErrorPrinter.errorHandler("ABN_HS_DNE");
+            writeFile("0");
             return 0;
         }
 

@@ -5,9 +5,9 @@ import java.util.Random;
 
 public class Board extends Main.GameManager{
     //init var
-    protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
-    public static Cell[][] cellList = new Cell[Main.INT_CONSTANTS.BOARD_SIZE.value][Main.INT_CONSTANTS.BOARD_SIZE.value]; //adds +1 because positions start at 1
-
+    final protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
+    final public static Cell[][] cellList = new Cell[GameUI.INT_CONSTANTS.BOARD_SIZE.value][GameUI.INT_CONSTANTS.BOARD_SIZE.value]; //adds +1 because positions start at 1
+    final private static ArrayList<Cell> cellsToRemove = new ArrayList<Cell>();
     public enum STRING_CONSTANTS {
         //TYPE VALUES: allows you to set celltypes without using direct strings and ensures no compatibility issues
         TYPE_FIELD,
@@ -19,8 +19,8 @@ public class Board extends Main.GameManager{
     Board(boolean init){
         if(!init){cellAgeDeprecation();
         }else{ //inits all cells into board
-            for(int row = 1; row < Main.INT_CONSTANTS.BOARD_SIZE.value; row++){for(int col = 1; col < Main.INT_CONSTANTS.BOARD_SIZE.value; col++){new Cell(row, col);}}
-            repaintPanels();
+            for(int row = 1; row < GameUI.INT_CONSTANTS.BOARD_SIZE.value; row++){for(int col = 1; col < GameUI.INT_CONSTANTS.BOARD_SIZE.value; col++){new Cell(row, col);}}
+            GameUI.repaintPanels();
         }  //creates a cell object for each row and age of 0
     }
 
@@ -46,14 +46,14 @@ public class Board extends Main.GameManager{
 
     protected static void createFood(){
         Random rand = new Random(); //gets random class to call random cell pos
-        int posRow = rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value);
-        int posCol = rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value);
+        int posRow = rand.nextInt(GameUI.INT_CONSTANTS.BOARD_SIZE.value);
+        int posCol = rand.nextInt(GameUI.INT_CONSTANTS.BOARD_SIZE.value);
 
         Cell cell = cellList[posRow][posCol]; //inits cell
 
             while (snakeCells.contains(cell) || posRow ==0 || posCol == 0) { //if selected cell is snake
-                posRow = rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value);
-                posCol = rand.nextInt(Main.INT_CONSTANTS.BOARD_SIZE.value);
+                posRow = rand.nextInt(GameUI.INT_CONSTANTS.BOARD_SIZE.value);
+                posCol = rand.nextInt(GameUI.INT_CONSTANTS.BOARD_SIZE.value);
             }
 
         cell = cellList[posRow][posCol]; //gets atts of cell currently selected
@@ -74,17 +74,15 @@ public class Board extends Main.GameManager{
 
         //constructor method used for initialization: sets X/Y position
         private Cell(int row, int col) {
-            if (Main.init){
-                ROW = row;
-                COLUMN = col;
-                this.type = STRING_CONSTANTS.TYPE_FIELD;
-                this.age = 0;
-                this.changeAppearance(false);
-                cellField.setEditable(false);
+            ROW = row;
+            COLUMN = col;
+            this.type = STRING_CONSTANTS.TYPE_FIELD;
+            this.age = 0;
+            this.changeAppearance(false);
+            cellField.setEditable(false);
 
-                cellList[row][col] = this;
-                setCell(cellField);
-            }
+            cellList[row][col] = this;
+            GameUI.setCell(cellField);
         }
 
         protected void changeAppearance(boolean status){

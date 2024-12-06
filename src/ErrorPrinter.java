@@ -29,8 +29,8 @@ public class ErrorPrinter {
             System.out.println(error.additional);
         }
 
-        if(error.code.equals("ABSTRUSE")){System.out.println("[FALLBACK]: " + code);
-        }else if(error.isError){
+        if(error.code.equals("ABSTRUSE")){System.out.println("[FALLBACK]: " + code);}
+       if(error.isError){
             System.out.println("\na message from alex regarding errors\n(this is automatically appended to all errors)\nso there's actually two types of issues in the error handler i wrote: abnormalities and errors\nabnormaities are just unintended issues i should probably fix\nand errors are active issues that impede the functioning of the game\nso it's really important you report errors to me\nthanks bro\n-alexander");
             System.exit(0);
         }
@@ -71,6 +71,9 @@ public class ErrorPrinter {
 
     private class init {
         private void initialize() throws IOException {
+
+            //game-management related
+            new Error("ERR_GG_EXECUTOR_SERVICE_FAULT", false, "The frame-advancement protocol hit an error!", "Details will be sent in a stacktrace.", null);
 
             //snake-related
             new Error("ABN_SK_IRREGULAR_MOVEMENT", false, "Snake movement is dysfunctional!\nYou likely somehow managed to both row/col values at once, or somehow moved twice in one frame advancement.", "[PAST ROW]: " + Snake.pastRow + " | [CURRENT ROW]: " + Snake.row + "\n[PAST COL]: " + Snake.pastCol + " | [CURRENT COL]: " + Snake.column + "\n[MODIFIER]: " + Snake.modifier, null);

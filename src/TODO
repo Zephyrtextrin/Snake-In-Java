@@ -3,6 +3,7 @@
     TODO: a button where you can change the speed and the board size (put this on the side when the game is running and put it on the gameover menu too
     TODO: a way to change the snake/board colors
     TODO: maybe find a way to refresh individual cells instead of the entire board
+    TODO: make all the ui shit in its own class
 
 
   [[[---RESOLVED-ISSUES---]]]

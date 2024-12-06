@@ -28,20 +28,11 @@ public class Board extends Main.GameManager{
 
     //decreases age of all cells by 1 and removes any cells with an age of zero
     protected static void cellAgeDeprecation(){
-        ArrayList<Cell> cellsToRemove = new ArrayList<>();
-        for(Cell currentCell:snakeCells){
-            //depreciates age by 1
-            currentCell.age--;
-
-            //if 0, turn back into a regular board cell
-            if (currentCell.age <= 0) {
-                currentCell.type = STRING_CONSTANTS.TYPE_FIELD;
-                currentCell.changeAppearance(false); //sets appearance to regular ass cell LOL
-                cellsToRemove.add(currentCell);
-            }
+        if(snakeCells.size()>Snake.length){
+            Cell gone = snakeCells.get(0);
+            gone.changeAppearance(STRING_CONSTANTS.TYPE_FIELD); //sets appearance to regular ass cell LOL
+            snakeCells.remove(gone);
         }
-        //loops through and removes all cells from cellList. u have to do this seperately instead of calling snakeCells.remove(Currentcell) bc that would give an exception cuse u cant edit an array while actively loopin thru it
-        for(Cell cell:cellsToRemove){snakeCells.remove(cell);}
     }
 
     protected static void createFood(){
@@ -60,7 +51,7 @@ public class Board extends Main.GameManager{
 
         //changes type to food and changes appearance to activated char
         cell.type = STRING_CONSTANTS.TYPE_FOOD;
-        cell.changeAppearance(true);
+        cell.changeAppearance(STRING_CONSTANTS.TYPE_FOOD);
     }
 
     //class manages attributes for individual cells
@@ -71,6 +62,9 @@ public class Board extends Main.GameManager{
         int age; //used to determine which cell is cleared when the snake moves
         STRING_CONSTANTS type; //accepted params are in the enum
         JTextField cellField = new JTextField();
+        private Color FIELD_COLOR = Color.WHITE;
+        private Color SNAKE_COLOR = Color.BLACK;
+        private Color FOOD_COLOR = Color.RED;
 
         //constructor method used for initialization: sets X/Y position
         private Cell(int row, int col) {
@@ -78,26 +72,27 @@ public class Board extends Main.GameManager{
             COLUMN = col;
             this.type = STRING_CONSTANTS.TYPE_FIELD;
             this.age = 0;
-            this.changeAppearance(false);
+            this.changeAppearance(STRING_CONSTANTS.TYPE_FIELD);
             cellField.setEditable(false);
 
             cellList[row][col] = this;
             GameUI.setCell(cellField);
         }
 
-        protected void changeAppearance(boolean status){
-            this.cellField.setBackground(statusColorsConstants(status));
+        protected void changeAppearance(STRING_CONSTANTS type){
+            this.cellField.setBackground(statusColorsConstants(type));
             this.cellField.repaint();
             this.cellField.revalidate();
         }
 
         //sets color depending on input status
-        private Color statusColorsConstants(boolean status){
-            this.status = status;
+        private Color statusColorsConstants(STRING_CONSTANTS type){
+            this.type = type;
             //intellij says "ermmm aktually u can just use an if statement here" WRONG if i do an if statement ill have to type return TWICE for both colors and this LOOKS CLEANER
-            return switch(status){
-                case true -> Color.BLACK;
-                default -> Color.WHITE;
+            return switch(type){
+                case TYPE_FOOD -> Color.RED;
+                case TYPE_SNAKE -> Color.BLACK;
+                case TYPE_FIELD -> Color.WHITE;
             };
         }
     }

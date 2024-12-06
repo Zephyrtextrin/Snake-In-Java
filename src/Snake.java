@@ -62,13 +62,13 @@ public class Snake extends Board{
 
     //adds cells to snakeCell list
     private static void snakeCellsManagement(Cell targetCell) throws IOException{
-        targetCell.changeAppearance(true); //changes target cell into its activated appearance (since snake cells are the activated appearance of a shaded-in block
         if(Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_FOOD)){ //this looks incredibly dumb but you have to have this if statement inside the else
             Snake.length++;
             Board.createFood();
             Main.GameManager.highScoreUpdater();
         }else if(snakeCells.contains(targetCell)){gameStatus = false;}
 
+        targetCell.changeAppearance(STRING_CONSTANTS.TYPE_SNAKE); //changes target cell into its activated appearance (since snake cells are the activated appearance of a shaded-in block
         targetCell.type = STRING_CONSTANTS.TYPE_SNAKE;
         targetCell.age = Snake.length + 1; //add one because the cells would immediately get depreciated to (length-1)
         targetCell.ROW = Snake.row;

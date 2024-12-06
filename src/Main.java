@@ -46,7 +46,7 @@ public class Main extends GameUI{
             Snake.direction = Snake.Direction.RIGHT;
             Snake.row = 1;
             Snake.column = 1;
-            Snake.length = 2;
+            Snake.length = 1;
             Snake.updateMovement();
 
             if(init){frameAdvancement();}

@@ -47,7 +47,7 @@ public class Snake extends Board{
 
     static void changeDirection(int key){
         Direction newDirection = directionMap.get(key);
-        if (!newDirection.equals(oppositeDirection(direction))){
+        if (newDirection!=null&&!newDirection.equals(oppositeDirection(direction))){
             direction = newDirection;
             modifier = direction.value;
         }

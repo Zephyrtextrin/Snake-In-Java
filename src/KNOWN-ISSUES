@@ -1,5 +1,6 @@
   [[[---KNOWN-ISSUES---]]]
       TODO: bro this game runs like dookie dogshit
+      TODO: for some fuckking reason the snake can still turn around in the opposite direction and ouroboros in on itself sometimes (make an err for this)
 
   [[[---POSSIBLE-FEATURES---]]]
     TODO: a button where you can change the speed and the board size (put this on the side when the game is running and put it on the gameover menu too
@@ -28,4 +29,4 @@
     *SOLUTION: this is cause of the scheduledexecutorservice u just have to do try/catch in the frameadvancement command isntead of putting the horizontal border logic in the bordercheck
 
     *PROBLEM: when hitting food the game would display gameover
-   *SOLUTION: THIS WAS SO DUMB when the positional values were generated 
+   *SOLUTION: THIS WAS SO DUMB when the positional values were generated

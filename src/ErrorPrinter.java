@@ -69,6 +69,7 @@ public class ErrorPrinter {
 
             //snake-related
             new Error("SK_IRREGULAR_MOVEMENT", false, "Snake movement is dysfunctional!\nYou likely somehow managed to both row/col values at once, or somehow moved twice in one frame advancement.", "[PAST ROW]: " + Snake.pastRow + " | [CURRENT ROW]: " + Snake.row + "\n[PAST COL]: " + Snake.pastCol + " | [CURRENT COL]: " + Snake.column + "\n[MODIFIER]: " + Snake.modifier, "tbh idk how this would ever happen so its a moot point");
+
             //errors for highscore reading
             new Error("HS_DNE", false, "Length high-score not found or invalid!", "\n[VALUE]: " + DataReadingInterface.errorOutput(), "The program has already created a new file and added a default value of 0, so the issue's resolved itself.\nIf this is your first time running the program, you can probably ignore this.\nIf this is NOT your first time running the program, please contact me.");
             new Error("HS_MALFORMED", false, "Your high-score is malformed!\nIt's either larger than the amount of cells in the board, or is negative.", "[CELL COUNT]: " + Main.INT_CONSTANTS.CELL_COUNT.value + "\n[HIGH-SCORE]: " + DataReadingInterface.errorOutput(), "HIGH-SCORE DATA HAS BEEN ERASED.\nThis was likely caused by changing the board size, and therefore changing the amount of cells.\nIt's also likely this was caused by intentional savedata editing. (if u rly care enough to edit my fucking snake game lol)\nBoth of those are known issues. It's not neccessary to report those;");

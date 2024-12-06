@@ -26,6 +26,7 @@ public class Snake extends Board{
     public static void updateMovement() throws IOException{
         pastRow = row;
         pastCol = column;
+        checkSelf();
         if(direction.equals(Direction.LEFT)||direction.equals(Direction.RIGHT)) {column += modifier;
         }else{row+=modifier;}
         Cell targetCell = cellList[row][column];
@@ -36,7 +37,6 @@ public class Snake extends Board{
     //checks to see if player ran into themsleves
     private static boolean checkSelf() throws IOException{
         final boolean ego = Objects.equals(cellList[row][column].type, STRING_CONSTANTS.TYPE_SNAKE);//is snake eating itself
-
 
         if (ego){
             System.out.println("[TEMP DEBUG ONLY] SNAKE LINE 46");

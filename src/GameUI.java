@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+
 public class GameUI {
 
     protected static JFrame frame = new JFrame("text-based snake in java+swing");
@@ -65,6 +67,12 @@ public class GameUI {
         cellPanel.revalidate();
         lengthPanel.repaint();
         lengthPanel.revalidate();
+
+        playAgain.addActionListener(_ -> {
+            GameManager.gameStatus = true;
+            new GameManager();
+            playAgain.setVisible(false);
+        });
     }
 
     public static void repaintPanels(){

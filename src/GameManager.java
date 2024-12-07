@@ -8,23 +8,18 @@ public class GameManager extends GameUI{
     //starts and stops game, initializes variables
     static int highScore = 0;
 
-
     static boolean gameStatus = true; //auto ends the game if false
 
     //CONSTRUCTOR to start/stop the game depending on the game status
-    GameManager(boolean gameStatus) throws IOException {
-        if(gameStatus){
-            UIInit();
-            runGame();
-            frameAdvancement();
-        }else{stopGame();}
+    GameManager(){
+        UIInit();
+        runGame();
+        frameAdvancement();
     }
-
-    GameManager(){} //this feels stupid but sometimes they dont want params in a constructor
-
     //manages game; initializes variables and sets timer
-    private static void runGame() throws IOException {
+    private static void runGame(){
         gameStatus = true;
+        Snake.setDefaultValues();
         Board.createFood(); //initializes food item
         cellPanel.setEnabled(true);
         cellPanel.setVisible(true);
@@ -38,11 +33,6 @@ public class GameManager extends GameUI{
         //display.setText("GAME OVER! Length: "+Snake.length);
         playAgain.setVisible(true);
         //logic for what happens when u click play again
-        playAgain.addActionListener(_ -> {
-            try {runGame();
-            }catch(IOException e){throw new RuntimeException(e);}
-            playAgain.setVisible(false);
-        });
 
         repaintPanels();
     }
@@ -61,7 +51,7 @@ public class GameManager extends GameUI{
                 }else{stopGame();}
 
             }catch(Exception e){
-                ErrorPrinter.errorHandler("ERR_GG_EXECUTOR_SERVICE_FAULT");
+                ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT");
                 throw new RuntimeException(e);
             }
         };

@@ -73,6 +73,14 @@ public class Snake extends Board{
         }
     }
 
+    public static void setDefaultValues(){
+        length = 1;
+        direction = Direction.RIGHT;
+        row = 1; //thithe position of the cell the snake's head is in
+        column = 1;
+        modifier = direction.value;
+    }
+
     //used exclusively for error handling
     public static String getErrorDetails(){return "[CURRENT ROW]: " + Snake.row + "\n[CURRENT COL]: " + Snake.column + "\n[MODIFIER]: " + Snake.modifier;}
 }

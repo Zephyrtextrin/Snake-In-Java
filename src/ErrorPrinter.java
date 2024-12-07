@@ -71,13 +71,13 @@ public class ErrorPrinter {
         private void initialize() throws IOException {
 
             //game-management related
-            new Error("ERR_GG_EXECUTOR_SERVICE_FAULT", false, "The frame-advancement protocol hit an error!", "Details will be sent in a stacktrace.", null);
+            new Error("ERR_GM_EXECUTOR_SERVICE_FAULT", false, "The frame-advancement protocol hit an error!", "Details will be sent in a stacktrace.", null);
 
             //snake-related
             new Error("ABN_SK_IRREGULAR_MOVEMENT", false, "Snake movement is dysfunctional!\nYou likely somehow managed to both row/col values at once, or somehow moved twice in one frame advancement.", Snake.getErrorDetails(), null);
             new Error("ERR_SK_OUROBOROS", true, "Snake turned around in on itself!\nWhile there are checks in place to prevent the snake from going right when it's already going left, this was (somehow) not applied.", Snake.getErrorDetails(), "\n[TEMP]\nthe snake moves every 75 milliseconds, but inputs are constantly being read from the actionlistener.\nits possible to make 2 inputs inbetween each frame and bypass the protections against ourobosing yourself");
             //errors for highscore reading
-            new Error("ABN_HS_DNE", false, "Length high-score not found or invalid!", "\n[VALUE]: " + DataReadingInterface.errorOutput(), "The program has already created a new file and added a default value of 0, so the issue's resolved itself.\nIf this is your first time running the program, you can probably ignore this.");
+            new Error("ABN_HS_INSUBSTANTIAL", false, "Length high-score not found or invalid!", "\n[VALUE]: " + DataReadingInterface.errorOutput(), "The program has already created a new file and added a default value of 0, so the issue's resolved itself.\nIf this is your first time running the program, you can probably ignore this.");
             new Error("ABN_HS_MALFORMED", false, "Your high-score is malformed!\nIt's either larger than the amount of cells in the board, or is negative.", "[CELL COUNT]: " + GameUI.INT_CONSTANTS.CELL_COUNT.value + "\n[HIGH-SCORE]: " + DataReadingInterface.errorOutput(), "HIGH-SCORE DATA HAS BEEN ERASED.\nThis was likely caused by changing the board size, and therefore changing the amount of cells. (as of 12/6 this isnt an actual feature yet)\nIt's also likely this was caused by intentional savedata editing. (if u rly care enough to edit my fucking snake game lol)\nBoth of those are known issues. It's not neccessary to report those circumstances.\nBut if it happens in any other circumstance, that's an issue.");
 
             //unique

@@ -21,7 +21,7 @@ public class DataReadingInterface{
                 return 0;
             }
         }else{ //error handler in case highscore data does not exist
-            ErrorPrinter.errorHandler("ABN_HS_DNE");
+            ErrorPrinter.errorHandler("ABN_HS_INSUBSTANTIAL");
             writeFile("0");
             return 0;
         }

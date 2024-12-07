@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Board extends GameManager{
@@ -15,11 +16,10 @@ public class Board extends GameManager{
         TYPE_FOOD
     }
 
-    //inits values or updates snake depending on bool
-    Board(){
+    public static void initCells(){
         for(int row = 1; row < GameUI.INT_CONSTANTS.BOARD_SIZE.value; row++){for(int col = 1; col < GameUI.INT_CONSTANTS.BOARD_SIZE.value; col++){new Cell(row, col);}}
         GameUI.repaintPanels();
-    }
+        }
 
     protected static void createFood(){
         Random rand = new Random(); //gets random class to call random cell pos

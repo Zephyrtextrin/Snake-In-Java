@@ -17,7 +17,7 @@ public class DataReadingInterface{
         int length;
         if(scan.hasNextInt()){
             length = scan.nextInt();
-            if(length>Main.INT_CONSTANTS.BOARD_SIZE.value){ //err handler if data is malformed
+            if(length>GameUI.INT_CONSTANTS.BOARD_SIZE.value){ //err handler if data is malformed
                 ErrorPrinter.errorHandler("ABN_HS_MALFORMED");
 
                 writeFile("0");

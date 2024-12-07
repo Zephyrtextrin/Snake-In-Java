@@ -3,7 +3,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Board extends Main.GameManager{
+public class Board extends GameManager{
     //init var
     final protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
     final public static Cell[][] cellList = new Cell[GameUI.INT_CONSTANTS.BOARD_SIZE.value][GameUI.INT_CONSTANTS.BOARD_SIZE.value]; //adds +1 because positions start at 1

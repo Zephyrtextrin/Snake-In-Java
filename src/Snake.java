@@ -65,7 +65,7 @@ public class Snake extends Board{
         if(Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_FOOD)){ //this looks incredibly dumb but you have to have this if statement inside the else
             Snake.length++;
             Board.createFood();
-            Main.GameManager.highScoreUpdater();
+            GameManager.highScoreUpdater();
         }else if(snakeCells.contains(targetCell)){gameStatus = false;}
 
         targetCell.changeAppearance(STRING_CONSTANTS.TYPE_SNAKE); //changes target cell into its activated appearance (since snake cells are the activated appearance of a shaded-in block

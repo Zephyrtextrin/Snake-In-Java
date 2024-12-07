@@ -1,0 +1,32 @@
+
+  [[[---POSSIBLE-FEATURES---]]]
+    TODO: a button where you can change the speed and the board size (put this on the side when the game is running and put it on the gameover menu too
+    TODO: a way to change the snake/board colors
+    TODO: maybe find a way to refresh individual cells instead of the entire board
+    TODO: make all the ui shit in its own class
+
+
+  [[[---RESOLVED-ISSUES---]]]
+    *PROBLEM: you can go insanely fast by going diagonal and/or holding down the arrow keys or pressing keys in the opposite direction
+    *SOLUTION: this is an easy fix but its really fun and isnt hurting anyone (you can just choose to not hold down the keys) so it's a feature now
+
+    *PROBLEM: game crashes when changing snake's Y value and positioning appears broken
+    *SOLUTION: forgot to update the nextPos var lol so it only updated upon initialization and it would always be 2
+
+    *PROBLEM: unable to lose via hitting game edges (you can lose by hitting urself tho)
+    *SOLUTION: all i had to do is calc the row/col vals on the fly by dividing the positional value by the cellCount
+
+    *PROBLEM: the method for making the game end rn feels weird coding-wise
+    *SOLUTION:  made new gamemanagar class
+
+    *PROBLEM: snake will lose game even if ur 2 blocks away from border but apparently only if ur direction's RIGHT???
+    *SOLUTION: IM A GENIUS OMG!! all i had to do is compare the previous position (instead of the next one) to the current one
+
+    *PROBLEM: vertical checksum is dysfunctional
+    *SOLUTION: this is probaly just smth that i need to change the if-statement order for EDIT: yeah kinda
+
+    *PROBLEM: game hangs when hitting top/bottom borders instead of game over
+    *SOLUTION: this is cause of the scheduledexecutorservice u just have to do try/catch in the frameadvancement command isntead of putting the horizontal border logic in the bordercheck
+
+    *PROBLEM: when hitting food the game would display gameover
+   *SOLUTION: THIS WAS SO DUMB when the positional values were generated

@@ -69,13 +69,13 @@ public class GameManager extends GameUI{
         scheduler.scheduleAtFixedRate(snakeMovement, 1, FPS, TimeUnit.MILLISECONDS);
     }
 
-    public static void highScoreUpdater() throws IOException{
+    public static void highScoreUpdater(int length) throws IOException{
         highScore = DataReadingInterface.readFile();
 
-        if(Snake.length>highScore){
-            highScore = Snake.length;
+        if(length>highScore){
+            highScore = length;
             DataReadingInterface.writeFile(String.valueOf(highScore));
         }
-        GameUI.lengthLabel.setText("Length: "+Snake.length+" || High Score: "+highScore);
+        GameUI.lengthLabel.setText("Length: "+length+" || High Score: "+highScore);
     }
 }

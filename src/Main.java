@@ -6,7 +6,7 @@ public class Main extends GameManager{
     //sets up frame, initializes some constructors, and runs method that actually makes the game work
     public static void main(String[] args) throws IOException{
         new ErrorPrinter();
-        new Board(true);
+        new Board();
         UIInit();
         new GameManager(true); //creates new instance of game manager
         frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e){Snake.changeDirection(e.getKeyCode());}}); //key listener to obtain player input

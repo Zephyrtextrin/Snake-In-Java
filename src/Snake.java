@@ -5,13 +5,11 @@ import java.util.Objects;
 
 //holds data for snake
 public class Snake extends Board{
-    static int length = 2;
-    static Direction direction = Direction.RIGHT;
-    static int row = 1; //thithe position of the cell the snake's head is in
-    static int column = 1;
-    static int modifier = direction.value;
-    static int pastRow;
-    static int pastCol;
+    private static int length = 1;
+    private static Direction direction = Direction.RIGHT;
+    private static int row = 1; //thithe position of the cell the snake's head is in
+    private static int column = 1;
+    private static int modifier = direction.value;
 
     enum Direction{
         //init var
@@ -23,22 +21,12 @@ public class Snake extends Board{
         Direction(int value){this.value=value;}
     }
 
-    public static void updateMovement() throws IOException{
-        pastCol = column;
-        pastRow = row;
-
-        if(direction.equals(Direction.LEFT)||direction.equals(Direction.RIGHT)){
-            column += modifier;
-            if(column!=pastCol+modifier){ErrorPrinter.errorHandler("ABN_SK_IRREGULAR_MOVEMENT");} //error handler if ur movement is different from ur directional modifier
-        }else{
-            row+=modifier;
-            if(row!=pastRow+modifier){ErrorPrinter.errorHandler("ABN_SK_IRREGULAR_MOVEMENT");} //error handler if ur movement is different from ur directional modifier
-        }
-
-        if(pastRow!=row&&pastCol!=column){ErrorPrinter.errorHandler("ABN_SK_IRREGULAR_MOVEMENT");} //error handlers if u somehow move diagonally(these should always be false but its nice to have a handler)
+    protected static void updateMovement() throws IOException{
+        if(direction.equals(Direction.LEFT)||direction.equals(Direction.RIGHT)){column += modifier;
+        }else{row+=modifier;}
 
         snakeCellsManagement(cellList[row][column]); //calls snakeCellsManagement method to add the cell into the list of snake cells
-        new Board(false);
+        cellAgeDeprecation();
     }
 
     //contains the opposite direction for each key input (so u dont hit left key while going right and u move inside of yourself and instalose)
@@ -65,7 +53,7 @@ public class Snake extends Board{
         if(Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_FOOD)){ //this looks incredibly dumb but you have to have this if statement inside the else
             Snake.length++;
             Board.createFood();
-            GameManager.highScoreUpdater();
+            GameManager.highScoreUpdater(length);
         }else if(snakeCells.contains(targetCell)){gameStatus = false;}
 
         targetCell.changeAppearance(STRING_CONSTANTS.TYPE_SNAKE); //changes target cell into its activated appearance (since snake cells are the activated appearance of a shaded-in block
@@ -75,4 +63,16 @@ public class Snake extends Board{
         targetCell.COLUMN = Snake.column;
         snakeCells.add(targetCell);
     }
+
+    //decreases age of all cells by 1 and removes any cells with an age of zero
+    private static void cellAgeDeprecation(){
+        if(snakeCells.size()>Snake.length){
+            Cell gone = snakeCells.getFirst();
+            gone.changeAppearance(STRING_CONSTANTS.TYPE_FIELD); //sets appearance to regular ass cell LOL
+            snakeCells.remove(gone);
+        }
+    }
+
+    //used exclusively for error handling
+    public static String getErrorDetails(){return "[CURRENT ROW]: " + Snake.row + "\n[CURRENT COL]: " + Snake.column + "\n[MODIFIER]: " + Snake.modifier;}
 }

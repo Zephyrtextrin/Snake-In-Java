@@ -47,83 +47,178 @@ public class SettingsUI {
         snakeColorLabel.setBounds((150)/2,0,150,25);
         panel.add(snakeColorLabel);
 
-        JTextField colorOneField = new JTextField("R");
-        colorOneField.setBounds(25,25,150,25);
-        panel.add(colorOneField);
+        JTextField snakeColorOneField = new JTextField("R");
+        snakeColorOneField.setBounds(25,25,150,25);
+        panel.add(snakeColorOneField);
 
-        JTextField colorTwoField = new JTextField("G");
-        colorTwoField.setBounds(25,55,150,26);
-        panel.add(colorTwoField);
+        JTextField snakeColorTwoField = new JTextField("G");
+        snakeColorTwoField.setBounds(25,55,150,26);
+        panel.add(snakeColorTwoField);
 
-        JTextField colorThreeField = new JTextField("B");
-        colorThreeField.setBounds(25,85,150,25);
-        panel.add(colorThreeField);
+        JTextField snakeColorThreeField = new JTextField("B");
+        snakeColorThreeField.setBounds(25,85,150,25);
+        panel.add(snakeColorThreeField);
 
         String[] colorTypes = {"RGB","Hex"};
-        JComboBox colorTypeSelect = new JComboBox(colorTypes);
-        colorTypeSelect.setBounds(25,115,150,25);
-        panel.add(colorTypeSelect);
+        JComboBox<String> snakeColorTypeSelect = new JComboBox<>(colorTypes);
+        snakeColorTypeSelect.setBounds(25,115,150,25);
+        panel.add(snakeColorTypeSelect);
 
         JButton setSnakeColor = new JButton("Set Color");
         setSnakeColor.setBounds(25,145,150,25);
         panel.add(setSnakeColor);
 
+
+
+
+        //to set field color
+        JLabel backgroundColorLabel = new JLabel("Field Color");
+        backgroundColorLabel.setBounds(((150)/2)+200,0,150,25);
+        panel.add(backgroundColorLabel);
+
+        JTextField backgroundColorOneField = new JTextField("255");
+        backgroundColorOneField.setBounds(225,25,150,25);
+        panel.add(backgroundColorOneField);
+
+        JTextField backgroundColorTwoField = new JTextField("255");
+        backgroundColorTwoField.setBounds(225,55,150,26);
+        panel.add(backgroundColorTwoField);
+
+        JTextField backgroundColorThreeField = new JTextField("255");
+        backgroundColorThreeField.setBounds(225,85,150,25);
+        panel.add(backgroundColorThreeField);
+
+        JComboBox<String> backgroundColorTypeSelect = new JComboBox<>(colorTypes);
+        backgroundColorTypeSelect.setBounds(225,115,150,25);
+        panel.add(backgroundColorTypeSelect);
+
+        JButton setFieldColor = new JButton("Set Color");
+        setFieldColor.setBounds(225,145,150,25);
+        panel.add(setFieldColor);
+
+
+
+
+
+        //to set food color
+        JLabel foodColorLabel = new JLabel("Food Color");
+        foodColorLabel.setBounds(((150)/2)+400,0,150,25);
+        panel.add(foodColorLabel);
+
+        JTextField foodColorOneField = new JTextField("255");
+        foodColorOneField.setBounds(425,25,150,25);
+        panel.add(foodColorOneField);
+
+        JTextField foodColorTwoField = new JTextField("G");
+        foodColorTwoField.setBounds(425,55,150,26);
+        panel.add(foodColorTwoField);
+
+        JTextField foodColorThreeField = new JTextField("B");
+        foodColorThreeField.setBounds(425,85,150,25);
+        panel.add(foodColorThreeField);
+
+        JComboBox<String> foodColorTypeSelect = new JComboBox<>(colorTypes);
+        foodColorTypeSelect.setBounds(425,115,150,25);
+        panel.add(foodColorTypeSelect);
+
+        JButton setFoodColor = new JButton("Set Color");
+        setFoodColor.setBounds(425,145,150,25);
+        panel.add(setFoodColor);
+
+
+        //to set FPS
+        JLabel snakeSpeedLabel = new JLabel("Snake Speed [0-100]");
+        snakeSpeedLabel.setBounds((150/2)+600,0,150,25);
+        panel.add(snakeSpeedLabel);
+
+        JSlider speedSlider = new JSlider(0, 0,100,100);
+        speedSlider.setBounds(625,25,150,25);
+        panel.add(speedSlider);
+
         //button to play again
-        playGame.setBounds(50,WINDOW_SIZE,150,50);
+        playGame.setBounds((frame.getWidth()/2)-150/2,frame.getHeight()-100,150,50);
         playGame.setFocusable(false); //this cannot be focusable: if it is focusable, you can click on it and steal focus from the frame, and the frame needs to be focused all the time because the input listener only works when the component its applied to is focused
         playGame.setVisible(true);
         panel.add(playGame);
 
 
-        colorTypeSelect.addActionListener(_->{
-            boolean isRgb = Objects.equals(colorTypeSelect.getSelectedItem(), "RGB");
-            colorTwoField.setVisible(isRgb);
-            colorTwoField.setEnabled(isRgb);
-
-            colorThreeField.setVisible(isRgb);
-            colorThreeField.setEnabled(isRgb);
-
-            if(isRgb){
-                colorOneField.setText("R");
-                colorOneField.setBounds(25,25,150,25);
-
-            }else if(Objects.equals(colorTypeSelect.getSelectedItem(), "Hex")){
-                colorOneField.setText("Hex");
-                colorOneField.setBounds(25,80,150,25);
-            }
-        });
+        snakeColorTypeSelect.addActionListener(_->{setColorType(snakeColorOneField,snakeColorTwoField,snakeColorThreeField,snakeColorTypeSelect);});
 
         setSnakeColor.addActionListener(_->{
-            if(Objects.equals(colorTypeSelect.getSelectedItem(), "RGB")){
-                int R = RGBCheckSum(colorOneField);
-                oneFieldUpdate("Red",R,colorOneField);
-
-                int G = RGBCheckSum(colorTwoField);
-                oneFieldUpdate("Green",G,colorTwoField);
-
-                int B = RGBCheckSum(colorThreeField);
-                oneFieldUpdate("Blue",B,colorThreeField);
-
-                Board.SNAKE_COLOR = new Color(R,G,B);
-            }else if(Objects.equals(colorTypeSelect.getSelectedItem(), "Hex")){
-                String hex = colorOneField.getText();
-                if(hex.charAt(0)!='#'){hex = "#"+hex;}
-                Board.SNAKE_COLOR = Color.decode(hex);
-            }
-            colorTypeSelect.setBackground(Board.SNAKE_COLOR);
-            colorTypeSelect.setForeground(isDarkColor(Board.SNAKE_COLOR));
+            Board.SNAKE_COLOR = setColor(snakeColorOneField,snakeColorTwoField,snakeColorThreeField,snakeColorTypeSelect);
             setSnakeColor.setBackground(Board.SNAKE_COLOR);
             setSnakeColor.setForeground(isDarkColor(Board.SNAKE_COLOR));
         });
 
+
+        backgroundColorTypeSelect.addActionListener(_->{setColorType(backgroundColorOneField,backgroundColorTwoField,backgroundColorThreeField,backgroundColorTypeSelect);});
+
+        setFieldColor.addActionListener(_->{
+            Board.FIELD_COLOR = setColor(backgroundColorOneField,backgroundColorTwoField,backgroundColorThreeField,backgroundColorTypeSelect);
+            setFieldColor.setBackground(Board.FIELD_COLOR);
+            setFieldColor.setForeground(isDarkColor(Board.FIELD_COLOR));
+        });
+
+        foodColorTypeSelect.addActionListener(_->{setColorType(foodColorOneField,foodColorTwoField,foodColorThreeField,foodColorTypeSelect);});
+
+        setFoodColor.addActionListener(_->{
+            Board.FOOD_COLOR = setColor(foodColorOneField,foodColorTwoField,foodColorThreeField,foodColorTypeSelect);
+            setFoodColor.setBackground(Board.FOOD_COLOR);
+            setFoodColor.setForeground(isDarkColor(Board.FOOD_COLOR));
+        });
+
         playGame.addActionListener(_ -> {
+            GameManager.FPS = (-17/4*speedSlider.getValue())+500;
             GameManager.gameStatus = true;
             new GameManager();
+            GameUI.frame.setVisible(true);
             playGame.setVisible(false);
+            GameManager.frameAdvancement();
         });
 
         panel.repaint();
         panel.revalidate();
+    }
+
+    private static void setColorType(JTextField RField, JTextField GField, JTextField BField, JComboBox<String> typeSelection){
+        boolean isRgb = Objects.equals(typeSelection.getSelectedItem(), "RGB");
+        GField.setVisible(isRgb);
+        GField.setEnabled(isRgb);
+
+        BField.setVisible(isRgb);
+        BField.setEnabled(isRgb);
+
+        if(isRgb){
+            RField.setText("R");
+            RField.setBounds(RField.getX(),25,RField.getWidth(),RField.getHeight());
+
+        }else if(Objects.equals(typeSelection.getSelectedItem(), "Hex")){
+            RField.setText("Hex");
+            RField.setBounds(RField.getX(),80,RField.getWidth(),RField.getHeight());
+        }
+    }
+
+    private static Color setColor(JTextField RField, JTextField GField, JTextField BField, JComboBox<String> typeSelection){
+        Color result = Color.BLACK;
+        if(Objects.equals(typeSelection.getSelectedItem(), "RGB")){
+            int R = RGBCheckSum(RField);
+            oneFieldUpdate("Red",R, RField);
+
+            int G = RGBCheckSum(GField);
+            oneFieldUpdate("Green",G, GField);
+
+            int B = RGBCheckSum(BField);
+            oneFieldUpdate("Blue",B, BField);
+
+            result = new Color(R,G,B);
+        }else if(Objects.equals(typeSelection.getSelectedItem(), "Hex")){
+            String hex = RField.getText(); //RField is used both for the R in RGB and for hex because there's no reaspn to make 2 seperate fields
+            if(hex.charAt(0)!='#'){hex = "#"+hex;}
+            result = Color.decode(hex);
+        }
+        typeSelection.setBackground(result);
+        typeSelection.setForeground(isDarkColor(result));
+        return result;
     }
 
     private static int RGBCheckSum(JTextField field){

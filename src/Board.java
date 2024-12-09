@@ -11,6 +11,7 @@ public class Board extends GameManager{
     public static Color FIELD_COLOR = Color.WHITE;
     public static Color SNAKE_COLOR = Color.BLACK;
     public static Color FOOD_COLOR = Color.RED;
+    public static Color BORDER_COLOR = Color.BLACK;
 
     public enum STRING_CONSTANTS {
         //TYPE VALUES: allows you to set celltypes without using direct strings and ensures no compatibility issues

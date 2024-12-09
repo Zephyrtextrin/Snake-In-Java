@@ -8,6 +8,9 @@ public class Board extends GameManager{
     //init var
     final protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
     final public static Cell[][] cellList = new Cell[GameUI.INT_CONSTANTS.BOARD_SIZE.value][GameUI.INT_CONSTANTS.BOARD_SIZE.value]; //adds +1 because positions start at 1
+    public static Color FIELD_COLOR = Color.WHITE;
+    public static Color SNAKE_COLOR = Color.BLACK;
+    public static Color FOOD_COLOR = Color.RED;
 
     public enum STRING_CONSTANTS {
         //TYPE VALUES: allows you to set celltypes without using direct strings and ensures no compatibility issues
@@ -50,9 +53,6 @@ public class Board extends GameManager{
         int age; //used to determine which cell is cleared when the snake moves
         STRING_CONSTANTS type; //accepted params are in the enum
         JTextField cellField = new JTextField();
-        private Color FIELD_COLOR = Color.WHITE;
-        private Color SNAKE_COLOR = Color.BLACK;
-        private Color FOOD_COLOR = Color.RED;
 
         //constructor method used for initialization: sets X/Y position
         private Cell(int row, int col){

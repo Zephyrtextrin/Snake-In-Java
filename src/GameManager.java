@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -14,15 +15,17 @@ public class GameManager extends GameUI{
     GameManager(){
         UIInit();
         runGame();
-        frameAdvancement();
     }
     //manages game; initializes variables and sets timer
     private static void runGame(){
-        gameStatus = true;
+        cellPanel.removeAll();
+        Board.initCells();
+        Board.snakeCells.clear();
         Snake.setDefaultValues();
         Board.createFood(); //initializes food item
         cellPanel.setEnabled(true);
         cellPanel.setVisible(true);
+        gameStatus = true;
     }
 
     private static void stopGame(){
@@ -37,18 +40,33 @@ public class GameManager extends GameUI{
         repaintPanels();
     }
 
-    private static void frameAdvancement(){
+    public static void frameAdvancement(){
         final int FPS = 75;
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
         Runnable snakeMovement = ()-> {
+            //you have to try/catch for an exception on everything because executorservices just hangs the program instead of throwing an exception and i CANNOT figure OUT what the ISSUE IS unless it throws something
 
             try {
+
                 if (gameStatus){
-                    //you have to try/catch for an exception here because executorservices just hangs the program instead of throwing an exception even tho i kinda need it to not do that cause of the gameover logic relying on the snake being out of bounds
                     try {Snake.updateMovement();
-                    }catch(Exception e){gameStatus = false;}
-                }else{stopGame();}
+                    }catch(Exception e){
+                        int[] pos = Snake.getPosData();
+                        if(pos[0]>INT_CONSTANTS.BOARD_SIZE.value-1||pos[1]>INT_CONSTANTS.BOARD_SIZE.value-1||pos[0]<0||pos[1]<0) {
+                            gameStatus = false;
+                        }else{
+                            ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT");
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }else{
+                    try{stopGame();}
+                    catch(Exception e){
+                        ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT");
+                        throw new RuntimeException(e);
+                    }
+                }
 
             }catch(Exception e){
                 ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT");

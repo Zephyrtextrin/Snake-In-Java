@@ -83,4 +83,7 @@ public class Snake extends Board{
 
     //used exclusively for error handling
     public static String getErrorDetails(){return "[CURRENT ROW]: " + Snake.row + "\n[CURRENT COL]: " + Snake.column + "\n[MODIFIER]: " + Snake.modifier;}
+
+    //used exclusively for error handling
+    public static int[] getPosData(){return new int[]{row,column};}
 }

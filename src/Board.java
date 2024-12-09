@@ -22,22 +22,25 @@ public class Board extends GameManager{
         }
 
     protected static void createFood(){
-        Random rand = new Random(); //gets random class to call random cell pos
-        int posRow = rand.nextInt(GameUI.INT_CONSTANTS.BOARD_SIZE.value);
-        int posCol = rand.nextInt(GameUI.INT_CONSTANTS.BOARD_SIZE.value);
+        Cell cell;
+        try {
+            Random rand = new Random(); //gets random class to call random cell pos
+            int posRow = rand.nextInt(GameUI.INT_CONSTANTS.BOARD_SIZE.value);
+            int posCol = rand.nextInt(GameUI.INT_CONSTANTS.BOARD_SIZE.value);
 
-        Cell cell = cellList[posRow][posCol]; //inits cell
-
-            while (snakeCells.contains(cell) || posRow ==0 || posCol == 0) { //if selected cell is snake
+            while (snakeCells.contains(cellList[posRow][posCol]) || posRow == 0 || posCol == 0) { //if selected cell is snake
                 posRow = rand.nextInt(GameUI.INT_CONSTANTS.BOARD_SIZE.value);
                 posCol = rand.nextInt(GameUI.INT_CONSTANTS.BOARD_SIZE.value);
             }
 
-        cell = cellList[posRow][posCol]; //gets atts of cell currently selected
+            cell = cellList[posRow][posCol]; //gets atts of cell currently selected
 
-        //changes type to food and changes appearance to activated char
-        cell.type = STRING_CONSTANTS.TYPE_FOOD;
-        cell.changeAppearance(STRING_CONSTANTS.TYPE_FOOD);
+            //changes type to food and changes appearance to activated char
+            cell.type = STRING_CONSTANTS.TYPE_FOOD;
+            cell.changeAppearance(STRING_CONSTANTS.TYPE_FOOD);
+        }catch(Exception e){
+            ErrorPrinter.errorHandler("ERR_BR_FOOD_OOB");
+        }
     }
 
     //class manages attributes for individual cells
@@ -52,13 +55,14 @@ public class Board extends GameManager{
         private Color FOOD_COLOR = Color.RED;
 
         //constructor method used for initialization: sets X/Y position
-        private Cell(int row, int col) {
+        private Cell(int row, int col){
             ROW = row;
             COLUMN = col;
             this.type = STRING_CONSTANTS.TYPE_FIELD;
             this.age = 0;
             this.changeAppearance(STRING_CONSTANTS.TYPE_FIELD);
             cellField.setEditable(false);
+            cellField.setFocusable(false);
 
             cellList[row][col] = this;
             GameUI.setCell(cellField);

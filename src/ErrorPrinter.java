@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ErrorPrinter {
     private static final Map<String,Error> errorDB = new HashMap<>();
@@ -28,7 +29,7 @@ public class ErrorPrinter {
         }
 
         if(error.code.equals("ABSTRUSE")){System.out.println("[FALLBACK]: " + code);}
-       if(error.isError){
+       if(error.isError&&!Objects.equals(error.code, "ERR_GM_EXECUTOR_SERVICE_FAULT")){
             System.out.println("\na message from alex regarding errors\n(this is automatically appended to all errors)\nso there's actually two types of issues in the error handler i wrote: abnormalities and errors\nabnormaities are just unintended issues i should probably fix\nand errors are active issues that impede the functioning of the game\nso it's really important you report errors to me\nthanks bro\n-alexander");
             System.exit(0);
         }
@@ -49,14 +50,14 @@ public class ErrorPrinter {
     public ErrorPrinter() throws IOException {
         new init();
     }
-    private static class Error{
+    private static class Error {
         String code;
         String cause;
         boolean isError;
         String details;
         String additional;
 
-        private Error(String code, boolean isError, String cause, String details, String additional){
+        private Error(String code, boolean isError, String cause, String details, String additional) {
             this.code = code;
             this.cause = cause;
             this.details = details;
@@ -71,7 +72,10 @@ public class ErrorPrinter {
         private void initialize() throws IOException {
 
             //game-management related
-            new Error("ERR_GM_EXECUTOR_SERVICE_FAULT", false, "The frame-advancement protocol hit an error!", "Details will be sent in a stacktrace.", null);
+            new Error("ERR_GM_EXECUTOR_SERVICE_FAULT", true, "The frame-advancement protocol hit an error!", "Details will be sent in a stacktrace.", null);
+
+            //board-related
+            new Error("ERR_BR_FOOD_OOB", true, "Food positions are out-of-bounds!", "", null);
 
             //snake-related
             new Error("ABN_SK_IRREGULAR_MOVEMENT", false, "Snake movement is dysfunctional!\nYou likely somehow managed to both row/col values at once, or somehow moved twice in one frame advancement.", Snake.getErrorDetails(), null);

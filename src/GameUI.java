@@ -4,11 +4,12 @@ import java.io.IOException;
 
 public class GameUI {
 
-    protected static JFrame frame = new JFrame("text-based snake in java+swing");
+    protected static JFrame frame = new JFrame("game");
     protected static JPanel lengthPanel = new JPanel();
     protected static JPanel cellPanel = new JPanel();
     protected static JLabel lengthLabel = new JLabel("Length: 1");
     protected static JButton playAgain = new JButton("Play again");
+    protected static JButton settingsButton = new JButton("Change settings");
 
     public enum INT_CONSTANTS {
         //INTEGERS: values that make the game work
@@ -56,6 +57,11 @@ public class GameUI {
         lengthLabel.setFocusable(false);
         lengthPanel.add(lengthLabel);
 
+        //label to display length
+        settingsButton.setBounds(0, INT_CONSTANTS.WINDOW_SIZE.value+50, 150, 50);
+        settingsButton.setFocusable(false);
+        lengthPanel.add(settingsButton);
+
         //button to play again
         playAgain.setFocusable(false); //this cannot be focusable: if it is focusable, you can click on it and steal focus from the frame, and the frame needs to be focused all the time because the input listener only works when the component its applied to is focused
         playAgain.setVisible(false);
@@ -72,6 +78,12 @@ public class GameUI {
             GameManager.gameStatus = true;
             new GameManager();
             playAgain.setVisible(false);
+        });
+
+        settingsButton.addActionListener(_ -> {
+            GameManager.gameStatus = false;
+            frame.setVisible(false);
+            SettingsUI.frame.setVisible(true);
         });
     }
 

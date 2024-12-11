@@ -19,6 +19,7 @@ public class GameManager extends GameUI{
         runGame();
 
     }
+
     //manages game; initializes variables and sets timer
     private static void runGame(){
         cellPanel.removeAll();

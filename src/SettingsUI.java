@@ -4,9 +4,8 @@ import java.util.Objects;
 
 public class SettingsUI {
 
-    protected static JFrame frame = new JFrame("snake settings");
-    protected static JPanel panel = new JPanel();
-    protected static JButton playGame = new JButton("Play!");
+
+    private static boolean firstPlay = true;
 
     public enum INT_CONSTANTS {
         //INTEGERS: values that make the game work
@@ -16,6 +15,8 @@ public class SettingsUI {
         //constructor for strings (all type vaues)
         INT_CONSTANTS(int value) {this.value = value;}
     }
+    public static JFrame frame = new JFrame("snake settings");
+
 
     protected static void UIInit(){
         //changes l&f to windows classic because im a basic bitch like that
@@ -29,7 +30,6 @@ public class SettingsUI {
         }catch (Exception e){System.out.println("error with look and feel!\n------DETAILS------\n" + e.getMessage());}
 
         int WINDOW_SIZE = INT_CONSTANTS.WINDOW_SIZE.value;
-        Color snakeColorTemp = Color.BLACK;
 
         //window
         frame.setSize(WINDOW_SIZE*2, WINDOW_SIZE);
@@ -38,6 +38,7 @@ public class SettingsUI {
         frame.setVisible(true);
 
         //cellPanel that all the display elements go on
+        JPanel panel = new JPanel();
         panel.setBounds(0, 0, frame.getWidth(), frame.getHeight());
         panel.setLayout(null);
         frame.add(panel);
@@ -136,6 +137,7 @@ public class SettingsUI {
         panel.add(speedSlider);
 
         //button to play again
+        JButton playGame = new JButton("Play!");
         playGame.setBounds((frame.getWidth()/2)-150/2,frame.getHeight()-100,150,50);
         playGame.setFocusable(false); //this cannot be focusable: if it is focusable, you can click on it and steal focus from the frame, and the frame needs to be focused all the time because the input listener only works when the component its applied to is focused
         playGame.setVisible(true);
@@ -168,12 +170,19 @@ public class SettingsUI {
         });
 
         playGame.addActionListener(_ -> {
-            GameManager.FPS = (-17/4*speedSlider.getValue())+500;
-            GameManager.gameStatus = true;
-            new GameManager();
-            GameUI.frame.setVisible(true);
-            playGame.setVisible(false);
-            GameManager.frameAdvancement();
+            if(firstPlay) {
+                GameManager.FPS = (-17 / 4 * speedSlider.getValue()) + 500;
+                GameManager.gameStatus = true;
+                new GameManager();
+                GameUI.frame.setVisible(true);
+                GameManager.frameAdvancement();
+                frame.setVisible(false);
+                firstPlay = false;
+                GameUI.lengthPanel.add(GameUI.settingsButton);
+            }else{
+                GameUI.frame.setVisible(true);
+                frame.setVisible(false);
+            }
         });
 
         panel.repaint();

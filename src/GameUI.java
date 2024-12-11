@@ -83,7 +83,7 @@ public class GameUI {
         settingsButton.addActionListener(_ -> {
             GameManager.gameStatus = false;
             frame.setVisible(false);
-            SettingsUI.frame.setVisible(true);
+            SettingsUI.enableDisableSettings(true);
         });
     }
 

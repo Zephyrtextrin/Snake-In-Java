@@ -6,6 +6,8 @@ public class SettingsUI {
 
 
     private static boolean firstPlay = true;
+    private static final JFrame frame = new JFrame("snake settings");
+
 
     public enum INT_CONSTANTS {
         //INTEGERS: values that make the game work
@@ -15,8 +17,6 @@ public class SettingsUI {
         //constructor for strings (all type vaues)
         INT_CONSTANTS(int value) {this.value = value;}
     }
-    public static JFrame frame = new JFrame("snake settings");
-
 
     protected static void UIInit(){
         //changes l&f to windows classic because im a basic bitch like that
@@ -262,4 +262,6 @@ public class SettingsUI {
         if(R<darkThreshold&&G<darkThreshold&&B<darkThreshold){return Color.WHITE;
         }else{return Color.BLACK;}
     }
+
+    protected static void enableDisableSettings(boolean status){frame.setVisible(status);}
 }

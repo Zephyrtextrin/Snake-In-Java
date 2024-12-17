@@ -144,7 +144,7 @@ public class SettingsUI {
         panel.add(playGame);
 
 
-        snakeColorTypeSelect.addActionListener(_->{setColorType(snakeColorOneField,snakeColorTwoField,snakeColorThreeField,snakeColorTypeSelect);});
+        snakeColorTypeSelect.addActionListener(_-> setColorType(snakeColorOneField,snakeColorTwoField,snakeColorThreeField,snakeColorTypeSelect));
 
         setSnakeColor.addActionListener(_->{
             Board.SNAKE_COLOR = setColor(snakeColorOneField,snakeColorTwoField,snakeColorThreeField,snakeColorTypeSelect);
@@ -153,7 +153,7 @@ public class SettingsUI {
         });
 
 
-        backgroundColorTypeSelect.addActionListener(_->{setColorType(backgroundColorOneField,backgroundColorTwoField,backgroundColorThreeField,backgroundColorTypeSelect);});
+        backgroundColorTypeSelect.addActionListener(_-> setColorType(backgroundColorOneField,backgroundColorTwoField,backgroundColorThreeField,backgroundColorTypeSelect));
 
         setFieldColor.addActionListener(_->{
             Board.FIELD_COLOR = setColor(backgroundColorOneField,backgroundColorTwoField,backgroundColorThreeField,backgroundColorTypeSelect);
@@ -161,7 +161,7 @@ public class SettingsUI {
             setFieldColor.setForeground(isDarkColor(Board.FIELD_COLOR));
         });
 
-        foodColorTypeSelect.addActionListener(_->{setColorType(foodColorOneField,foodColorTwoField,foodColorThreeField,foodColorTypeSelect);});
+        foodColorTypeSelect.addActionListener(_-> setColorType(foodColorOneField,foodColorTwoField,foodColorThreeField,foodColorTypeSelect));
 
         setFoodColor.addActionListener(_->{
             Board.FOOD_COLOR = setColor(foodColorOneField,foodColorTwoField,foodColorThreeField,foodColorTypeSelect);
@@ -234,7 +234,7 @@ public class SettingsUI {
         int value;
         try{
             value = Integer.parseInt(field.getText());
-            Color test = new Color(value,value,value); //used purely to test if values are more/less than 255 or 0
+            new Color(value,value,value); //used purely to test if values are more/less than 255 or 0
         }catch (Exception e){value = 0;}
         return value;
     }

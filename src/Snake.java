@@ -50,6 +50,7 @@ public class Snake extends Board{
 
     //adds cells to snakeCell list
     private static void snakeCellsManagement(Cell targetCell) throws IOException{
+        if(targetCell==null){ErrorPrinter.errorHandler("ERR_BR_OOB");}
         if(Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_FOOD)){ //this looks incredibly dumb but you have to have this if statement inside the else
             Snake.length++;
             Board.createFood();

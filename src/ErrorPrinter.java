@@ -35,7 +35,7 @@ public class ErrorPrinter {
         //additional details, usually aimed at end-users
         if(error.additional!=null){
             headerBuilder(error.isError, false,"ADDITIONAL-DETAILS");
-            if(error.code == "ERR_GM_EXECUTOR_SERVICE_FAULT"){e.printStackTrace();
+            if(Objects.equals(error.code, "ERR_GM_EXECUTOR_SERVICE_FAULT")){e.printStackTrace();
             }else{System.out.println(error.additional);}
         }
 

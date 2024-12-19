@@ -13,7 +13,6 @@ public class GameUI {
     public static int cellCount = 400; //temp
     
     protected static void UIInit(){
-        final int WINDOW_SIZE = 860;
         boardSize = SettingsUI.getBoardSize();
         //changes l&f to windows classic because im a basic bitch like that
         try {
@@ -25,25 +24,32 @@ public class GameUI {
             }
         }catch (Exception e){System.out.println("error with look and feel!\n------DETAILS------\n" + e.getMessage());}
 
+
+        //window
+        frame.setSize(WINDOW_X, WINDOW_Y*7/6);
+        frame.setResizable(false);
+        frame.setLayout(null);
+        frame.setFocusable(true);
+
         //panel that displays the length
-        lengthPanel.setBounds(0, WINDOW_SIZE, frame.getWidth(), WINDOW_SIZE/6);
+        lengthPanel.setBounds(0, WINDOW_Y, frame.getWidth(), WINDOW_Y/6);
         lengthPanel.setFocusable(false);
         lengthPanel.setVisible(true);
         frame.add(lengthPanel);
 
         //cellPanel that all the display elements go on
-        cellPanel.setBounds(30, 0, WINDOW_SIZE-60, WINDOW_SIZE);
+        cellPanel.setBounds(30, 0, WINDOW_X-60, WINDOW_Y);
         cellPanel.setFocusable(false); //i dont think anyone will ever focus on the cellPanel but this is just in case yk (explanation under the play again button comments)
         cellPanel.setLayout(new GridLayout(boardSize, boardSize));
         frame.add(cellPanel);
 
         //label to display length
-        lengthLabel.setBounds(0, WINDOW_SIZE, frame.getWidth(), WINDOW_SIZE/6);
+        lengthLabel.setBounds(0, WINDOW_X, frame.getWidth(), WINDOW_Y/6);
         lengthLabel.setFocusable(false);
         lengthPanel.add(lengthLabel);
 
         //label to display length
-        settingsButton.setBounds(0, WINDOW_SIZE+50, 150, 50);
+        settingsButton.setBounds(0, WINDOW_X+50, 150, 50);
         settingsButton.setFocusable(false);
         lengthPanel.add(settingsButton);
 

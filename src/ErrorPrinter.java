@@ -1,7 +1,5 @@
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class ErrorPrinter {
     private static final Map<String,Error> errorDB = new HashMap<>();
@@ -14,13 +12,11 @@ public class ErrorPrinter {
             error.details = "[FALLBACK]: "+code+"\n"+additionalDetails;
         }
 
-
         //refreshes err details
         init.updateValues();
 
         //first portion of error printing system: prints out details of what happened
         //ERROR is for actual game-impeding issues; ABNORMALITY is for unintended things of lower destructiveness/priority. (honestly most of these are fringe cases that never happen ever but its good to have a handler)
-        //typically ERRORs are rarer if the game isnt actively getting debugged, since they're issues i solve first
         headerBuilder(error.isError, true,"");
 
         System.out.println(error.cause); //explains what happened and a likely explanation for why
@@ -35,17 +31,17 @@ public class ErrorPrinter {
         //additional details, usually aimed at end-users
         if(error.additional!=null){
             headerBuilder(error.isError, false,"ADDITIONAL-DETAILS");
-            if(Objects.equals(error.code, "ERR_GM_EXECUTOR_SERVICE_FAULT")){e.printStackTrace();
-            }else{System.out.println(error.additional);}
+            System.out.println(error.additional);
         }
 
-        if(error.code.equals("ABSTRUSE")){System.out.println("[FALLBACK]: " + code);}
-       if(error.isError&&!Objects.equals(error.code, "ERR_GM_EXECUTOR_SERVICE_FAULT")){
+       if(error.isError){
             System.out.println("\na message from alex regarding errors\n(this is automatically appended to all errors)\nso there's actually two types of issues in the error handler i wrote: abnormalities and errors\nabnormaities are just unintended issues i should probably fix\nand errors are active issues that impede the functioning of the game\nso it's really important you report errors to me\nthanks bro\n-alexander");
-            System.exit(0);
         }
 
         System.out.println("------------------------------------------------------------------------------------------------");
+
+       boolean stackYN = getYN("Would you like to print a stack-trace? (if you dont know what this is just say yes -alexander)");
+       if(stackYN){System.out.println(e.getMessage()); e.printStackTrace();}
     }
 
     private static void headerBuilder(boolean isError, boolean isMainHeader, String message){
@@ -66,6 +62,29 @@ public class ErrorPrinter {
     }
 
     public static void printCellAtts(Board.Cell cell){additionalDetails+="\n[ROW]: "+cell.ROW+"\n[COLUMN]: "+cell.COLUMN+"\n[AGE]: "+cell.age+"\n[TYPE]: "+cell.type;}
+
+    public static boolean getYN(final String message){
+        //init var
+        Scanner scan = new Scanner(System.in);
+        String input;
+        System.out.println(message+" [Y/N]");
+        final String[] options = {"y","n","yes","no"};
+        boolean output = false;
+
+        do{
+            input = scan.nextLine().toLowerCase(); //casts input to lower case to account for case differences
+
+            if(Arrays.asList(options).contains(input)) {
+                if(input.equalsIgnoreCase("y")||input.equalsIgnoreCase("yes")){output = true;}
+                break;
+
+                //casts options to arraylist because printing regular arrays isnt readable only lists are
+            }else{System.out.println("Sorry, you've entered an invalid input. Please try again. | VALID INPUTS: "+Arrays.asList(options));}
+
+        }while(true);
+
+        return output;
+    }
 
     private static class init {
         //some of these errors have values that need updates so they are initialized in the updateValues method instead which is why some have placeholder details

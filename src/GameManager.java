@@ -16,7 +16,6 @@ public class GameManager extends GameUI{
     GameManager(){
         UIInit();
         runGame();
-
     }
 
     //manages game; initializes variables and sets timer
@@ -61,18 +60,10 @@ public class GameManager extends GameUI{
                         if(pos[0]>boardSize-1||pos[1]>boardSize-1||pos[0]<=0||pos[1]<=0) {
                             gameStatus = false;
                         }else{
-                            ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT", e);
-                            throw new RuntimeException(e);
+                            ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT", e); //throws error if an exception happens for any other reason
                         }
                     }
-                }else{
-                    try{stopGame();}
-                    catch(Exception e){
-                        ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT", e);
-                        throw new RuntimeException(e);
-                    }
-                }
-
+                }else{stopGame();} //stops game is gamestatus is false
             }catch(Exception e){
                 ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT", e);
                 throw new RuntimeException(e);

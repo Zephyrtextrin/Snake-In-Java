@@ -6,7 +6,7 @@ import java.util.Random;
 public class Board extends GameManager {
     //init var
     final protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
-    final public static Cell[][] cellList = new Cell[GameUI.INT_CONSTANTS.BOARD_SIZE.value][GameUI.INT_CONSTANTS.BOARD_SIZE.value]; //adds +1 because positions start at 1
+    final public static Cell[][] cellList = new Cell[GameUI.boardSize][GameUI.boardSize];
     public static Color FIELD_COLOR = Color.WHITE;
     public static Color SNAKE_COLOR = Color.BLACK;
     public static Color FOOD_COLOR = Color.RED;
@@ -22,17 +22,17 @@ public class Board extends GameManager {
         int row = 0;
         int col = 0;
         final String errorMethodTraceBack = "initCells();";
+        final int boardSize = GameUI.boardSize;
         try{
             //im so used to one-line methods that it physically pains me to see this as 5 LINES (incl. brackets) but it's for the sake of "readability" SMH MY HEAD BRO
-            for (row = 1; row < GameUI.INT_CONSTANTS.BOARD_SIZE.value+2; row++) {
-                for (col = 1; col < GameUI.INT_CONSTANTS.BOARD_SIZE.value; col++) {
-                    new Cell(row, col);
+            for (row = 1; row < boardSize; row++) {
+                for (col = 1; col < boardSize; col++) {
                     new Cell(row, col, errorMethodTraceBack);
                 }
             }
         }catch (Exception e){
             ErrorPrinter.setDetails("[METHOD]: "+ errorMethodTraceBack,false);
-            ErrorPrinter.errorHandler("ERR_BR_GENERIC"); //if error is not related to positioning
+            ErrorPrinter.errorHandler("ERR_BR_GENERIC", e); //if error is not related to positioning
         }
         GameUI.repaintPanels();
     }
@@ -43,14 +43,12 @@ public class Board extends GameManager {
         int posCol = 0;
 
         try {
-            Random rand = new Random(); //gets random class to call random cell pos
-            posRow = rand.nextInt(GameUI.INT_CONSTANTS.BOARD_SIZE.value);
-            posCol = rand.nextInt(GameUI.INT_CONSTANTS.BOARD_SIZE.value);
+            do {
+                Random rand = new Random(); //gets random class to call random cell pos
+                posRow = rand.nextInt(GameUI.boardSize);
+                posCol = rand.nextInt(GameUI.boardSize);
 
-            while (snakeCells.contains(cellList[posRow][posCol]) || posRow == 0 || posCol == 0) { //if selected cell is snake
-                posRow = rand.nextInt(GameUI.INT_CONSTANTS.BOARD_SIZE.value);
-                posCol = rand.nextInt(GameUI.INT_CONSTANTS.BOARD_SIZE.value);
-            }
+            }while(snakeCells.contains(cellList[posRow][posCol]) || posRow == 0 || posCol == 0); //if selected cell is snake
 
             cell = cellList[posRow][posCol]; //gets atts of cell currently selected
             //changes type to food and changes appearance to activated char
@@ -63,10 +61,10 @@ public class Board extends GameManager {
             try{System.out.println(cellList[posRow][posCol]);
             }catch(Exception ex){
                 ErrorPrinter.setDetails("\n[ROW]: "+posRow+"\n[COL]: "+posCol,true);
-                ErrorPrinter.errorHandler("ERR_BR_CELL_OOB");
+                ErrorPrinter.errorHandler("ERR_BR_CELL_OOB", e);
             }
 
-            ErrorPrinter.errorHandler("ERR_BR_GENERIC");
+            ErrorPrinter.errorHandler("ERR_BR_GENERIC", e);
         }
     }
 
@@ -98,9 +96,9 @@ public class Board extends GameManager {
 
                 //a nested try/catch is required to check if the issue is that the cell is out-of-bounds or if it is a more general issue
                 try{System.out.println(cellList[row][col]);  //we print cellList[row][cell] here for the try (to check if accessing a cell at that index would crash) because it requires nothing to be initialized
-                }catch(Exception ex){ErrorPrinter.errorHandler("ERR_BR_CELL_OOB");}
+                }catch(Exception ex){ErrorPrinter.errorHandler("ERR_BR_CELL_OOB", e);}
 
-                ErrorPrinter.errorHandler("ABN_BR_CELL_UNDER_CONSTRUXION");
+                ErrorPrinter.errorHandler("ABN_BR_CELL_UNDER_CONSTRUXION", e);
             }
         }
 

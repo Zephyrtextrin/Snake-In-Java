@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
-import java.util.Map;
 
 public class GameUI {
 
@@ -11,19 +9,12 @@ public class GameUI {
     protected static JLabel lengthLabel = new JLabel("Length: 1");
     protected static JButton playAgain = new JButton("Play again");
     protected static JButton settingsButton = new JButton("Change settings");
-
-    public enum INT_CONSTANTS {
-        //INTEGERS: values that make the game work
-        BOARD_SIZE(20),
-        WINDOW_SIZE(35 * BOARD_SIZE.value),
-        CELL_COUNT((int) Math.pow(BOARD_SIZE.value, 2));
-        public final int value;
-
-        //constructor for strings (all type vaues)
-        INT_CONSTANTS(int value) {this.value = value;}
-    }
+    public static int boardSize = 20; //temp solution
+    public static int cellCount = 400; //temp
     
     protected static void UIInit(){
+        boardSize = SettingsUI.getBoardSize();
+        final int WINDOW_SIZE = 35 * boardSize;
         //changes l&f to windows classic because im a basic bitch like that
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -36,30 +27,30 @@ public class GameUI {
 
 
         //window
-        frame.setSize(INT_CONSTANTS.WINDOW_SIZE.value, INT_CONSTANTS.WINDOW_SIZE.value*7/6);
+        frame.setSize(WINDOW_SIZE, WINDOW_SIZE*7/6);
         frame.setResizable(false);
         frame.setLayout(null);
         frame.setFocusable(true);
 
         //panel that displays the length
-        lengthPanel.setBounds(0, INT_CONSTANTS.WINDOW_SIZE.value, frame.getWidth(), INT_CONSTANTS.WINDOW_SIZE.value/6);
+        lengthPanel.setBounds(0, WINDOW_SIZE, frame.getWidth(), WINDOW_SIZE/6);
         lengthPanel.setFocusable(false);
         lengthPanel.setVisible(true);
         frame.add(lengthPanel);
 
         //cellPanel that all the display elements go on
-        cellPanel.setBounds(30, 0, INT_CONSTANTS.WINDOW_SIZE.value-60, INT_CONSTANTS.WINDOW_SIZE.value);
+        cellPanel.setBounds(30, 0, WINDOW_SIZE-60, WINDOW_SIZE);
         cellPanel.setFocusable(false); //i dont think anyone will ever focus on the cellPanel but this is just in case yk (explanation under the play again button comments)
-        cellPanel.setLayout(new GridLayout(INT_CONSTANTS.BOARD_SIZE.value, INT_CONSTANTS.BOARD_SIZE.value));
+        cellPanel.setLayout(new GridLayout(boardSize, boardSize));
         frame.add(cellPanel);
 
         //label to display length
-        lengthLabel.setBounds(0, INT_CONSTANTS.WINDOW_SIZE.value, frame.getWidth(), INT_CONSTANTS.WINDOW_SIZE.value/6);
+        lengthLabel.setBounds(0, WINDOW_SIZE, frame.getWidth(), WINDOW_SIZE/6);
         lengthLabel.setFocusable(false);
         lengthPanel.add(lengthLabel);
 
         //label to display length
-        settingsButton.setBounds(0, INT_CONSTANTS.WINDOW_SIZE.value+50, 150, 50);
+        settingsButton.setBounds(0, WINDOW_SIZE+50, 150, 50);
         settingsButton.setFocusable(false);
         lengthPanel.add(settingsButton);
 

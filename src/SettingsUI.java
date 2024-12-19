@@ -6,6 +6,7 @@ public class SettingsUI {
 
 
     private static boolean firstPlay = true;
+    private static int boardSizeInt = 20;
     private static final JFrame frame = new JFrame("snake settings");
 
 
@@ -126,7 +127,6 @@ public class SettingsUI {
         setFoodColor.setBounds(425,145,150,25);
         panel.add(setFoodColor);
 
-
         //to set FPS
         JLabel snakeSpeedLabel = new JLabel("Snake Speed [0-100]");
         snakeSpeedLabel.setBounds((150/2)+600,0,150,25);
@@ -135,6 +135,11 @@ public class SettingsUI {
         JSlider speedSlider = new JSlider(0, 0,100,100);
         speedSlider.setBounds(625,25,150,25);
         panel.add(speedSlider);
+
+        //to set board size
+        JTextField boardSize = new JTextField("Board Size");
+        boardSize.setBounds(speedSlider.getX(),50,150,25);
+        panel.add(boardSize);
 
         //button to play again
         JButton playGame = new JButton("Play!");
@@ -170,6 +175,7 @@ public class SettingsUI {
         });
 
         playGame.addActionListener(_ -> {
+            try{boardSizeInt = Integer.parseInt(boardSize.getText());}catch(Exception e){boardSizeInt = 20;}
             if(firstPlay) {
                 GameManager.FPS = (-17 / 4 * speedSlider.getValue()) + 500;
                 GameManager.gameStatus = true;
@@ -264,4 +270,6 @@ public class SettingsUI {
     }
 
     protected static void enableDisableSettings(boolean status){frame.setVisible(status);}
+
+    protected static int getBoardSize(){return boardSizeInt;}
 }

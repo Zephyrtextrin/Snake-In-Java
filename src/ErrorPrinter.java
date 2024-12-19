@@ -6,7 +6,7 @@ import java.util.Objects;
 public class ErrorPrinter {
     private static final Map<String,Error> errorDB = new HashMap<>();
     private static String additionalDetails;
-    public static void errorHandler(String code){
+    public static void errorHandler(String code, Exception e){
         System.out.println("------------------------------------------------------------------------------------------------");
         Error error = errorDB.get(code);
         if(error==null){error = errorDB.get("ABSTRUSE");}
@@ -79,10 +79,10 @@ public class ErrorPrinter {
 
             //errors for high-score reading
             new Error("ABN_HS_INSUBSTANTIAL", false, "Length high-score not found or invalid!", "\n[VALUE]: " + DataReadingInterface.errorOutput(), "The program has already created a new file and added a default value of 0, so the issue's resolved itself.\nIf this is your first time running the program, you can probably ignore this.");
-            new Error("ABN_HS_MALFORMED", false, "Your high-score is malformed!\nIt's either larger than the amount of cells in the board, or is negative.", "[CELL COUNT]: " + GameUI.INT_CONSTANTS.CELL_COUNT.value + "\n[HIGH-SCORE]: " + DataReadingInterface.errorOutput(), "HIGH-SCORE DATA HAS BEEN ERASED.\nThis was likely caused by changing the board size, and therefore changing the amount of cells. (as of 12/18 this isn't an actual feature yet)\nIt's also likely this was caused by intentional savedata editing. (if u rly care enough to edit my fucking snake game lol)\nBoth of those are known issues. It's not neccessary to report those circumstances.\nBut if it happens in any other circumstance, that's an issue.\n[TEMPORARY NOTICE] as of rn it'll just say \"ermmm ur highscore data is fucked up :nerd emoji:\" AND IDK WHY IT HAPPENS THIS IS AWFUL -alexander");
+            new Error("ABN_HS_MALFORMED", false, "Your high-score is malformed!\nIt's either larger than the amount of cells in the board, or is negative.", "[CELL COUNT]: " + GameUI.cellCount + "\n[HIGH-SCORE]: " + DataReadingInterface.errorOutput(), "HIGH-SCORE DATA HAS BEEN ERASED.\nThis was likely caused by changing the board size, and therefore changing the amount of cells. (as of 12/19 this isn't an actual feature yet)\nIt's also likely this was caused by intentional savedata editing. (if u rly care enough to edit my fucking snake game lol)\nBoth of those are known issues. It's not neccessary to report those circumstances.\nBut if it happens in any other circumstance, that's an issue.\n[TEMPORARY NOTICE] as of rn it'll just say \"ermmm ur highscore data is fucked up :nerd emoji:\" AND IDK WHY IT HAPPENS THIS IS AWFUL -alexander");
 
             //unique
-            new Error("ABSTRUSE", true, "UNKNOWN", "This is a fallback error: Something called the ErrorPrinter class, but the error-code specified is malformed or does not exist.", "It's very likely I just made a typo somewhere. Send me the fallback code if this happens.");
+            new Error("ABSTRUSE", true, "This is a fallback error: Something called the ErrorPrinter class, but the error-code specified is malformed or does not exist.", null, "It's very likely I just made a typo somewhere. Send me the fallback code if this happens.");
         }
 
         private init() throws IOException{initialize();}
@@ -92,6 +92,7 @@ public class ErrorPrinter {
             errorDB.get("ERR_BR_CELL_OOB").details = additionalDetails;
             errorDB.get("ERR_BR_GENERIC").details = additionalDetails;
             errorDB.get("ABN_BR_CELL_UNDER_CONSTRUXION").details = additionalDetails;
+            errorDB.get("ABSTRUSE").details = "\n"+additionalDetails;
         }
     }
 

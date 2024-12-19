@@ -1,7 +1,6 @@
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -59,23 +58,23 @@ public class GameManager extends GameUI{
                     try {Snake.updateMovement();
                     }catch(Exception e){
                         int[] pos = Snake.getPosData();
-                        if(pos[0]>INT_CONSTANTS.BOARD_SIZE.value-1||pos[1]>INT_CONSTANTS.BOARD_SIZE.value-1||pos[0]<=0||pos[1]<=0) {
+                        if(pos[0]>boardSize-1||pos[1]>boardSize-1||pos[0]<=0||pos[1]<=0) {
                             gameStatus = false;
                         }else{
-                            ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT");
+                            ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT", e);
                             throw new RuntimeException(e);
                         }
                     }
                 }else{
                     try{stopGame();}
                     catch(Exception e){
-                        ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT");
+                        ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT", e);
                         throw new RuntimeException(e);
                     }
                 }
 
             }catch(Exception e){
-                ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT");
+                ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT", e);
                 throw new RuntimeException(e);
             }
         };

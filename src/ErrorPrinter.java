@@ -36,7 +36,8 @@ public class ErrorPrinter {
 
        if(error.isError){
             System.out.println("\na message from alex regarding errors\n(this is automatically appended to all errors)\nso there's actually two types of issues in the error handler i wrote: abnormalities and errors\nabnormaities are just unintended issues i should probably fix\nand errors are active issues that impede the functioning of the game\nso it's really important you report errors to me\nthanks bro\n-alexander");
-        }
+            GameManager.emergencyShutdown();
+       }
 
         System.out.println("------------------------------------------------------------------------------------------------");
 

@@ -9,17 +9,8 @@ public class SettingsUI {
     private static int boardSizeInt = 20;
     private static final JFrame frame = new JFrame("snake settings");
 
-
-    public enum INT_CONSTANTS {
-        //INTEGERS: values that make the game work
-        WINDOW_SIZE(400);
-        public final int value;
-
-        //constructor for strings (all type vaues)
-        INT_CONSTANTS(int value) {this.value = value;}
-    }
-
     protected static void UIInit(){
+        final int WINDOW_SIZE = 400;
         //changes l&f to windows classic because im a basic bitch like that
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -29,8 +20,6 @@ public class SettingsUI {
                 }
             }
         }catch (Exception e){System.out.println("error with look and feel!\n------DETAILS------\n" + e.getMessage());}
-
-        int WINDOW_SIZE = INT_CONSTANTS.WINDOW_SIZE.value;
 
         //window
         frame.setSize(WINDOW_SIZE*2, WINDOW_SIZE);
@@ -272,7 +261,7 @@ public class SettingsUI {
         }else{return Color.BLACK;}
     }
 
-    protected static void enableDisableSettings(boolean status){frame.setVisible(status);}
+    protected static void enableSettings(){frame.setVisible(true);}
 
     protected static int getBoardSize(){return boardSizeInt;}
 }

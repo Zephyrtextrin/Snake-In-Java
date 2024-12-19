@@ -3,11 +3,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class ErrorPrinter{
+public class ErrorPrinter {
     private static final Map<String,Error> errorDB = new HashMap<>();
+    private static String additionalDetails;
     public static void errorHandler(String code){
         System.out.println("------------------------------------------------------------------------------------------------");
         Error error = errorDB.get(code);
+        if(error==null){error = errorDB.get("ABSTRUSE");}
 
         //refreshes err details
         init.updateValues();
@@ -53,6 +55,13 @@ public class ErrorPrinter{
 
     public ErrorPrinter() throws IOException {new init();}
 
+    public static void setDetails(String errorDetails, boolean append){
+        if(append){additionalDetails += errorDetails;
+        }else{additionalDetails=errorDetails;}
+    }
+
+    public static void printCellAtts(Board.Cell cell){additionalDetails+="\n[ROW]: "+cell.ROW+"\n[COLUMN]: "+cell.COLUMN+"\n[AGE]: "+cell.age+"\n[TYPE]: "+cell.type;}
+
     private static class init {
         //some of these errors have values that need updates so they are initialized in the updateValues method instead which is why some have placeholder details
         private void initialize() throws IOException {
@@ -79,14 +88,13 @@ public class ErrorPrinter{
         private init() throws IOException{initialize();}
 
         //refreshes values for any error that requires a variable
-        private static void updateValues() {
-            final String boardErrorDetails = Board.getLine();
-
-            errorDB.get("ERR_BR_CELL_OOB").details = "[METHOD]: " + boardErrorDetails;
-            errorDB.get("ERR_BR_GENERIC").details = "[METHOD]: " + boardErrorDetails;
-            errorDB.get("ABN_BR_CELL_UNDER_CONSTRUXION").details = boardErrorDetails;
+        private static void updateValues(){
+            errorDB.get("ERR_BR_CELL_OOB").details = additionalDetails;
+            errorDB.get("ERR_BR_GENERIC").details = additionalDetails;
+            errorDB.get("ABN_BR_CELL_UNDER_CONSTRUXION").details = additionalDetails;
         }
     }
+
     private static class Error {
         String code;
         String cause;

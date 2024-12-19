@@ -10,7 +10,6 @@ public class Board extends GameManager {
     public static Color FIELD_COLOR = Color.WHITE;
     public static Color SNAKE_COLOR = Color.BLACK;
     public static Color FOOD_COLOR = Color.RED;
-    private static String errorDetails; //used exclusively for error handlers
 
     public enum STRING_CONSTANTS {
         //TYPE VALUES: allows you to set celltypes without using direct strings and ensures no compatibility issues
@@ -22,19 +21,17 @@ public class Board extends GameManager {
     public static void initCells(){
         int row = 0;
         int col = 0;
+        final String errorMethodTraceBack = "initCells();";
         try{
             //im so used to one-line methods that it physically pains me to see this as 5 LINES (incl. brackets) but it's for the sake of "readability" SMH MY HEAD BRO
             for (row = 1; row < GameUI.INT_CONSTANTS.BOARD_SIZE.value+2; row++) {
                 for (col = 1; col < GameUI.INT_CONSTANTS.BOARD_SIZE.value; col++) {
                     new Cell(row, col);
+                    new Cell(row, col, errorMethodTraceBack);
                 }
             }
         }catch (Exception e){
-            errorDetails = "initCells";
-
-            //used to check if the error is with the cell position specifically or is a more abstruse error
-            try{new Cell(row, col);}catch (Exception f){ErrorPrinter.errorHandler("ERR_BR_CELL_OOB");}
-
+            ErrorPrinter.setDetails("[METHOD]: "+ errorMethodTraceBack,false);
             ErrorPrinter.errorHandler("ERR_BR_GENERIC"); //if error is not related to positioning
         }
         GameUI.repaintPanels();
@@ -44,6 +41,7 @@ public class Board extends GameManager {
         Cell cell;
         int posRow = 0;
         int posCol = 0;
+
         try {
             Random rand = new Random(); //gets random class to call random cell pos
             posRow = rand.nextInt(GameUI.INT_CONSTANTS.BOARD_SIZE.value);
@@ -55,22 +53,22 @@ public class Board extends GameManager {
             }
 
             cell = cellList[posRow][posCol]; //gets atts of cell currently selected
-
             //changes type to food and changes appearance to activated char
             cell.type = STRING_CONSTANTS.TYPE_FOOD;
             cell.changeAppearance(STRING_CONSTANTS.TYPE_FOOD);
         }catch(Exception e){
-            errorDetails = "initCells";
-            //used to check if the error is with the cell position specifically or is a more generic error since itd suck if it said "cell dont exist" and the error was something else
-            try{new Cell(posRow, posCol);}catch(Exception f){ErrorPrinter.errorHandler("ERR_BR_OOB");}
+            ErrorPrinter.setDetails("[METHOD]: createFood();",false);
+
+            //checks if the issue is a general error or a positioning one specifically so the error output changes
+            try{System.out.println(cellList[posRow][posCol]);
+            }catch(Exception ex){
+                ErrorPrinter.setDetails("\n[ROW]: "+posRow+"\n[COL]: "+posCol,true);
+                ErrorPrinter.errorHandler("ERR_BR_CELL_OOB");
+            }
+
             ErrorPrinter.errorHandler("ERR_BR_GENERIC");
         }
     }
-
-    //we're in the zone where all the remaining methods are used exclusively for error handling
-    public static String getLine(){return errorDetails;}
-
-    public static void printCellAtts(Cell cell){errorDetails = "[ROW]: "+cell.ROW+"\n[COLUMN]: "+cell.COLUMN+"\n[AGE]: "+cell.age+"\n[TYPE]: "+cell.type;}
 
     //class manages attributes for individual cells
     static final class Cell{
@@ -81,7 +79,8 @@ public class Board extends GameManager {
         JTextField cellField = new JTextField();
 
         //constructor method used for initialization: sets X/Y position
-        private Cell(int row, int col){
+        //"method" is used for more accurate error handling. u wanna know what method tried to make a cell
+        private Cell(int row, int col, String method){
             try {
                 ROW = row;
                 COLUMN = col;
@@ -94,8 +93,14 @@ public class Board extends GameManager {
                 cellList[row][col] = this;
                 GameUI.setCell(cellField);
             }catch(Exception e){
-                printCellAtts(this);
-                ErrorPrinter.errorHandler("ABN_BR_UNDER_CONSTRUXION");
+                ErrorPrinter.setDetails("[METHOD]: "+method,false);
+                ErrorPrinter.printCellAtts(this);
+
+                //a nested try/catch is required to check if the issue is that the cell is out-of-bounds or if it is a more general issue
+                try{System.out.println(cellList[row][col]);  //we print cellList[row][cell] here for the try (to check if accessing a cell at that index would crash) because it requires nothing to be initialized
+                }catch(Exception ex){ErrorPrinter.errorHandler("ERR_BR_CELL_OOB");}
+
+                ErrorPrinter.errorHandler("ABN_BR_CELL_UNDER_CONSTRUXION");
             }
         }
 
@@ -104,8 +109,6 @@ public class Board extends GameManager {
             this.cellField.repaint();
             this.cellField.revalidate();
         }
-
-        private Cell(){}
 
         //sets color depending on input status
         private Color statusColorsConstants(STRING_CONSTANTS type){

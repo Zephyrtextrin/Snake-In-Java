@@ -93,6 +93,5 @@ public class GameManager extends GameUI{
         GameUI.frame.setEnabled(false);
         GameUI.frame.setVisible(false);
         gameStatus = false;
-        scheduler.shutdown();
     }
 }

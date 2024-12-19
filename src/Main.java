@@ -5,6 +5,9 @@ public class Main extends GameManager{
     public static void main(String[] args) throws IOException{
         new ErrorPrinter();
         SettingsUI.UIInit();
-        if(DEBUG){System.out.println("[DEBUG MODE ENABLED]\nQ: print current fruit position\nW: slow game down to 1/3rd of the speed\nE: create a new fruit\nR: invoke abstruse error");}
+        if(DEBUG){
+            System.out.println("[DEBUG MODE ENABLED]");
+            Debug.displayOptions();
+        }
     }
 }

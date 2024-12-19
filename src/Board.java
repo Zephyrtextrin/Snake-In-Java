@@ -69,21 +69,6 @@ public class Board extends GameManager {
         }
     }
 
-    //[DEBUG ONLY] not optimized idgaf tho
-    private static void getFoodPositionDebug(){
-        int food = 0;
-        System.out.println("[DEBUG]: ATTEMPTING TO PRINT CURRENT FOOD POSITION");
-        for (int row = 1; row < boardSize; row++) {
-            for (int col = 1; col < boardSize; col++) {
-                Cell cell = cellList[row][col];
-                if(cell.type==STRING_CONSTANTS.TYPE_FOOD){
-                    System.out.println("\n[ROW]: "+cell.ROW+"\n[COLUMN]: ");
-                    
-                }
-            }
-        }
-        if(food==0){System.out.println("[DEBUG]: DOES NOT EXIST");}
-    }
     //class manages attributes for individual cells
     static final class Cell{
         int ROW; //this is the location data and is effectively rows+col. this is used because you have to run the values through a map to sort by an element and running 2 maps for rows and cols is lag-inducing

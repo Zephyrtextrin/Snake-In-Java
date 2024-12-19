@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 
 public class GameManager extends GameUI{
 
+    public static final boolean DEBUG = true;
+
     //starts and stops game, initializes variables
     static int highScore = 0;
     static int FPS = 75;
@@ -43,8 +45,12 @@ public class GameManager extends GameUI{
     }
 
     public static void frameAdvancement(){
-        frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e){Snake.changeDirection(e.getKeyCode());}}); //key listener to obtain player input
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        //key listener to obtain player input
+        frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e){
+            Snake.changeDirection(e.getKeyCode());
+            if(DEBUG){Debug.runDebugFunctions(e.getKeyChar());}
+        }});
         if(FPS==100){FPS=75;} //my stupid equation doesnt work properly so i have to make a banaid fix. FIX THIS LATER
 
         //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
@@ -52,7 +58,6 @@ public class GameManager extends GameUI{
             //you have to try/catch for an exception on everything because executorservices just hangs the program instead of throwing an exception and i CANNOT figure OUT what the ISSUE IS unless it throws something
 
             try {
-
                 if (gameStatus){
                     try {Snake.updateMovement();
                     }catch(Exception e){
@@ -81,5 +86,13 @@ public class GameManager extends GameUI{
             DataReadingInterface.writeFile(String.valueOf(highScore));
         }
         GameUI.lengthLabel.setText("Length: "+length+" || High Score: "+highScore);
+    }
+
+    //you have to use a method here instead of shutting the game down natively using system.exit because you need to disable the game functions but keep the console running (to print stack trace)
+    public static void emergencyShutdown(){
+        GameUI.frame.setEnabled(false);
+        GameUI.frame.setVisible(false);
+        gameStatus = false;
+        scheduler.shutdown();
     }
 }

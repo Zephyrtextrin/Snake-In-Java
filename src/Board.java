@@ -6,7 +6,7 @@ import java.util.Random;
 public class Board extends GameManager {
     //init var
     final protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
-    final public static Cell[][] cellList = new Cell[GameUI.boardSize][GameUI.boardSize];
+    public static Cell[][] cellList = new Cell[GameUI.boardSize][GameUI.boardSize];
     public static Color FIELD_COLOR = Color.WHITE;
     public static Color SNAKE_COLOR = Color.BLACK;
     public static Color FOOD_COLOR = Color.RED;
@@ -19,6 +19,7 @@ public class Board extends GameManager {
     }
 
     public static void initCells(){
+        cellList = new Cell[GameUI.boardSize][GameUI.boardSize];
         int row = 0;
         int col = 0;
         final String errorMethodTraceBack = "initCells();";

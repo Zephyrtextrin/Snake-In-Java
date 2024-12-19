@@ -175,7 +175,10 @@ public class SettingsUI {
         });
 
         playGame.addActionListener(_ -> {
-            try{boardSizeInt = Integer.parseInt(boardSize.getText());}catch(Exception e){boardSizeInt = 20;}
+                try {if(boardSizeInt!=Integer.parseInt(boardSize.getText())){boardSizeInt = Integer.parseInt(boardSize.getText());}
+                }catch (Exception e){boardSizeInt = 20;}
+                Board.initCells();
+
             if(firstPlay) {
                 GameManager.FPS = (-17 / 4 * speedSlider.getValue()) + 500;
                 GameManager.gameStatus = true;

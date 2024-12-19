@@ -9,7 +9,11 @@ public class ErrorPrinter {
     public static void errorHandler(String code, Exception e){
         System.out.println("------------------------------------------------------------------------------------------------");
         Error error = errorDB.get(code);
-        if(error==null){error = errorDB.get("ABSTRUSE");}
+        if(error==null){
+            error = errorDB.get("ABSTRUSE");
+            error.details = "[FALLBACK]: "+code+"\n"+additionalDetails;
+        }
+
 
         //refreshes err details
         init.updateValues();
@@ -31,7 +35,8 @@ public class ErrorPrinter {
         //additional details, usually aimed at end-users
         if(error.additional!=null){
             headerBuilder(error.isError, false,"ADDITIONAL-DETAILS");
-            System.out.println(error.additional);
+            if(error.code == "ERR_GM_EXECUTOR_SERVICE_FAULT"){e.printStackTrace();
+            }else{System.out.println(error.additional);}
         }
 
         if(error.code.equals("ABSTRUSE")){System.out.println("[FALLBACK]: " + code);}
@@ -92,7 +97,6 @@ public class ErrorPrinter {
             errorDB.get("ERR_BR_CELL_OOB").details = additionalDetails;
             errorDB.get("ERR_BR_GENERIC").details = additionalDetails;
             errorDB.get("ABN_BR_CELL_UNDER_CONSTRUXION").details = additionalDetails;
-            errorDB.get("ABSTRUSE").details = "\n"+additionalDetails;
         }
     }
 

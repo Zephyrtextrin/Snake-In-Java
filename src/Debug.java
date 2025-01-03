@@ -51,6 +51,6 @@ public class Debug {
 
     public static void displayOptions(){
         System.out.println("\nQ: PRINT CURRENT FRUIT POSITION\nE: CREATE A NEW FRUIT\nR: INVOKE ABSTRUSE ERROR\nT: DISPLAY ALL DEBUG OPTIONS\n");
-        System.out.println("note: u dont type these in to the terminal u just hit the key while the game is running. doesnt work when ur in the color settings tho cause im lazy");
+        System.out.println("note: u dont type these in to the terminal u just hit the key while the game is running. doesnt work when ur in the color settings tho cause im lazy\nmost of these probably wont be of use to you specifically but if u get that stupid fucking glitch where the food just doesnt respawn \nafter u eat it and theres no way to grow bigger pllleeeaaasssseeee hit Q bro and send me the results pls\n-alexander");
     }
 }

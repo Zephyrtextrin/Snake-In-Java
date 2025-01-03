@@ -34,8 +34,8 @@ public class Debug {
 
         try {
             int food = 0;
-            for (int row = 1; row < GameUI.boardSize; row++) {
-                for (int col = 1; col < GameUI.boardSize; col++) {
+            for (int row = 1; row < Board.getBoardSize(); row++) {
+                for (int col = 1; col < Board.getBoardSize(); col++) {
                     Board.Cell cell = Board.cellList[row][col];
                     if (cell.type == Board.STRING_CONSTANTS.TYPE_FOOD) {
                         System.out.println("\n[ROW]: " + cell.ROW + "\n[COLUMN]: " + cell.COLUMN);

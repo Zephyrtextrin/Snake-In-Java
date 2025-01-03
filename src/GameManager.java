@@ -11,7 +11,6 @@ public class GameManager extends GameUI{
 
     //starts and stops game, initializes variables
     static int highScore = 0;
-    static int FPS = 75;
     static boolean gameStatus = true; //auto ends the game if false
 
     //CONSTRUCTOR to start/stop the game depending on the game status
@@ -56,17 +55,14 @@ public class GameManager extends GameUI{
         //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
         Runnable snakeMovement = ()-> {
             //you have to try/catch for an exception on everything because executorservices just hangs the program instead of throwing an exception and i CANNOT figure OUT what the ISSUE IS unless it throws something
-
-            try {
-                if (gameStatus){
-                    try {Snake.updateMovement();
+            try{
+                if(gameStatus){
+                    try{Snake.updateMovement();
                     }catch(Exception e){
                         int[] pos = Snake.getPosData();
-                        if(pos[0]>boardSize-1||pos[1]>boardSize-1||pos[0]<=0||pos[1]<=0) {
+                        if(pos[0]>Board.getBoardSize()-1||pos[1]>Board.getBoardSize()-1||pos[0]<=0||pos[1]<=0) {
                             gameStatus = false;
-                        }else{
-                            ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT", e); //throws error if an exception happens for any other reason
-                        }
+                        }else{ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT", e);} //throws error if an exception happens for any other reason
                     }
                 }else{stopGame();} //stops game is gamestatus is false
             }catch(Exception e){

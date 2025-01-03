@@ -9,12 +9,11 @@ public class GameUI {
     protected static JLabel lengthLabel = new JLabel("Length: 1");
     protected static JButton playAgain = new JButton("Play again");
     protected static JButton settingsButton = new JButton("Change settings");
-    public static int boardSize = 20; //temp solution
     public static int cellCount = 400; //temp
     
     protected static void UIInit(){
-        int WINDOW_SIZE = ((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth()/3));
-        boardSize = SettingsUI.getBoardSize();
+        final int boardSize = Board.getBoardSize();
+        final int WINDOW_SIZE = ((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth()/3));
         //changes l&f to windows classic because im a basic bitch like that
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {

@@ -5,11 +5,12 @@ import java.util.Random;
 
 public class Board extends GameManager {
     //init var
-    final protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
-    public static Cell[][] cellList = new Cell[GameUI.boardSize][GameUI.boardSize];
+    private static final int BOARD_SIZE = 20;
     public static Color FIELD_COLOR = Color.WHITE;
     public static Color SNAKE_COLOR = Color.BLACK;
     public static Color FOOD_COLOR = Color.RED;
+    final protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
+    public static Cell[][] cellList = new Cell[BOARD_SIZE][BOARD_SIZE];
 
     public enum STRING_CONSTANTS {
         //TYPE VALUES: allows you to set celltypes without using direct strings and ensures no compatibility issues
@@ -19,11 +20,11 @@ public class Board extends GameManager {
     }
 
     public static void initCells(){
-        cellList = new Cell[GameUI.boardSize][GameUI.boardSize];
-        int row = 0;
-        int col = 0;
+        cellList = new Cell[BOARD_SIZE][BOARD_SIZE];
+        int row;
+        int col;
         final String errorMethodTraceBack = "initCells();";
-        final int boardSize = GameUI.boardSize;
+        final int boardSize = BOARD_SIZE;
         try{
             //im so used to one-line methods that it physically pains me to see this as 5 LINES (incl. brackets) but it's for the sake of "readability" SMH MY HEAD BRO
             for (row = 1; row < boardSize; row++) {
@@ -46,8 +47,8 @@ public class Board extends GameManager {
         try {
             do {
                 Random rand = new Random(); //gets random class to call random cell pos
-                posRow = rand.nextInt(GameUI.boardSize);
-                posCol = rand.nextInt(GameUI.boardSize);
+                posRow = rand.nextInt(BOARD_SIZE);
+                posCol = rand.nextInt(BOARD_SIZE);
 
             }while(snakeCells.contains(cellList[posRow][posCol]) || posRow == 0 || posCol == 0); //if selected cell is snake
 
@@ -69,8 +70,10 @@ public class Board extends GameManager {
         }
     }
 
+    public static int getBoardSize(){return BOARD_SIZE;}
+
     //class manages attributes for individual cells
-    static final class Cell{
+    public static final class Cell{
         int ROW; //this is the location data and is effectively rows+col. this is used because you have to run the values through a map to sort by an element and running 2 maps for rows and cols is lag-inducing
         int COLUMN;
         int age; //used to determine which cell is cleared when the snake moves

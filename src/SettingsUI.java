@@ -6,7 +6,6 @@ public class SettingsUI {
 
 
     private static boolean firstPlay = true;
-    private static int boardSizeInt = 20;
     private static final JFrame frame = new JFrame("snake settings");
 
     protected static void UIInit(){
@@ -125,11 +124,6 @@ public class SettingsUI {
         speedSlider.setBounds(625,25,150,25);
         panel.add(speedSlider);
 
-        //to set board size
-        JTextField boardSize = new JTextField("Board Size");
-        boardSize.setBounds(speedSlider.getX(),50,150,25);
-        panel.add(boardSize);
-
         //button to play again
         JButton playGame = new JButton("Play!");
         playGame.setBounds((frame.getWidth()/2)-150/2,frame.getHeight()-100,150,50);
@@ -164,9 +158,7 @@ public class SettingsUI {
         });
 
         playGame.addActionListener(_ -> {
-                try {if(boardSizeInt!=Integer.parseInt(boardSize.getText())){boardSizeInt = Integer.parseInt(boardSize.getText());}
-                }catch (Exception e){boardSizeInt = 20;}
-                Board.initCells();
+            Board.initCells();
 
             if(firstPlay) {
                 GameManager.FPS = (-17 / 4 * speedSlider.getValue()) + 500;
@@ -262,6 +254,4 @@ public class SettingsUI {
     }
 
     protected static void enableSettings(){frame.setVisible(true);}
-
-    protected static int getBoardSize(){return boardSizeInt;}
 }

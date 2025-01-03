@@ -49,5 +49,8 @@ public class Debug {
         }catch(Exception e){ErrorPrinter.errorHandler("ABN_GM_DEBUG_GENERIC_EXCEPTION", e);}
     }
 
-    public static void displayOptions(){System.out.println("\nQ: PRINT CURRENT FRUIT POSITION\nE: CREATE A NEW FRUIT\nR: INVOKE ABSTRUSE ERROR\nT: DISPLAY ALL DEBUG OPTIONS\n");}
+    public static void displayOptions(){
+        System.out.println("\nQ: PRINT CURRENT FRUIT POSITION\nE: CREATE A NEW FRUIT\nR: INVOKE ABSTRUSE ERROR\nT: DISPLAY ALL DEBUG OPTIONS\n");
+        System.out.println("note: u dont type these in to the terminal u just hit the key while the game is running. doesnt work when ur in the color settings tho cause im lazy");
+    }
 }

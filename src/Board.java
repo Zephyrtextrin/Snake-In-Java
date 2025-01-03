@@ -50,7 +50,7 @@ public class Board extends GameManager {
                 posRow = rand.nextInt(BOARD_SIZE);
                 posCol = rand.nextInt(BOARD_SIZE);
 
-            }while(snakeCells.contains(cellList[posRow][posCol]) || posRow == 0 || posCol == 0); //if selected cell is snake
+            }while(snakeCells.contains(cellList[posRow][posCol])||posRow== 0||posCol==0); //if selected cell is snake
 
             cell = cellList[posRow][posCol]; //gets atts of cell currently selected
             //changes type to food and changes appearance to activated char

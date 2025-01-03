@@ -9,7 +9,7 @@ public class SettingsUI {
     private static final JFrame frame = new JFrame("snake settings");
 
     protected static void UIInit(){
-        final int WINDOW_SIZE = 400;
+        final int WINDOW_SIZE = 300;
         //changes l&f to windows classic because im a basic bitch like that
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -115,15 +115,6 @@ public class SettingsUI {
         setFoodColor.setBounds(425,145,150,25);
         panel.add(setFoodColor);
 
-        //to set FPS
-        JLabel snakeSpeedLabel = new JLabel("Snake Speed [0-100]");
-        snakeSpeedLabel.setBounds((150/2)+600,0,150,25);
-        panel.add(snakeSpeedLabel);
-
-        JSlider speedSlider = new JSlider(0, 0,100,100);
-        speedSlider.setBounds(625,25,150,25);
-        panel.add(speedSlider);
-
         //button to play again
         JButton playGame = new JButton("Play!");
         playGame.setBounds((frame.getWidth()/2)-150/2,frame.getHeight()-100,150,50);
@@ -161,7 +152,6 @@ public class SettingsUI {
             Board.initCells();
 
             if(firstPlay) {
-                GameManager.FPS = (-17 / 4 * speedSlider.getValue()) + 500;
                 GameManager.gameStatus = true;
                 new GameManager();
                 GameUI.frame.setVisible(true);

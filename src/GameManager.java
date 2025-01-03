@@ -44,14 +44,13 @@ public class GameManager extends GameUI{
     }
 
     public static void frameAdvancement(){
+        final int FPS = 75;
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         //key listener to obtain player input
         frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e){
             Snake.changeDirection(e.getKeyCode());
             if(DEBUG){Debug.runDebugFunctions(e.getKeyChar());}
         }});
-        if(FPS==100){FPS=75;} //my stupid equation doesnt work properly so i have to make a banaid fix. FIX THIS LATER
-
         //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
         Runnable snakeMovement = ()-> {
             //you have to try/catch for an exception on everything because executorservices just hangs the program instead of throwing an exception and i CANNOT figure OUT what the ISSUE IS unless it throws something

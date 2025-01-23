@@ -34,7 +34,7 @@ public class Board extends GameManager {
             }
         }catch (Exception e){
             ErrorPrinter.setDetails("[METHOD]: "+ errorMethodTraceBack,false);
-            ErrorPrinter.errorHandler("ERR_BR_GENERIC", e); //if error is not related to positioning
+            ErrorPrinter.handler("ERR_BR_GENERIC", e); //if error is not related to positioning
         }
         GameUI.repaintPanels();
     }
@@ -63,10 +63,10 @@ public class Board extends GameManager {
             try{System.out.println(cellList[posRow][posCol]);
             }catch(Exception ex){
                 ErrorPrinter.setDetails("\n[ROW]: "+posRow+"\n[COL]: "+posCol,true);
-                ErrorPrinter.errorHandler("ERR_BR_CELL_OOB", e);
+                ErrorPrinter.handler("ERR_BR_CELL_OOB", e);
             }
 
-            ErrorPrinter.errorHandler("ERR_BR_GENERIC", e);
+            ErrorPrinter.handler("ERR_BR_GENERIC", e);
         }
     }
 
@@ -100,9 +100,9 @@ public class Board extends GameManager {
 
                 //a nested try/catch is required to check if the issue is that the cell is out-of-bounds or if it is a more general issue
                 try{System.out.println(cellList[row][col]);  //we print cellList[row][cell] here for the try (to check if accessing a cell at that index would crash) because it requires nothing to be initialized
-                }catch(Exception ex){ErrorPrinter.errorHandler("ERR_BR_CELL_OOB", e);}
+                }catch(Exception ex){ErrorPrinter.handler("ERR_BR_CELL_OOB", e);}
 
-                ErrorPrinter.errorHandler("ABN_BR_CELL_UNDER_CONSTRUXION", e);
+                ErrorPrinter.handler("ABN_BR_CELL_UNDER_CONSTRUXION", e);
             }
         }
 

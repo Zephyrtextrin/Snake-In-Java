@@ -56,16 +56,19 @@ public class GameManager extends GameUI{
             //you have to try/catch for an exception on everything because executorservices just hangs the program instead of throwing an exception and i CANNOT figure OUT what the ISSUE IS unless it throws something
             try{
                 if(gameStatus){
+                    if(getFoodPosition()==null){
+                        ErrorPrinter.handler("ABN_GM_FOOD_DNE", null);
+                        Board.createFood();}
                     try{Snake.updateMovement();
                     }catch(Exception e){
                         int[] pos = Snake.getPosData();
                         if(pos[0]>Board.getBoardSize()-1||pos[1]>Board.getBoardSize()-1||pos[0]<=0||pos[1]<=0) {
                             gameStatus = false;
-                        }else{ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT", e);} //throws error if an exception happens for any other reason
+                        }else{ErrorPrinter.handler("ERR_GM_EXECUTOR_SERVICE_FAULT", e);} //throws error if an exception happens for any other reason
                     }
                 }else{stopGame();} //stops game is gamestatus is false
             }catch(Exception e){
-                ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT", e);
+                ErrorPrinter.handler("ERR_GM_EXECUTOR_SERVICE_FAULT", e);
                 throw new RuntimeException(e);
             }
         };
@@ -88,5 +91,29 @@ public class GameManager extends GameUI{
         GameUI.frame.setEnabled(false);
         GameUI.frame.setVisible(false);
         gameStatus = false;
+    }
+
+    private static Board.Cell getFoodPosition(){
+        int food = 0;
+
+        try{
+            if(Board.cellList!=null){
+                for (int row = 1; row < Board.getBoardSize(); row++) {
+                    for (int col = 1; col < Board.getBoardSize(); col++) {
+                        Board.Cell cell = Board.cellList[row][col];
+                        if (cell.type == Board.STRING_CONSTANTS.TYPE_FOOD) {
+                            return cell;
+                        }
+                    }
+                }
+            }else{ErrorPrinter.handler("ERR_BR_DNE",null);}
+            if(food==0){
+                return null;
+            }else if(food!=1&&food!=0){
+                Exception e = new Exception();
+                ErrorPrinter.handler("ABN_GM_DEBUG_GENERIC_EXCEPTION",e);
+            }
+        }catch(Exception e){ErrorPrinter.handler("ABN_GM_DEBUG_GENERIC_EXCEPTION", e);}
+        return null;
     }
 }

@@ -10,6 +10,7 @@ public class Snake extends Board{
     private static int row = 1; //thithe position of the cell the snake's head is in
     private static int column = 1;
     private static int modifier = direction.value;
+    public static Direction opposite;
 
     enum Direction{
         //init var
@@ -35,8 +36,12 @@ public class Snake extends Board{
     static void changeDirection(int key){
         Direction newDirection = directionMap.get(key);
         if (newDirection!=null&&!newDirection.equals(oppositeDirection(direction))){
+            opposite = oppositeDirection(direction);
             direction = newDirection;
             modifier = direction.value;
+            if(direction==opposite){
+                ErrorPrinter.handler("ERR_SK_OUROBOROS",null);
+            }
         }
     }
 
@@ -86,4 +91,5 @@ public class Snake extends Board{
 
     //used exclusively for error handling
     public static int[] getPosData(){return new int[]{row,column};}
+
 }

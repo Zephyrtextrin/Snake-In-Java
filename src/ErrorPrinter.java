@@ -4,7 +4,7 @@ import java.util.*;
 public class ErrorPrinter {
     private static final Map<String,Error> errorDB = new HashMap<>();
     private static String additionalDetails;
-    public static void errorHandler(String code, Exception e){
+    public static void handler(String code, Exception e){
         System.out.println("------------------------------------------------------------------------------------------------");
         Error error = errorDB.get(code);
         if(error==null){
@@ -98,15 +98,20 @@ public class ErrorPrinter {
         private void initialize() throws IOException {
 
             //game-management related
-            new Error("ERR_GM_EXECUTOR_SERVICE_FAULT", true, "The frame-advancement protocol threw an exception!", null, "Unfortunately, this is a very generic error which can be applied to just about anything and if the stacktrace isn't useful there's just about nothing I can actually do about it :/");
-            new Error("ABN_GM_DEBUG_GENERIC_EXCEPTION", false, "error debug method", null, null);
+            new Error("ERR_GM_EXECUTOR_SERVICE_FAULT", true, "The frame-advancement protocol threw an exception!", null, "Unfortunately, this is a very generic error which can be applied to just about anything and if the stacktrace isn't useful there's just about nothing I can actually do about it :/\nbut for the love of god do print the stack trace if you're prompted for it");
+            new Error("ABN_GM_DEBUG_GENERIC_EXCEPTION", false, "error with debug method", null, null);
+
             //board-related
             new Error("ERR_BR_CELL_OOB", true, "The specified cell does not exist!", "!!PLACEHOLDER!! this should be overwritten in errorprinter class", null);
-            new Error("ABN_BR_CELL_UNDER_CONSTRUXION", false, "Abnormality during the cell construction process!", "!!PLACEHOLDER!! this should be overwritten in errorprinter class", null); //the name is a camellia ref LOL@!
             new Error("ERR_BR_GENERIC", true, "An error occurred regarding the cells!", "!!PLACEHOLDER!! this should be overwritten in errorprinter class", "This is a super generic error I made in the off-chance an error happens with the board that isn't accounted for by other errors and is as a result very vague and it would be incredibly hard to get specific details on");
+            new Error("ERR_BR_DNE", true, "The Board is not loaded! (Or the Cell-List isnt initialized)","A method has queried the cell-list, but it does not exist or the Board has not been initialized. (WHICH BTW, BOTH OF THOSE SHOULD DEFINITELY BE INITIALIZED BY NOW)", null);
+            new Error("ABN_BR_FOOD_DNE", false, "There's no food on the board!", "If I'm being completely serious here: I don't know what causes this but I DO know how to detect and fix this", "An additional food item has been created.\nIf this was unnecessary, lmk - Alexander");
+            new Error("ABN_BR_CELL_UNDER_CONSTRUXION", false, "Abnormality during the cell construction process!", "!!PLACEHOLDER!! this should be overwritten in errorprinter class", null); //the name is a camellia ref LOL@!
+            new Error("ABN_BR_FOOD_MULTIPLICITY", false, "There's multiple fruit on the board!","If you spawned in multiple fruit with the debug menu this is a nothingburger but if it ISNT then uhhh uh-oh", null);
+
             //snake-related
+            new Error("ERR_SK_OUROBOROS", true, "Snake turned around in on itself!\nWhile there are checks in place to prevent the snake from going right when it's already going left, this was (somehow) not applied.", Snake.getErrorDetails()+"\nthe snake moves every 75 milliseconds, but inputs are constantly being read from the ActionListener.\nits possible to make 2 inputs in-between each frame and bypass the protections against ouroboros-ing yourself", null);
             new Error("ABN_SK_IRREGULAR_MOVEMENT", false, "Snake movement is dysfunctional!\nYou likely somehow managed to both row/col values at once, or somehow moved twice in one frame advancement.", Snake.getErrorDetails(), null);
-            new Error("ERR_SK_OUROBOROS", true, "Snake turned around in on itself!\nWhile there are checks in place to prevent the snake from going right when it's already going left, this was (somehow) not applied.", Snake.getErrorDetails(), "\n[TEMP]\nthe snake moves every 75 milliseconds, but inputs are constantly being read from the ActionListener.\nits possible to make 2 inputs in-between each frame and bypass the protections against ouroboros-ing yourself");
 
             //errors for high-score reading
             new Error("ABN_HS_INSUBSTANTIAL", false, "Length high-score not found or invalid!", "\n[VALUE]: " + DataReadingInterface.errorOutput(), "The program has already created a new file and added a default value of 0, so the issue's resolved itself.\nIf this is your first time running the program, you can probably ignore this.");

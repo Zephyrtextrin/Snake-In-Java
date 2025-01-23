@@ -43,7 +43,7 @@ public class Debug {
                     }
                 }
             }
-            if (food == 0) {
+            if(food == 0){
                 System.out.println("[DEBUG]: DOES NOT EXIST");
             }
         }catch(Exception e){ErrorPrinter.handler("ABN_GM_DEBUG_GENERIC_EXCEPTION", e);}

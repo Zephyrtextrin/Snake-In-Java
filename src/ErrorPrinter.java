@@ -47,18 +47,25 @@ public class ErrorPrinter {
             }
        }
 
-       boolean stackYN = getYN("Would you like to print a stack-trace? (if you dont know what this is just say yes");
-       if(stackYN){System.out.println(e.getMessage()); e.printStackTrace();}
-    }
+        boolean stackYN = true;
+        if(error.isError){stackYN = getYN("Would you like to print a stack-trace? (if you dont know what this is just say yes");}
+            if(stackYN&&e!=null){
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }
 
     private static void headerBuilder(boolean isError, boolean isMainHeader, String message){
-        String display = "[[--%s--]]";
+        String header = "[[--%s--]]";
         if(isMainHeader){
-            if(isError){display = "[[[[----ERROR!----]]]]";
-            }else{display = "[[[---ABNORMALITY---]]]";}
-        }else if(isError){display="\n[[[---%s---]]]";}
+            if(isError){
+                header = "[[[[----ERROR!----]]]]";
+            }else{
+                header = "[[[---ABNORMALITY---]]]";}
+        }else if(isError){
+            header ="\n[[[---%s---]]]";}
 
-        System.out.printf(display+"\n",message);
+        System.out.printf("\n"+ header +"\n",message);
     }
 
     public ErrorPrinter() throws IOException {new init();}
@@ -93,13 +100,15 @@ public class ErrorPrinter {
         return output;
     }
 
-    private static class init {
+    private static class init{
+        final String genericError = "Unfortunately, this is a very generic error which can be applied to just about anything and if the stacktrace isn't useful there's just about nothing I can actually do about it :/\nbut for the love of god do print the stack trace if you're prompted for it";
         //some of these errors have values that need updates so they are initialized in the updateValues method instead which is why some have placeholder details
         private void initialize() throws IOException {
 
             //game-management related
-            new Error("ERR_GM_EXECUTOR_SERVICE_FAULT", true, "The frame-advancement protocol threw an exception!", null, "Unfortunately, this is a very generic error which can be applied to just about anything and if the stacktrace isn't useful there's just about nothing I can actually do about it :/\nbut for the love of god do print the stack trace if you're prompted for it");
-            new Error("ABN_GM_DEBUG_GENERIC_EXCEPTION", false, "error with debug method", null, null);
+            new Error("ERR_GM_EXECUTOR_SERVICE_FAULT", true, "The frame-advancement protocol threw an exception!", null, genericError);
+            new Error("ABN_GM_DEBUG_GENERIC_EXCEPTION", false, "error with debug method", "this should not be thrown in normal gameplay", genericError);
+            new Error("ABN_GM_FINDER_MALFORMED", false, "The method to find the food is throwing an error!", null, genericError);
 
             //board-related
             new Error("ERR_BR_CELL_OOB", true, "The specified cell does not exist!", "!!PLACEHOLDER!! this should be overwritten in errorprinter class", null);
@@ -128,6 +137,7 @@ public class ErrorPrinter {
             errorDB.get("ERR_BR_CELL_OOB").details = additionalDetails;
             errorDB.get("ERR_BR_GENERIC").details = additionalDetails;
             errorDB.get("ABN_BR_CELL_UNDER_CONSTRUXION").details = additionalDetails;
+            errorDB.get("ABN_GM_FINDER_MALFORMED").details = additionalDetails;
         }
     }
 

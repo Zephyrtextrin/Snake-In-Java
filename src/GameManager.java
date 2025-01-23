@@ -56,9 +56,7 @@ public class GameManager extends GameUI{
             //you have to try/catch for an exception on everything because executorservices just hangs the program instead of throwing an exception and i CANNOT figure OUT what the ISSUE IS unless it throws something
             try{
                 if(gameStatus){
-                    if(getFoodPosition()==null){
-                        ErrorPrinter.handler("ABN_GM_FOOD_DNE", null);
-                        Board.createFood();}
+                    checkNullFood();
                     try{Snake.updateMovement();
                     }catch(Exception e){
                         int[] pos = Snake.getPosData();
@@ -93,27 +91,30 @@ public class GameManager extends GameUI{
         gameStatus = false;
     }
 
-    private static Board.Cell getFoodPosition(){
-        int food = 0;
+    //this is horribly structured but its kinda required because theres a lot of choke points when it comes to errors that need to be caught
+    //checks if theres food on the board and prints errors if there isnt
+    private static void checkNullFood(){
+        final int boardSize=Board.getBoardSize()-1; //do -1 here because indexes start at 0
 
         try{
-            if(Board.cellList!=null){
-                for (int row = 1; row < Board.getBoardSize(); row++) {
-                    for (int col = 1; col < Board.getBoardSize(); col++) {
+            if(Board.cellList[boardSize][boardSize]!=null){ //you have to check if the end of the board exists instead of if the entire board is null because it may be possible that the board just hasnt finished init-ing yet so
+                for (int row=1;row<boardSize;row++){
+                    for (int col=1;col<boardSize;col++){
                         Board.Cell cell = Board.cellList[row][col];
-                        if (cell.type == Board.STRING_CONSTANTS.TYPE_FOOD) {
-                            return cell;
+                        if(cell!=null){
+                            if(cell.type==Board.STRING_CONSTANTS.TYPE_FOOD){return;} //you have to have nested if-loops here instead of using && because it will throw an error trying to do this if-statement if the cell if null
+                        }else{
+                            ErrorPrinter.setDetails("[ROW]: "+row+" [COL]: "+ col, false);
+                            ErrorPrinter.handler("ERR_BR_CELL_OOB", null); //if a cell does not exist
                         }
                     }
                 }
-            }else{ErrorPrinter.handler("ERR_BR_DNE",null);}
-            if(food==0){
-                return null;
-            }else if(food!=1&&food!=0){
-                Exception e = new Exception();
-                ErrorPrinter.handler("ABN_GM_DEBUG_GENERIC_EXCEPTION",e);
+
+                //if there WAS food here then the loop would've already ended, so this code is only executed if there's no food on the board
+                ErrorPrinter.handler("ABN_BR_FOOD_DNE", null);
+                Board.createFood();
+
             }
-        }catch(Exception e){ErrorPrinter.handler("ABN_GM_DEBUG_GENERIC_EXCEPTION", e);}
-        return null;
+        }catch(Exception e){ErrorPrinter.handler("ABN_GM_FINDER_MALFORMED", e);} //generic error
     }
 }

@@ -4,6 +4,7 @@ import java.util.*;
 public class ErrorPrinter {
     private static final Map<String,Error> errorDB = new HashMap<>();
     private static String additionalDetails;
+
     public static void errorHandler(String code, Exception e){
         System.out.println("------------------------------------------------------------------------------------------------");
         Error error = errorDB.get(code);
@@ -61,8 +62,6 @@ public class ErrorPrinter {
         System.out.printf(display+"\n",message);
     }
 
-    public ErrorPrinter() throws IOException {new init();}
-
     public static void setDetails(String errorDetails, boolean append){
         if(append){additionalDetails += errorDetails;
         }else{additionalDetails=errorDetails;}
@@ -95,6 +94,7 @@ public class ErrorPrinter {
 
     private static class init {
         //some of these errors have values that need updates so they are initialized in the updateValues method instead which is why some have placeholder details
+        //todo: make these err codes enums instead
         private void initialize() throws IOException {
 
             //game-management related

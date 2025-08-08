@@ -13,14 +13,26 @@ public class GameManager extends GameUI{
     static int highScore = 0;
     static boolean gameStatus = true; //auto ends the game if false
 
+    //sets up frame, initializes some constructors, and runs method that actually makes the game work
+    public static void main(String[] args) throws IOException{
+
+        ErrorPrinter.initialize();
+        SettingsUI.UIInit();
+
+        if(DEBUG){
+            System.out.println("[DEBUG MODE ENABLED]");
+            Debug.displayOptions();
+        }
+    }
+
     //CONSTRUCTOR to start/stop the game depending on the game status
-    GameManager(){
+    GameManager() throws IOException {
         UIInit();
         runGame();
     }
 
     //manages game; initializes variables and sets timer
-    private static void runGame(){
+    private static void runGame() throws IOException {
         cellPanel.removeAll();
         Board.initCells();
         Board.snakeCells.clear();
@@ -61,11 +73,11 @@ public class GameManager extends GameUI{
                         int[] pos = Snake.getPosData();
                         if(pos[0]>Board.getBoardSize()-1||pos[1]>Board.getBoardSize()-1||pos[0]<=0||pos[1]<=0) {
                             gameStatus = false;
-                        }else{ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT", e);} //throws error if an exception happens for any other reason
+                        }else{ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ERR_GM_EXECUTOR_SERVICE_FAULT, e);} //throws error if an exception happens for any other reason
                     }
                 }else{stopGame();} //stops game is gamestatus is false
             }catch(Exception e){
-                ErrorPrinter.errorHandler("ERR_GM_EXECUTOR_SERVICE_FAULT", e);
+                ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ERR_GM_EXECUTOR_SERVICE_FAULT, e);
                 throw new RuntimeException(e);
             }
         };
@@ -73,20 +85,21 @@ public class GameManager extends GameUI{
         scheduler.scheduleAtFixedRate(snakeMovement, 1, FPS, TimeUnit.MILLISECONDS);
     }
 
-    public static void highScoreUpdater(int length) throws IOException{
+    //you have to use a method here instead of shutting the game down natively using system.exit because you need to disable the game functions but keep the console running (to print stack trace)
+    public static void emergencyShutdown(){
+        GameUI.frame.setEnabled(false);
+        GameUI.frame.setVisible(false);
+        gameStatus = false;
+    }
+
+    public static void updateLengthText(int length) throws IOException {
         highScore = DataReadingInterface.readFile();
 
         if(length>highScore){
             highScore = length;
             DataReadingInterface.writeFile(String.valueOf(highScore));
         }
-        GameUI.lengthLabel.setText("Length: "+length+" || High Score: "+highScore);
-    }
 
-    //you have to use a method here instead of shutting the game down natively using system.exit because you need to disable the game functions but keep the console running (to print stack trace)
-    public static void emergencyShutdown(){
-        GameUI.frame.setEnabled(false);
-        GameUI.frame.setVisible(false);
-        gameStatus = false;
+        GameUI.lengthLabel.setText("Length: "+length+" || High Score: "+highScore);
     }
 }

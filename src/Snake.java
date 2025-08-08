@@ -4,12 +4,15 @@ import java.util.Map;
 import java.util.Objects;
 
 //holds data for snake
+//todo: make this not extend the board why is it LIKE THIS
 public class Snake extends Board{
     private static int length = 1;
     private static Direction direction = Direction.RIGHT;
     private static int row = 1; //thithe position of the cell the snake's head is in
     private static int column = 1;
     private static int modifier = direction.value;
+
+    Snake() throws IOException {}
 
     enum Direction{
         //init var
@@ -53,7 +56,7 @@ public class Snake extends Board{
         if(Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_FOOD)){ //this looks incredibly dumb but you have to have this if statement inside the else
             Snake.length++;
             Board.createFood();
-            GameManager.highScoreUpdater(length);
+            GameManager.updateLengthText(length);
         }else if(snakeCells.contains(targetCell)){gameStatus = false;}
 
         targetCell.changeAppearance(STRING_CONSTANTS.TYPE_SNAKE); //changes target cell into its activated appearance (since snake cells are the activated appearance of a shaded-in block
@@ -73,12 +76,13 @@ public class Snake extends Board{
         }
     }
 
-    public static void setDefaultValues(){
+    public static void setDefaultValues() throws IOException {
         length = 1;
         direction = Direction.RIGHT;
         row = 1; //thithe position of the cell the snake's head is in
         column = 1;
         modifier = direction.value;
+        GameManager.updateLengthText(length);
     }
 
     //used exclusively for error handling
@@ -86,4 +90,5 @@ public class Snake extends Board{
 
     //used exclusively for error handling
     public static int[] getPosData(){return new int[]{row,column};}
+
 }

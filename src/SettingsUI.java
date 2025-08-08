@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.Objects;
 
 public class SettingsUI {
@@ -153,7 +154,8 @@ public class SettingsUI {
 
             if(firstPlay) {
                 GameManager.gameStatus = true;
-                new GameManager();
+                try{new GameManager();
+                }catch (IOException e){throw new RuntimeException(e);}
                 GameUI.frame.setVisible(true);
                 GameManager.frameAdvancement();
                 frame.setVisible(false);

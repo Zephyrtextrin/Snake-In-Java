@@ -1,8 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class GameUI {
 
+    //todo DONT DO THIS
     protected static JFrame frame = new JFrame("game");
     protected static JPanel lengthPanel = new JPanel();
     protected static JPanel cellPanel = new JPanel();
@@ -14,7 +16,8 @@ public class GameUI {
     protected static void UIInit(){
         final int boardSize = Board.getBoardSize();
         final int WINDOW_SIZE = ((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth()/3));
-        //changes l&f to windows classic because im a basic bitch like that
+
+        //changes look and feel into windows classic
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Windows Classic".equals(info.getName())) {
@@ -25,6 +28,7 @@ public class GameUI {
         }catch (Exception e){System.out.println("error with look and feel!\n------DETAILS------\n" + e.getMessage());}
 
 
+        //TODO: MAKE THIS NOT BAD
         //window
         frame.setSize(WINDOW_SIZE, WINDOW_SIZE*7/6);
         frame.setResizable(false);
@@ -67,7 +71,8 @@ public class GameUI {
 
         playAgain.addActionListener(_ -> {
             GameManager.gameStatus = true;
-            new GameManager();
+            try {new GameManager();
+            }catch (IOException e){throw new RuntimeException(e);}
             playAgain.setVisible(false);
         });
 

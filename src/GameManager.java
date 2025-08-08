@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 public class GameManager extends GameUI{
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     //starts and stops game, initializes variables
     static int highScore = 0;
@@ -79,14 +79,13 @@ public class GameManager extends GameUI{
                         int[] pos = Snake.getPosData();
                         if(pos[0]>Board.getBoardSize()-1||pos[1]>Board.getBoardSize()-1||pos[0]<=0||pos[1]<=0) {
                             gameStatus = false;
-                        }else{ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ERR_GM_EXECUTOR_SERVICE_FAULT, e);} //throws error if an exception happens for any other reason
+                        }else{throw ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ERR_GM_EXECUTOR_SERVICE_FAULT);} //throws error if an exception happens for any other reason
                     }
                 }else{stopGame();}//stops game is gamestatus is false
             }catch(Exception e){
-
-                try {ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ERR_GM_EXECUTOR_SERVICE_FAULT, e);
+                //idk why java is making me do this.. why do i need to try/catch an error throw
+                try {throw ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ERR_GM_EXECUTOR_SERVICE_FAULT);
                 }catch (Exception ex){throw new RuntimeException(ex);}
-                throw new RuntimeException(e);
             }
         };
 

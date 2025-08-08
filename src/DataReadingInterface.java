@@ -14,15 +14,12 @@ public class DataReadingInterface{
         if(scan.hasNextInt()){
             length = scan.nextInt();
             if(length>GameUI.cellCount){ //err handler if data is malformed
-                ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ABN_HS_MALFORMED, null);
-
                 writeFile("0");
-                return 0;
+                throw ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ABN_HS_MALFORMED);
             }
         }else{ //error handler in case highscore data does not exist
-            ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ABN_HS_INSUBSTANTIAL, null);
             writeFile("0");
-            return 0;
+            throw ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ABN_HS_INSUBSTANTIAL);
         }
         return length;
     }

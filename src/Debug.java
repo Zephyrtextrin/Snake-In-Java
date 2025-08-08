@@ -14,8 +14,7 @@ public class Debug {
 
             case 'r':
                 System.out.println("[DEBUG]: ATTEMPTING TO INVOKE ABSTRUSE ERROR");
-                ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.DEBUG, null);
-                break;
+                throw ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.DEBUG);
 
             case 't':
                 displayOptions();
@@ -46,7 +45,7 @@ public class Debug {
             if (food == 0) {
                 System.out.println("[DEBUG]: DOES NOT EXIST");
             }
-        }catch(Exception e){ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ABN_GM_DEBUG_GENERIC_EXCEPTION, e);}
+        }catch(Exception e){throw ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ABN_GM_DEBUG_GENERIC_EXCEPTION);}
     }
 
     public static void displayOptions(){

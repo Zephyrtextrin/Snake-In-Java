@@ -2,16 +2,16 @@ import java.io.IOException;
 import java.util.*;
 
 public abstract class ErrorPrinter {
-    private static final Map<ERROR_CODE,Error> errorDB = new HashMap<>();
+    private static final ErrorDB DB = new ErrorDB();
     private static String additionalDetails;
 
-    public static Exception errorBuilder(ERROR_CODE code, Exception e){
+    public static Exception errorHandler(ERROR_CODE code){
         final StringBuilder builder = new StringBuilder();
 
         builder.append("\n------------------------------------------------------------------------------------------------");
-        Error error = errorDB.get(code);
+        Error error = DB.get(code);
         if(error==null){
-            error = errorDB.get(ERROR_CODE.ABSTRUSE);
+            error = DB.get(ERROR_CODE.ABSTRUSE);
             error.details = "[ATTEMPTED-CALL]: "+code+"\n"+additionalDetails;
         }
 
@@ -50,11 +50,6 @@ public abstract class ErrorPrinter {
        if(stackYN){System.out.println(e.getMessage()); e.printStackTrace();}*/
 
        return new Exception(builder.toString());
-    }
-
-
-    public static void errorHandler(ERROR_CODE code, Exception e) throws Exception{
-        throw errorBuilder(code,new Exception());
     }
 
 
@@ -104,46 +99,51 @@ public abstract class ErrorPrinter {
     //todo: make these err codes enums instead
     public static void initialize() throws IOException {
 
-        //game-management related
-        new Error(ERROR_CODE.ERR_GM_EXECUTOR_SERVICE_FAULT, true, "The frame-advancement protocol threw an exception!", null, "Unfortunately, this is a very generic error which can be applied to just about anything and if the stacktrace isn't useful there's just about nothing I can actually do about it :/");
-        new Error(ERROR_CODE.ABN_GM_DEBUG_GENERIC_EXCEPTION, false, "error debug method", null, null);
+        DB.putAllErrs(new Error[]{
+            //game-management related
+            new Error(ERROR_CODE.ERR_GM_EXECUTOR_SERVICE_FAULT, true, "The frame-advancement protocol threw an exception!", null, "Unfortunately, this is a very generic error which can be applied to just about anything and if the stacktrace isn't useful there's just about nothing I can actually do about it :/"),
+            new Error(ERROR_CODE.ABN_GM_DEBUG_GENERIC_EXCEPTION, false, "error debug method", null, null),
 
-        //board-related
-        new Error(ERROR_CODE.ERR_BR_CELL_OOB, true, "The specified cell does not exist!", "!!PLACEHOLDER!! this should be overwritten in errorprinter class", null);
-        new Error(ERROR_CODE.ABN_BR_CELL_UNDER_CONSTRUXION, false, "Abnormality during the cell construction process!", "!!PLACEHOLDER!! this should be overwritten in errorprinter class", null); //the name is a camellia ref LOL@!
-        new Error(ERROR_CODE.ERR_BR_GENERIC, true, "An error occurred regarding the cells!", "!!PLACEHOLDER!! this should be overwritten in errorprinter class", "This is a super generic error I made in the off-chance an error happens with the board that isn't accounted for by other errors and is as a result very vague and it would be incredibly hard to get specific details on");
+            //board-related
+            new Error(ERROR_CODE.ERR_BR_CELL_OOB, true, "The specified cell does not exist!", "!!PLACEHOLDER!! this should be overwritten in errorprinter class", null),
+            new Error(ERROR_CODE.ABN_BR_CELL_UNDER_CONSTRUXION, false, "Abnormality during the cell construction process!", "!!PLACEHOLDER!! this should be overwritten in errorprinter class", null), //the name is a camellia ref LOL@!
+            new Error(ERROR_CODE.ERR_BR_GENERIC, true, "An error occurred regarding the cells!", "!!PLACEHOLDER!! this should be overwritten in errorprinter class", "This is a super generic error I made in the off-chance an error happens with the board that isn't accounted for by other errors and is as a result very vague and it would be incredibly hard to get specific details on"),
 
-        //snake-related
-        new Error(ERROR_CODE.ABN_SK_IRREGULAR_MOVEMENT, false, "Snake movement is dysfunctional!\nYou likely somehow managed to both row/col values at once, or somehow moved twice in one frame advancement.", Snake.getErrorDetails(), null);
-        new Error(ERROR_CODE.ERR_SK_OUROBOROS, true, "Snake turned around in on itself!\nWhile there are checks in place to prevent the snake from going right when it's already going left, this was (somehow) not applied.", Snake.getErrorDetails(), "\n[TEMP]\nthe snake moves every 75 milliseconds, but inputs are constantly being read from the ActionListener.\nits possible to make 2 inputs in-between each frame and bypass the protections against ouroboros-ing yourself");
+            //snake-related
+            new Error(ERROR_CODE.ABN_SK_IRREGULAR_MOVEMENT, false, "Snake movement is dysfunctional!\nYou likely somehow managed to both row/col values at once, or somehow moved twice in one frame advancement.", Snake.getErrorDetails(), null),
+            new Error(ERROR_CODE.ERR_SK_OUROBOROS, true, "Snake turned around in on itself!\nWhile there are checks in place to prevent the snake from going right when it's already going left, this was (somehow) not applied.", Snake.getErrorDetails(), "\n[TEMP]\nthe snake moves every 75 milliseconds, but inputs are constantly being read from the ActionListener.\nits possible to make 2 inputs in-between each frame and bypass the protections against ouroboros-ing yourself"),
 
-        //errors for high-score reading
-        new Error(ERROR_CODE.ABN_HS_INSUBSTANTIAL, false, "Length high-score not found or invalid!", "\n[VALUE]: " + DataReadingInterface.errorOutput(), "The program has already created a new file and added a default value of 0, so the issue's resolved itself.\nIf this is your first time running the program, you can probably ignore this.");
-        new Error(ERROR_CODE.ABN_HS_MALFORMED, false, "Your high-score is malformed!\nIt's either larger than the amount of cells in the board, or is negative.", "[CELL COUNT]: " + GameUI.cellCount + "\n[HIGH-SCORE]: " + DataReadingInterface.errorOutput(), "HIGH-SCORE DATA HAS BEEN ERASED.\nThis was likely caused by changing the board size, and therefore changing the amount of cells. (as of 12/19 this isn't an actual feature yet)\nIt's also likely this was caused by intentional savedata editing. (if u rly care enough to edit my fucking snake game lol)\nBoth of those are known issues. It's not neccessary to report those circumstances.\nBut if it happens in any other circumstance, that's an issue.\n[TEMPORARY NOTICE] as of rn it'll just say \"ermmm ur highscore data is fucked up :nerd emoji:\" AND IDK WHY IT HAPPENS THIS IS AWFUL -alexander");
+            //errors for high-score reading
+            new Error(ERROR_CODE.ABN_HS_INSUBSTANTIAL, false, "Length high-score not found or invalid!", "\n[VALUE]: " + DataReadingInterface.errorOutput(), "The program has already created a new file and added a default value of 0, so the issue's resolved itself.\nIf this is your first time running the program, you can probably ignore this."),
+            new Error(ERROR_CODE.ABN_HS_MALFORMED, false, "Your high-score is malformed!\nIt's either larger than the amount of cells in the board, or is negative.", "[CELL COUNT]: " + GameUI.cellCount + "\n[HIGH-SCORE]: " + DataReadingInterface.errorOutput(), "HIGH-SCORE DATA HAS BEEN ERASED."),
 
-        //unique
-        new Error(ERROR_CODE.ABSTRUSE, true, "This is a fallback error: Something called the ErrorPrinter class, but the error-code specified is malformed or does not exist.", null, "It's very likely I just made a typo somewhere.");
+            //unique
+            new Error(ERROR_CODE.ABSTRUSE, true, "This is a fallback error: Something called the ErrorPrinter class, but the error-code specified is malformed or does not exist.", null, "It's very likely I just made a typo somewhere."),
+
+        });
 
         updateValues();
+
     }
 
     //refreshes values for any error that requires a variable
     private static void updateValues(){
-        errorDB.get(ERROR_CODE.ERR_BR_CELL_OOB).details = additionalDetails;
-        errorDB.get(ERROR_CODE.ERR_BR_GENERIC).details = additionalDetails;
-        errorDB.get(ERROR_CODE.ABN_BR_CELL_UNDER_CONSTRUXION).details = additionalDetails;
+        DB.get(ERROR_CODE.ERR_BR_CELL_OOB).details = additionalDetails;
+        DB.get(ERROR_CODE.ERR_BR_GENERIC).details = additionalDetails;
+        DB.get(ERROR_CODE.ABN_BR_CELL_UNDER_CONSTRUXION).details = additionalDetails;
     }
 
 
     public static void printCellAtts(Board.Cell cell){additionalDetails+="\n[ROW]: "+cell.ROW+"\n[COLUMN]: "+cell.COLUMN+"\n[AGE]: "+cell.age+"\n[TYPE]: "+cell.type;}
 
-    private static class Error {
+    private static class Error extends Exception{
         ERROR_CODE code;
         String cause;
         boolean isError;
         String details;
         String additional;
 
+        //used when first initializing the program. adds error to errorDB
         private Error(ERROR_CODE code, boolean isError, String cause, String details, String additional) {
             this.code = code;
             this.cause = cause;
@@ -151,7 +151,15 @@ public abstract class ErrorPrinter {
             this.isError = isError;
             this.additional = additional;
 
-            errorDB.put(code, this);
+            DB.put(code, this);
+        }
+    }
+
+    private static class ErrorDB extends HashMap<ERROR_CODE,Error>{
+        public void putAllErrs(Error[] errors){
+            for(Error error:errors) {
+                this.put(error.code, error);
+            }
         }
     }
 }

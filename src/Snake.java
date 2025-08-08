@@ -1,10 +1,9 @@
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
 //holds data for snake
-//todo: make this not extend the board why is it LIKE THIS
+//todo: make this not extend the board why is it LIKE THIS THIS IS SOOO BAD
 public class Snake extends Board{
     private static int length = 1;
     private static Direction direction = Direction.RIGHT;
@@ -43,7 +42,7 @@ public class Snake extends Board{
             direction = newDirection;
             modifier = direction.value;
             if(direction==opposite){
-                ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ERR_SK_OUROBOROS,null);
+                throw ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ERR_SK_OUROBOROS);
             }
         }
     }

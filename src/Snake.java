@@ -43,7 +43,7 @@ public class Snake extends Board{
             direction = newDirection;
             modifier = direction.value;
             if(direction==opposite){
-                ErrorPrinter.handler("ERR_SK_OUROBOROS",null);
+                ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ERR_SK_OUROBOROS,null);
             }
         }
     }

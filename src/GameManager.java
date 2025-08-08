@@ -26,13 +26,13 @@ public class GameManager extends GameUI{
     }
 
     //CONSTRUCTOR to start/stop the game depending on the game status
-    GameManager() throws IOException {
+    GameManager() throws Exception {
         UIInit();
         runGame();
     }
 
     //manages game; initializes variables and sets timer
-    private static void runGame() throws IOException {
+    private static void runGame() throws Exception {
         cellPanel.removeAll();
         Board.initCells();
         Board.snakeCells.clear();
@@ -60,8 +60,14 @@ public class GameManager extends GameUI{
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         //key listener to obtain player input
         frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e){
-            Snake.changeDirection(e.getKeyCode());
-            if(DEBUG){Debug.runDebugFunctions(e.getKeyChar());}
+
+            try {Snake.changeDirection(e.getKeyCode());
+            }catch (Exception ex){throw new RuntimeException(ex);}
+
+            if(DEBUG){
+                try{Debug.runDebugFunctions(e.getKeyChar());
+                }catch (Exception ex) {throw new RuntimeException(ex);}
+            }
         }});
         //method that gets called every (milliseconds defined in FPS variable) makes the snake move and shit
         Runnable snakeMovement = ()-> {
@@ -75,9 +81,11 @@ public class GameManager extends GameUI{
                             gameStatus = false;
                         }else{ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ERR_GM_EXECUTOR_SERVICE_FAULT, e);} //throws error if an exception happens for any other reason
                     }
-                }else{stopGame();} //stops game is gamestatus is false
+                }else{stopGame();}//stops game is gamestatus is false
             }catch(Exception e){
-                ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ERR_GM_EXECUTOR_SERVICE_FAULT, e);
+
+                try {ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ERR_GM_EXECUTOR_SERVICE_FAULT, e);
+                }catch (Exception ex){throw new RuntimeException(ex);}
                 throw new RuntimeException(e);
             }
         };
@@ -92,7 +100,7 @@ public class GameManager extends GameUI{
         gameStatus = false;
     }
 
-    public static void updateLengthText(int length) throws IOException {
+    public static void updateLengthText(int length) throws Exception {
         highScore = DataReadingInterface.readFile();
 
         if(length>highScore){

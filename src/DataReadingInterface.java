@@ -8,7 +8,7 @@ public class DataReadingInterface{
     private static final String dataPath = "./LENGTHDATA.txt";
     private static final File DATA_FILE = new File(dataPath); //path to the txt with all the shit that matters in it
 
-    protected static int readFile() throws IOException {
+    protected static int readFile() throws Exception {
         final Scanner scan = new Scanner(DATA_FILE);
         int length;
         if(scan.hasNextInt()){

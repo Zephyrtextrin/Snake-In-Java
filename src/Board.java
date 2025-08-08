@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -14,7 +13,7 @@ public class Board extends GameManager{
     final protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
     public static Cell[][] cellList = new Cell[BOARD_SIZE][BOARD_SIZE];
 
-    Board() throws IOException {}
+    Board() throws Exception {}
 
     public enum STRING_CONSTANTS {
         //TYPE VALUES: allows you to set celltypes without using direct strings and ensures no compatibility issues
@@ -23,7 +22,7 @@ public class Board extends GameManager{
         TYPE_FOOD
     }
 
-    public static void initCells(){
+    public static void initCells() throws Exception {
         cellList = new Cell[BOARD_SIZE][BOARD_SIZE];
         int row;
         int col;
@@ -43,7 +42,7 @@ public class Board extends GameManager{
         GameUI.repaintPanels();
     }
 
-    protected static void createFood(){
+    protected static void createFood() throws Exception {
         Cell cell;
         int posRow = 0;
         int posCol = 0;
@@ -86,7 +85,7 @@ public class Board extends GameManager{
 
         //constructor method used for initialization: sets X/Y position
         //"method" is used for more accurate error handling. u wanna know what method tried to make a cell
-        private Cell(int row, int col, String method){
+        private Cell(int row, int col, String method) throws Exception {
             try {
                 ROW = row;
                 COLUMN = col;

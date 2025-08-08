@@ -150,12 +150,13 @@ public class SettingsUI {
         });
 
         playGame.addActionListener(_ -> {
-            Board.initCells();
+            try{Board.initCells();
+            }catch (Exception e){throw new RuntimeException(e);}
 
             if(firstPlay) {
                 GameManager.gameStatus = true;
                 try{new GameManager();
-                }catch (IOException e){throw new RuntimeException(e);}
+                }catch (Exception e) {throw new RuntimeException(e);}
                 GameUI.frame.setVisible(true);
                 GameManager.frameAdvancement();
                 frame.setVisible(false);

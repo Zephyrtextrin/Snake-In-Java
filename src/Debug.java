@@ -1,5 +1,5 @@
 public class Debug {
-    public static void runDebugFunctions(char key){
+    public static void runDebugFunctions(char key) throws Exception {
         boolean isRealFunction = true;
         switch(key){
             case 'q':
@@ -30,7 +30,7 @@ public class Debug {
     }
 
     //[DEBUG ONLY] not optimized idgaf tho
-    private static void getFoodPosition(){
+    private static void getFoodPosition() throws Exception {
 
         try {
             int food = 0;

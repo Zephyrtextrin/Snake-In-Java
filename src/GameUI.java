@@ -72,7 +72,7 @@ public class GameUI {
         playAgain.addActionListener(_ -> {
             GameManager.gameStatus = true;
             try {new GameManager();
-            }catch (IOException e){throw new RuntimeException(e);}
+            }catch (Exception e){throw new RuntimeException(e);}
             playAgain.setVisible(false);
         });
 

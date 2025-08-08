@@ -13,7 +13,7 @@ public class Snake extends Board{
     private static int modifier = direction.value;
     public static Direction opposite;
 
-    Snake() throws IOException {}
+    Snake() throws Exception {}
 
     enum Direction{
         //init var
@@ -25,7 +25,7 @@ public class Snake extends Board{
         Direction(int value){this.value=value;}
     }
 
-    protected static void updateMovement() throws IOException{
+    protected static void updateMovement() throws Exception {
         if(direction.equals(Direction.LEFT)||direction.equals(Direction.RIGHT)){column += modifier;
         }else{row+=modifier;}
 
@@ -36,7 +36,7 @@ public class Snake extends Board{
     //contains the opposite direction for each key input (so u dont hit left key while going right and u move inside of yourself and instalose)
     private static final Map<Integer, Direction> directionMap = Map.of(KeyEvent.VK_RIGHT, Direction.RIGHT, KeyEvent.VK_LEFT, Direction.LEFT, KeyEvent.VK_UP, Direction.UP, KeyEvent.VK_DOWN, Direction.DOWN);
 
-    static void changeDirection(int key){
+    static void changeDirection(int key) throws Exception {
         Direction newDirection = directionMap.get(key);
         if (newDirection!=null&&!newDirection.equals(oppositeDirection(direction))){
             opposite = oppositeDirection(direction);
@@ -57,7 +57,7 @@ public class Snake extends Board{
     };}
 
     //adds cells to snakeCell list
-    private static void snakeCellsManagement(Cell targetCell) throws IOException{
+    private static void snakeCellsManagement(Cell targetCell) throws Exception {
         if(Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_FOOD)){ //this looks incredibly dumb but you have to have this if statement inside the else
             Snake.length++;
             Board.createFood();
@@ -81,7 +81,7 @@ public class Snake extends Board{
         }
     }
 
-    public static void setDefaultValues() throws IOException {
+    public static void setDefaultValues() throws Exception {
         length = 1;
         direction = Direction.RIGHT;
         row = 1; //thithe position of the cell the snake's head is in

@@ -10,7 +10,6 @@ public class Snake extends Board{
     private int row = 1; //thithe position of the cell the snake's head is in
     private int column = 1;
     private int modifier = direction.value;
-    public Direction opposite;
 
     Snake() throws Exception {}
 
@@ -38,10 +37,10 @@ public class Snake extends Board{
     void changeDirection(int key) throws Exception {
         Direction newDirection = directionMap.get(key);
         if (newDirection!=null&&!newDirection.equals(oppositeDirection(direction))){
-            opposite = oppositeDirection(direction);
+            Direction opposite = oppositeDirection(direction);
             direction = newDirection;
             modifier = direction.value;
-            if(direction==opposite){
+            if(direction== opposite){
                 throw ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ERR_SK_OUROBOROS);
             }
         }

@@ -150,6 +150,10 @@ public class SettingsUI {
         });
 
         playGame.addActionListener(_ -> {
+            Snake snake;
+            try { snake = new Snake();
+            }catch (Exception e){throw new RuntimeException(e);}
+
             try{Board.initCells();
             }catch (Exception e){throw new RuntimeException(e);}
 
@@ -158,7 +162,7 @@ public class SettingsUI {
                 try{new GameManager();
                 }catch (Exception e) {throw new RuntimeException(e);}
                 GameUI.frame.setVisible(true);
-                GameManager.frameAdvancement();
+                GameManager.frameAdvancement(snake);
                 frame.setVisible(false);
                 firstPlay = false;
                 GameUI.lengthPanel.add(GameUI.settingsButton);

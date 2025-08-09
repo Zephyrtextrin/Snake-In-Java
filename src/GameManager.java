@@ -36,7 +36,6 @@ public class GameManager extends GameUI{
         cellPanel.removeAll();
         Board.initCells();
         Board.snakeCells.clear();
-        Snake.setDefaultValues();
         Board.createFood(); //initializes food item
         cellPanel.setEnabled(true);
         cellPanel.setVisible(true);
@@ -55,13 +54,13 @@ public class GameManager extends GameUI{
         repaintPanels();
     }
 
-    public static void frameAdvancement(){
+    public static void frameAdvancement(Snake snake){
         final int FPS = 75;
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         //key listener to obtain player input
         frame.addKeyListener(new KeyAdapter(){public void keyPressed(KeyEvent e){
 
-            try {Snake.changeDirection(e.getKeyCode());
+            try {snake.changeDirection(e.getKeyCode());
             }catch (Exception ex){throw new RuntimeException(ex);}
 
             if(DEBUG){
@@ -74,9 +73,9 @@ public class GameManager extends GameUI{
             //you have to try/catch for an exception on everything because executorservices just hangs the program instead of throwing an exception and i CANNOT figure OUT what the ISSUE IS unless it throws something
             try{
                 if(gameStatus){
-                    try{Snake.updateMovement();
+                    try{snake.updateMovement();
                     }catch(Exception e){
-                        int[] pos = Snake.getPosData();
+                        int[] pos = snake.getPosData();
                         if(pos[0]>Board.getBoardSize()-1||pos[1]>Board.getBoardSize()-1||pos[0]<=0||pos[1]<=0) {
                             gameStatus = false;
                         }else{throw ErrorPrinter.errorHandler(ErrorPrinter.ERROR_CODE.ERR_GM_EXECUTOR_SERVICE_FAULT);} //throws error if an exception happens for any other reason

@@ -3,20 +3,18 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-//todo: make this not extend the GM why is it LIKE THIS
+//todo: why is it EXTENDING GM BRO FIX THIS DOGSHIT 2024 CODE LOL
 public class Board extends GameManager{
-    //init var
     private static final int BOARD_SIZE = 20;
     public static Color FIELD_COLOR = Color.WHITE;
     public static Color SNAKE_COLOR = Color.BLACK;
     public static Color FOOD_COLOR = Color.RED;
-    final protected static ArrayList<Cell> snakeCells = new ArrayList<>(); //has all the cellsssss that are part of the snake in them
+    final protected static ArrayList<Cell> snakeCells = new ArrayList<>();
     public static Cell[][] cellList = new Cell[BOARD_SIZE][BOARD_SIZE];
 
     Board() throws Exception {}
 
     public enum STRING_CONSTANTS {
-        //TYPE VALUES: allows you to set celltypes without using direct strings and ensures no compatibility issues
         TYPE_FIELD,
         TYPE_SNAKE,
         TYPE_FOOD

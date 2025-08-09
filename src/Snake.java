@@ -5,12 +5,12 @@ import java.util.Objects;
 //holds data for snake
 //todo: make this not extend the board why is it LIKE THIS THIS IS SOOO BAD
 public class Snake extends Board{
-    private static int length = 1;
-    private static Direction direction = Direction.RIGHT;
-    private static int row = 1; //thithe position of the cell the snake's head is in
-    private static int column = 1;
-    private static int modifier = direction.value;
-    public static Direction opposite;
+    private int length = 1;
+    private Direction direction = Direction.RIGHT;
+    private int row = 1; //thithe position of the cell the snake's head is in
+    private int column = 1;
+    private int modifier = direction.value;
+    public Direction opposite;
 
     Snake() throws Exception {}
 
@@ -24,7 +24,7 @@ public class Snake extends Board{
         Direction(int value){this.value=value;}
     }
 
-    protected static void updateMovement() throws Exception {
+    protected void updateMovement() throws Exception {
         if(direction.equals(Direction.LEFT)||direction.equals(Direction.RIGHT)){column += modifier;
         }else{row+=modifier;}
 
@@ -35,7 +35,7 @@ public class Snake extends Board{
     //contains the opposite direction for each key input (so u dont hit left key while going right and u move inside of yourself and instalose)
     private static final Map<Integer, Direction> directionMap = Map.of(KeyEvent.VK_RIGHT, Direction.RIGHT, KeyEvent.VK_LEFT, Direction.LEFT, KeyEvent.VK_UP, Direction.UP, KeyEvent.VK_DOWN, Direction.DOWN);
 
-    static void changeDirection(int key) throws Exception {
+    void changeDirection(int key) throws Exception {
         Direction newDirection = directionMap.get(key);
         if (newDirection!=null&&!newDirection.equals(oppositeDirection(direction))){
             opposite = oppositeDirection(direction);
@@ -56,31 +56,31 @@ public class Snake extends Board{
     };}
 
     //adds cells to snakeCell list
-    private static void snakeCellsManagement(Cell targetCell) throws Exception {
+    private void snakeCellsManagement(Cell targetCell) throws Exception {
         if(Objects.equals(targetCell.type, STRING_CONSTANTS.TYPE_FOOD)){ //this looks incredibly dumb but you have to have this if statement inside the else
-            Snake.length++;
+            length++;
             Board.createFood();
             GameManager.updateLengthText(length);
         }else if(snakeCells.contains(targetCell)){gameStatus = false;}
 
         targetCell.changeAppearance(STRING_CONSTANTS.TYPE_SNAKE); //changes target cell into its activated appearance (since snake cells are the activated appearance of a shaded-in block
         targetCell.type = STRING_CONSTANTS.TYPE_SNAKE;
-        targetCell.age = Snake.length + 1; //add one because the cells would immediately get depreciated to (length-1)
-        targetCell.ROW = Snake.row;
-        targetCell.COLUMN = Snake.column;
+        targetCell.age = length + 1; //add one because the cells would immediately get depreciated to (length-1)
+        targetCell.ROW = row;
+        targetCell.COLUMN = column;
         snakeCells.add(targetCell);
     }
 
     //decreases age of all cells by 1 and removes any cells with an age of zero
-    private static void cellAgeDeprecation(){
-        if(snakeCells.size()>Snake.length){
+    private void cellAgeDeprecation(){
+        if(snakeCells.size()>length){
             Cell gone = snakeCells.getFirst();
             gone.changeAppearance(STRING_CONSTANTS.TYPE_FIELD); //sets appearance to regular ass cell LOL
             snakeCells.remove(gone);
         }
     }
 
-    public static void setDefaultValues() throws Exception {
+    public void setDefaultValues() throws Exception {
         length = 1;
         direction = Direction.RIGHT;
         row = 1; //thithe position of the cell the snake's head is in
@@ -90,9 +90,9 @@ public class Snake extends Board{
     }
 
     //used exclusively for error handling
-    public static String getErrorDetails(){return "[CURRENT ROW]: " + Snake.row + "\n[CURRENT COL]: " + Snake.column + "\n[MODIFIER]: " + Snake.modifier;}
+    public String getErrorDetails(){return "[CURRENT ROW]: " + this.row + "\n[CURRENT COL]: " + this.column + "\n[MODIFIER]: " + this.modifier;}
 
     //used exclusively for error handling
-    public static int[] getPosData(){return new int[]{row,column};}
+    public int[] getPosData(){return new int[]{row,column};}
 
 }
